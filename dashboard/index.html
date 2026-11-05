@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bandit Algorithm Arena</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a lab bench. Sticky control rail on the left, instruments (charts) on the right,
+   then a reference shelf: how bandits decide, and a catalog of every algorithm. */
+:root {
+  --bg: #f2f3f5;
+  --surface: #fcfcfb;
+  --surface-2: #eceef1;
+  --ink: #14161a;
+  --ink-2: #4b505b;
+  --muted: #7d828c;
+  --line: #e1e3e8;
+  --baseline: #c3c7ce;
+  --ring: rgba(20, 22, 26, 0.10);
+  --primary: #14161a;
+  --on-primary: #fcfcfb;
+  --focus: #2a78d6;
+  --good: #0ca30c;
+  --good-text: #006300;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+  --s5: #e87ba4; --s6: #008300; --s7: #6250d6; --s8: #e34948;
+  --q0: #eceef1; --q1: #cde2fb; --q2: #9ec5f4; --q3: #6da7ec; --q4: #3987e5;
+  --q5: #256abf; --q6: #1c5cab; --q7: #104281; --q8: #0d366b;
+
+  --font-display: "Bricolage Grotesque", "IBM Plex Sans", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --step--1: 0.8125rem; --step-0: 0.9375rem; --step-1: 1.125rem; --step-2: 1.5rem; --step-3: 2.25rem;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1012; --surface: #1a1a19; --surface-2: #232426; --ink: #f0efec; --ink-2: #c3c2b7;
+    --muted: #8d8f94; --line: #2c2c2a; --baseline: #3d3e41; --ring: rgba(255, 255, 255, 0.10);
+    --primary: #f0efec; --on-primary: #141414; --focus: #5598e7; --good-text: #0ca30c;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+    --q0: #232426; --q1: #0d366b; --q2: #104281; --q3: #184f95; --q4: #1c5cab;
+    --q5: #256abf; --q6: #3987e5; --q7: #6da7ec; --q8: #9ec5f4;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1012; --surface: #1a1a19; --surface-2: #232426; --ink: #f0efec; --ink-2: #c3c2b7;
+  --muted: #8d8f94; --line: #2c2c2a; --baseline: #3d3e41; --ring: rgba(255, 255, 255, 0.10);
+  --primary: #f0efec; --on-primary: #141414; --focus: #5598e7; --good-text: #0ca30c;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+  --q0: #232426; --q1: #0d366b; --q2: #104281; --q3: #184f95; --q4: #1c5cab;
+  --q5: #256abf; --q6: #3987e5; --q7: #6da7ec; --q8: #9ec5f4;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.5;
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 650; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h1 { font-size: var(--step-3); line-height: 1.05; font-weight: 700; }
+h2 { font-size: var(--step-2); line-height: 1.15; }
+h3 { font-size: var(--step-1); line-height: 1.25; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-data); font-size: 0.92em; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.eyebrow { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.num { font-variant-numeric: tabular-nums; }
+
+.wrap {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- masthead ---------- */
+.masthead { padding-block: 28px 20px; }
+.masthead .wrap { display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: end; justify-content: space-between; }
+.masthead .lede { color: var(--ink-2); max-width: 62ch; margin-top: 8px; }
+.status { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.pill {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px;
+  background: var(--surface); box-shadow: inset 0 0 0 1px var(--ring); font-size: var(--step--1); color: var(--ink-2);
+  white-space: nowrap;
+}
+.pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.pill[data-state="running"] .dot { background: var(--s4); animation: pulse 1s ease-in-out infinite; }
+.pill[data-state="done"] .dot { background: var(--good); }
+@keyframes pulse { 50% { opacity: 0.35; } }
+.progress { width: 96px; height: 4px; border-radius: 2px; background: var(--surface-2); overflow: hidden; }
+.progress span { display: block; height: 100%; width: 0; background: var(--ink-2); transition: width 120ms linear; }
+
+/* ---------- bench layout ---------- */
+.bench { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 20px; align-items: start; padding-bottom: 40px; }
+@media (max-width: 960px) { .bench { grid-template-columns: minmax(0, 1fr); } }
+
+.rail {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px);
+  max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow: auto;
+  background: var(--surface); border-radius: var(--radius); box-shadow: 0 0 0 1px var(--ring);
+  display: flex; flex-direction: column;
+}
+@media (max-width: 960px) { .rail { position: static; max-height: none; order: 2; } }
+.rail section { padding: 16px; border-bottom: 1px solid var(--line); display: grid; gap: 10px; }
+.rail section:last-child { border-bottom: 0; }
+.rail .row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; }
+.rail label { font-size: var(--step--1); color: var(--ink-2); }
+.field { display: grid; gap: 6px; }
+select, input[type="number"] {
+  width: 100%; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg);
+}
+input[type="range"] { width: 100%; accent-color: var(--ink); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.seed { display: grid; grid-template-columns: 1fr auto; gap: 6px; }
+
+.envs { display: grid; gap: 6px; }
+.env-opt { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; padding: 8px 10px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; }
+.env-opt:hover { background: var(--bg); }
+.env-opt:has(input:checked) { border-color: var(--ink); background: var(--bg); }
+.env-opt input { grid-row: span 2; margin-top: 4px; accent-color: var(--ink); }
+.env-opt b { font-weight: 600; font-size: var(--step--1); color: var(--ink); }
+.env-opt span { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
+.tag { font-size: 0.6875rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; margin-left: 6px; font-weight: 500; }
+
+.presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: transparent; cursor: pointer;
+  font-size: 0.8125rem; color: var(--ink-2);
+}
+.chip:hover { border-color: var(--ink-2); color: var(--ink); }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 9px 16px; border-radius: 8px;
+  border: 0; background: var(--primary); color: var(--on-primary); font-weight: 600; cursor: pointer;
+}
+.btn:hover { opacity: 0.88; }
+.btn.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); font-weight: 500; }
+.icon-btn { padding: 7px 10px; }
+
+.algo-group { display: grid; gap: 2px; }
+.algo-group > .eyebrow { margin: 6px 0 2px; }
+.algo { border-radius: 8px; }
+.algo > label { display: grid; grid-template-columns: auto 14px 1fr; align-items: center; gap: 8px; padding: 5px 6px; cursor: pointer; color: var(--ink); font-size: var(--step--1); border-radius: 8px; }
+.algo > label:hover { background: var(--bg); }
+.algo input[type="checkbox"] { accent-color: var(--ink); margin: 0; }
+.algo .sw { width: 14px; height: 3px; border-radius: 2px; background: transparent; }
+.algo.disabled > label { color: var(--muted); cursor: not-allowed; }
+.params { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px 10px; padding: 2px 6px 8px 28px; }
+.params label { display: grid; gap: 2px; font-size: 0.75rem; color: var(--muted); }
+.params input { padding: 4px 8px; font-family: var(--font-data); font-size: 0.8125rem; }
+.cap-note { font-size: 0.75rem; color: var(--muted); }
+
+/* ---------- main column ---------- */
+.main { display: grid; gap: 20px; min-width: 0; }
+.card { background: var(--surface); border-radius: var(--radius); box-shadow: 0 0 0 1px var(--ring); padding: 18px; min-width: 0; }
+.card-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.card-head p { color: var(--muted); font-size: var(--step--1); }
+
+.tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 1180px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .tiles { grid-template-columns: minmax(0, 1fr); } }
+.tile { background: var(--surface); border-radius: var(--radius); box-shadow: 0 0 0 1px var(--ring); padding: 14px 16px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.tile .label { font-size: var(--step--1); color: var(--ink-2); }
+.tile .value { font-family: var(--font-display); font-size: 1.625rem; font-weight: 650; line-height: 1.15; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.tile .value .key { flex: none; width: 14px; height: 3px; border-radius: 2px; }
+.tile .value span.txt { overflow-wrap: anywhere; }
+.tile .sub { font-size: var(--step--1); color: var(--muted); }
+
+.tabs { display: inline-flex; padding: 3px; border-radius: 9px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); flex-wrap: wrap; }
+.tabs button { border: 0; background: transparent; padding: 5px 12px; border-radius: 7px; cursor: pointer; font-size: var(--step--1); color: var(--ink-2); }
+.tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--ring), 0 1px 2px var(--ring); font-weight: 600; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+.toggle { display: inline-flex; gap: 6px; align-items: center; font-size: var(--step--1); color: var(--ink-2); cursor: pointer; }
+.toggle input { accent-color: var(--ink); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 10px 0 4px; }
+.legend button { display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; padding: 2px 0; cursor: pointer; font-size: var(--step--1); color: var(--ink-2); }
+.legend button:hover, .legend button.on { color: var(--ink); }
+.legend .key { width: 16px; height: 2px; border-radius: 1px; }
+
+.chart { position: relative; width: 100%; min-width: 0; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart.stale svg { opacity: 0.55; transition: opacity 150ms; }
+.axis text, .chart text { fill: var(--muted); font-family: var(--font-data); font-size: 11px; }
+.chart .lbl { fill: var(--ink); font-family: var(--font-body); font-size: 12px; font-weight: 600; }
+.chart .lbl-2 { fill: var(--ink-2); font-family: var(--font-body); font-size: 12px; }
+.grid line { stroke: var(--line); stroke-width: 1; }
+.baseline { stroke: var(--baseline); stroke-width: 1; }
+.series { transition: opacity 120ms; }
+svg.focusing .series:not(.on) { opacity: 0.15; }
+.note { color: var(--muted); font-size: var(--step--1); margin-top: 8px; }
+
+.tooltip {
+  position: absolute; pointer-events: none; z-index: 5; min-width: 180px; max-width: 280px;
+  background: var(--surface); color: var(--ink); border-radius: 8px; padding: 8px 10px;
+  box-shadow: 0 0 0 1px var(--ring), 0 6px 24px rgba(0, 0, 0, 0.14); font-size: var(--step--1);
+}
+.tooltip .t-head { color: var(--muted); font-size: 0.75rem; margin-bottom: 4px; font-family: var(--font-data); }
+.tooltip .t-row { display: grid; grid-template-columns: 14px auto 1fr; gap: 8px; align-items: center; padding: 1px 0; }
+.tooltip .t-row .key { width: 14px; height: 2px; border-radius: 1px; }
+.tooltip .t-row b { font-family: var(--font-data); font-weight: 500; font-variant-numeric: tabular-nums; text-align: right; }
+.tooltip .t-row span { color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+@media (max-width: 1180px) { .split { grid-template-columns: minmax(0, 1fr); } }
+
+.scale { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 0.75rem; color: var(--muted); margin-top: 10px; }
+.scale .bins { display: flex; gap: 2px; }
+.scale .bins span { width: 22px; height: 10px; border-radius: 2px; }
+
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: var(--step--1); }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { color: var(--muted); font-weight: 500; font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; }
+th button { all: unset; cursor: pointer; }
+th button:focus-visible { outline: 2px solid var(--focus); }
+td.n, th.n { text-align: right; font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+td .key { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 8px; }
+td.params-cell { color: var(--muted); font-family: var(--font-data); font-size: 0.75rem; }
+tr.winner td:first-child { font-weight: 600; }
+
+/* ---------- reference shelf ---------- */
+.shelf { padding-block: 8px 56px; display: grid; gap: 20px; }
+.shelf-head { display: grid; gap: 6px; max-width: 70ch; }
+.shelf-head p { color: var(--ink-2); }
+figure { margin: 0; }
+figcaption { color: var(--ink-2); font-size: var(--step--1); margin-top: 12px; max-width: 80ch; }
+.diagram { overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 640px; height: auto; color: var(--ink); }
+.diagram text { font-family: var(--font-body); font-size: 13px; fill: currentColor; }
+.diagram .mono { font-family: var(--font-data); font-size: 12px; }
+.diagram .dim { fill: var(--muted); }
+.diagram .ink2 { fill: var(--ink-2); }
+.diagram .box { fill: var(--surface); stroke: currentColor; stroke-width: 1.25; }
+.diagram .box-2 { fill: var(--bg); stroke: var(--baseline); stroke-width: 1; }
+.diagram .edge { stroke: currentColor; stroke-width: 1.5; fill: none; }
+.diagram .edge-dim { stroke: var(--muted); stroke-width: 1.25; fill: none; stroke-dasharray: 4 4; }
+.diagram .gridl { stroke: var(--line); stroke-width: 1; }
+.diagram .head { font-family: var(--font-display); font-size: 15px; font-weight: 650; }
+
+.catalog { display: grid; gap: 24px; }
+.family { display: grid; gap: 10px; }
+.family-head { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.family-head p { color: var(--muted); font-size: var(--step--1); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.acard { background: var(--surface); border-radius: var(--radius); box-shadow: 0 0 0 1px var(--ring); padding: 14px 16px; display: grid; gap: 8px; align-content: start; grid-template-rows: auto auto auto 1fr auto; }
+.acard .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.acard h3 { font-size: 1.0625rem; }
+.acard .formula { font-family: var(--font-data); font-size: 0.8125rem; background: var(--bg); padding: 8px 10px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.acard .idea { color: var(--ink-2); font-size: var(--step--1); }
+.acard .bound { font-size: 0.75rem; color: var(--muted); }
+.acard .bound b { color: var(--ink-2); font-weight: 500; font-family: var(--font-data); }
+.acard .chip[aria-pressed="true"] { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+.acard .chip:disabled { opacity: 0.45; cursor: not-allowed; }
+
+footer { color: var(--muted); font-size: var(--step--1); padding-block: 0 40px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Multi-armed bandits · reinforcement learning</div>
+      <h1>Bandit Algorithm Arena</h1>
+      <p class="lede">Seventeen bandit algorithms, simulated in your browser. Every algorithm in a run plays the same bandit and sees the same reward stream, so differences come from the strategy, not the luck of the draw.</p>
+    </div>
+    <div class="status" aria-live="polite">
+      <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+      <div class="pill" id="status-pill" data-state="idle"><span class="dot"></span><span id="status-text">Starting</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap bench">
+  <aside class="rail" aria-label="Simulation settings">
+    <section>
+      <div class="eyebrow">Environment</div>
+      <div class="envs" id="envs" role="radiogroup" aria-label="Environment"></div>
+    </section>
+    <section>
+      <div class="field">
+        <div class="row"><label for="k-range">Arms (K)</label><output id="k-out" class="mono num" for="k-range">10</output></div>
+        <input type="range" id="k-range" min="2" max="50" step="1" value="10">
+      </div>
+      <div class="two">
+        <div class="field">
+          <label for="t-select">Horizon (T steps)</label>
+          <select id="t-select">
+            <option value="250">250</option><option value="500">500</option><option value="1000" selected>1,000</option>
+            <option value="2000">2,000</option><option value="5000">5,000</option><option value="10000">10,000</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="runs-select">Runs averaged</label>
+          <select id="runs-select">
+            <option value="20">20</option><option value="50">50</option><option value="100">100</option>
+            <option value="200" selected>200</option><option value="500">500</option><option value="1000">1,000</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="seed-input">Seed</label>
+        <div class="seed">
+          <input type="number" id="seed-input" value="7" min="0" step="1">
+          <button class="btn ghost icon-btn" id="seed-roll" type="button" title="New random seed">New seed</button>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="row">
+        <div class="eyebrow">Algorithms</div>
+        <span class="cap-note num" id="algo-count">0 of 8</span>
+      </div>
+      <div class="presets" id="presets"></div>
+      <div id="algo-list"></div>
+      <p class="cap-note">Up to eight at a time, one color each. A color stays with its algorithm until you remove it.</p>
+    </section>
+    <section>
+      <button class="btn" id="run-btn" type="button">Run again</button>
+      <p class="cap-note">Changes re-run automatically.</p>
+    </section>
+  </aside>
+
+  <main class="main">
+    <div class="tiles" id="tiles"></div>
+
+    <section class="card" aria-labelledby="curve-title">
+      <div class="card-head">
+        <div>
+          <h2 id="curve-title">Learning curves</h2>
+          <p id="curve-sub"></p>
+        </div>
+        <div class="toolbar">
+          <div class="tabs" role="tablist" id="metric-tabs">
+            <button role="tab" data-metric="regret" aria-selected="true" type="button">Cumulative regret</button>
+            <button role="tab" data-metric="optimal" aria-selected="false" type="button">Best-arm rate</button>
+            <button role="tab" data-metric="reward" aria-selected="false" type="button">Reward per step</button>
+          </div>
+          <label class="toggle"><input type="checkbox" id="logx"> Log time axis</label>
+        </div>
+      </div>
+      <div class="legend" id="legend"></div>
+      <div class="chart" id="curve-chart"></div>
+      <p class="note" id="curve-note"></p>
+    </section>
+
+    <div class="split">
+      <section class="card" aria-labelledby="board-title">
+        <div class="card-head">
+          <div>
+            <h2 id="board-title">Final regret</h2>
+            <p id="board-sub">Lower is better. Whiskers show a 95% confidence interval of the mean.</p>
+          </div>
+        </div>
+        <div class="chart" id="board-chart"></div>
+      </section>
+      <section class="card" aria-labelledby="heat-title">
+        <div class="card-head">
+          <div>
+            <h2 id="heat-title">Where the pulls went</h2>
+            <p>Share of all pulls, by arm, with arms ranked from best (left) to worst.</p>
+          </div>
+        </div>
+        <div class="chart" id="heat-chart"></div>
+        <div class="scale" id="heat-scale"></div>
+      </section>
+    </div>
+
+    <section class="card" aria-labelledby="table-title">
+      <div class="card-head">
+        <div>
+          <h2 id="table-title">Results table</h2>
+          <p>Every number behind the charts. Select a column header to sort.</p>
+        </div>
+      </div>
+      <div class="table-wrap"><table id="results-table"></table></div>
+    </section>
+  </main>
+</div>
+
+<div class="wrap shelf">
+  <div class="shelf-head">
+    <div class="eyebrow">Reference</div>
+    <h2>How a bandit agent decides</h2>
+    <p>Each step the agent picks one of K arms and sees only that arm's reward. It never sees the means, so it cannot know what it lost. Regret counts that loss from the outside.</p>
+  </div>
+
+  <section class="card">
+    <figure class="diagram">
+      <svg id="loop-diagram" viewBox="0 0 960 300" role="img" aria-label="The bandit loop: the agent turns its estimates into an arm choice, the environment returns a reward from that arm only, the agent updates its estimates, and regret accumulates outside the agent's view."></svg>
+      <figcaption>The bandit loop. The algorithms on this page differ only in the box marked <em>selection rule</em>: how they turn the same estimates into a choice. Regret is computed by the simulator from the hidden means and is never shown to the agent.</figcaption>
+    </figure>
+  </section>
+
+  <section class="card">
+    <figure class="diagram">
+      <svg id="decide-diagram" viewBox="0 0 960 330" role="img" aria-label="Same evidence, three decisions: epsilon-greedy picks arm A, UCB1 picks arm B because its interval is widest, and Thompson sampling picks whichever arm's posterior draw is highest."></svg>
+      <figcaption>Same evidence, three decisions. After 200 pulls, arm A has the best average but arm B has far fewer samples. ε-greedy takes A unless its coin says explore, and then it picks uniformly, even the clearly bad arm C. UCB1 takes B because its uncertainty bonus is largest. Thompson sampling draws one value from each posterior and acts on the draw, so it picks B about one time in four.</figcaption>
+    </figure>
+  </section>
+
+  <div class="shelf-head">
+    <div class="eyebrow">Catalog</div>
+    <h2>Every algorithm in the arena</h2>
+    <p>Grouped by how they explore. Add any of them to the comparison from here.</p>
+  </div>
+  <div class="catalog" id="catalog"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    Simulation core: <code>src/mab.js</code>. Regret is pseudo-regret, Σ (μ*ₜ − μ<sub>aₜ</sub>); for drifting and abrupt environments μ*ₜ is the best mean at step t. Bonuses are scaled by s = 1 for Bernoulli and s = √2 for unit-variance Gaussian rewards.
+  </div>
+</footer>
+
+<script src="../src/mab.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
