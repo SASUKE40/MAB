@@ -1,0 +1,462 @@
+{
+ "setting": "knapsack",
+ "config": {
+  "K": 5,
+  "T": 1000,
+  "runs": 50,
+  "seed": 7,
+  "extra": {
+   "beta": 0.25
+  }
+ },
+ "environments": {
+  "one": [
+   {
+    "id": "cbwk",
+    "name": "CBwK (linear, simplified)",
+    "family": "contextual",
+    "params": {
+     "alpha": 0.5,
+     "eta": 1
+    },
+    "summary": {
+     "regret": 49.43551302542333,
+     "regretSE": 4.663249973853629,
+     "regretMedian": 43.09318225597451,
+     "reward": 409.77727363817814,
+     "ratio": 0.8933593238550693,
+     "left": 0.16647999999999996,
+     "stopT": 999.58,
+     "msPerRun": 0.933558799999999
+    }
+   },
+   {
+    "id": "ucb-bwk",
+    "name": "UCB-BwK",
+    "family": "optimistic-lp",
+    "params": {
+     "cr": 0.5
+    },
+    "summary": {
+     "regret": 57.09500774779075,
+     "regretSE": 3.9584780873030727,
+     "regretMedian": 55.83150340610672,
+     "reward": 402.1177789158105,
+     "ratio": 0.8769163546605236,
+     "left": 0,
+     "stopT": 957.72,
+     "msPerRun": 1.2622636800000009
+    }
+   },
+   {
+    "id": "pd-bwk",
+    "name": "PD-BwK",
+    "family": "primal-dual",
+    "params": {
+     "cr": 0.5
+    },
+    "summary": {
+     "regret": 121.88991220672646,
+     "regretSE": 5.1690720319793915,
+     "regretMedian": 117.6627973463485,
+     "reward": 337.3228744568749,
+     "ratio": 0.7382659315864482,
+     "left": 0,
+     "stopT": 636.96,
+     "msPerRun": 0.5658904799999971
+    }
+   },
+   {
+    "id": "ucb-ratio",
+    "name": "Reward-per-cost UCB",
+    "family": "baseline",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "regret": 138.09177847392033,
+     "regretSE": 8.250320234323778,
+     "regretMedian": 136.07155198537674,
+     "reward": 321.121008189681,
+     "ratio": 0.6991803208836097,
+     "left": 0.4715200000000001,
+     "stopT": 983.88,
+     "msPerRun": 0.4821465999999961
+    }
+   },
+   {
+    "id": "lagrange-bwk",
+    "name": "LagrangeBwK",
+    "family": "primal-dual",
+    "params": {
+     "primal": 0,
+     "eta": 1
+    },
+    "summary": {
+     "regret": 139.80963497079773,
+     "regretSE": 6.672980543854413,
+     "regretMedian": 148.95187610949938,
+     "reward": 319.4031516928037,
+     "ratio": 0.6962877036686151,
+     "left": 0.18328,
+     "stopT": 977.12,
+     "msPerRun": 0.615140199999999
+    }
+   },
+   {
+    "id": "ucb1",
+    "name": "UCB1 (ignores costs)",
+    "family": "baseline",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "regret": 209.17773372306863,
+     "regretSE": 7.8421075495140675,
+     "regretMedian": 220.5023629515729,
+     "reward": 250.03505294053278,
+     "ratio": 0.5506611012324959,
+     "left": 0,
+     "stopT": 388.66,
+     "msPerRun": 0.24089703999999984
+    }
+   }
+  ],
+  "two": [
+   {
+    "id": "ucb-bwk",
+    "name": "UCB-BwK",
+    "family": "optimistic-lp",
+    "params": {
+     "cr": 0.5
+    },
+    "summary": {
+     "regret": 37.16011439135693,
+     "regretSE": 2.635747291174157,
+     "regretMedian": 36.84035483029112,
+     "reward": 344.3268845296468,
+     "ratio": 0.901478035370544,
+     "left": 0,
+     "stopT": 960.06,
+     "msPerRun": 1.0281238799999994
+    }
+   },
+   {
+    "id": "cbwk",
+    "name": "CBwK (linear, simplified)",
+    "family": "contextual",
+    "params": {
+     "alpha": 0.5,
+     "eta": 1
+    },
+    "summary": {
+     "regret": 46.54321041107993,
+     "regretSE": 2.747881942647246,
+     "regretMedian": 44.78990557083711,
+     "reward": 334.9437885099237,
+     "ratio": 0.8757229862715958,
+     "left": 0.07256000000000004,
+     "stopT": 1000,
+     "msPerRun": 0.43461405999999897
+    }
+   },
+   {
+    "id": "pd-bwk",
+    "name": "PD-BwK",
+    "family": "primal-dual",
+    "params": {
+     "cr": 0.5
+    },
+    "summary": {
+     "regret": 47.09140774149118,
+     "regretSE": 2.9436467836406623,
+     "regretMedian": 42.1510357673277,
+     "reward": 334.3955911795125,
+     "ratio": 0.8754776011556022,
+     "left": 0,
+     "stopT": 599.12,
+     "msPerRun": 0.39300763999999844
+    }
+   },
+   {
+    "id": "ucb1",
+    "name": "UCB1 (ignores costs)",
+    "family": "baseline",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "regret": 80.96647895948637,
+     "regretSE": 5.874224781035839,
+     "regretMedian": 83.13749138612599,
+     "reward": 300.52051996151727,
+     "ratio": 0.7891450863553645,
+     "left": 0,
+     "stopT": 484.22,
+     "msPerRun": 0.16626677999999515
+    }
+   },
+   {
+    "id": "lagrange-bwk",
+    "name": "LagrangeBwK",
+    "family": "primal-dual",
+    "params": {
+     "primal": 0,
+     "eta": 1
+    },
+    "summary": {
+     "regret": 82.78256209532964,
+     "regretSE": 5.009069921947485,
+     "regretMedian": 82.67856758429753,
+     "reward": 298.704436825674,
+     "ratio": 0.7795336374058636,
+     "left": 0.04600000000000001,
+     "stopT": 921.06,
+     "msPerRun": 0.38828192000000283
+    }
+   },
+   {
+    "id": "ucb-ratio",
+    "name": "Reward-per-cost UCB",
+    "family": "baseline",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "regret": 98.17030243228804,
+     "regretSE": 8.14664746573771,
+     "regretMedian": 82.14167169876009,
+     "reward": 283.3166964887157,
+     "ratio": 0.7403733469611317,
+     "left": 0.08096,
+     "stopT": 837.7,
+     "msPerRun": 0.2616895399999953
+    }
+   }
+  ],
+  "shift": [
+   {
+    "id": "ucb-bwk",
+    "name": "UCB-BwK",
+    "family": "optimistic-lp",
+    "params": {
+     "cr": 0.5
+    },
+    "summary": {
+     "regret": 133.42141573799336,
+     "regretSE": 7.8638226916614835,
+     "regretMedian": 124.36997981057937,
+     "reward": 526.043307425677,
+     "ratio": 0.7974328431285029,
+     "left": 0.02016,
+     "stopT": 969.28,
+     "msPerRun": 0.9742475799999966
+    }
+   },
+   {
+    "id": "ucb-ratio",
+    "name": "Reward-per-cost UCB",
+    "family": "baseline",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "regret": 139.18118318065478,
+     "regretSE": 7.369114696245947,
+     "regretMedian": 137.75453817433504,
+     "reward": 520.2835399830155,
+     "ratio": 0.7893927458368413,
+     "left": 0.49416000000000004,
+     "stopT": 986.56,
+     "msPerRun": 0.3158633400000053
+    }
+   },
+   {
+    "id": "cbwk",
+    "name": "CBwK (linear, simplified)",
+    "family": "contextual",
+    "params": {
+     "alpha": 0.5,
+     "eta": 1
+    },
+    "summary": {
+     "regret": 192.2745198486168,
+     "regretSE": 12.08767999608207,
+     "regretMedian": 179.23345925013587,
+     "reward": 467.1902033150533,
+     "ratio": 0.7093363401639354,
+     "left": 0.2836,
+     "stopT": 997.04,
+     "msPerRun": 0.5402101399999992
+    }
+   },
+   {
+    "id": "pd-bwk",
+    "name": "PD-BwK",
+    "family": "primal-dual",
+    "params": {
+     "cr": 0.5
+    },
+    "summary": {
+     "regret": 254.69805857602762,
+     "regretSE": 12.298265712146652,
+     "regretMedian": 271.4121317029792,
+     "reward": 404.7666645876426,
+     "ratio": 0.6151592882860855,
+     "left": 0.00392,
+     "stopT": 733.72,
+     "msPerRun": 0.4556825800000024
+    }
+   },
+   {
+    "id": "lagrange-bwk",
+    "name": "LagrangeBwK",
+    "family": "primal-dual",
+    "params": {
+     "primal": 0,
+     "eta": 1
+    },
+    "summary": {
+     "regret": 260.94028832407855,
+     "regretSE": 9.96229292139907,
+     "regretMedian": 258.7262003619793,
+     "reward": 398.5244348395918,
+     "ratio": 0.6021267501275152,
+     "left": 0.21439999999999998,
+     "stopT": 977.48,
+     "msPerRun": 0.48185372000000143
+    }
+   },
+   {
+    "id": "ucb1",
+    "name": "UCB1 (ignores costs)",
+    "family": "baseline",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "regret": 408.8808481535671,
+     "regretSE": 9.491717887444622,
+     "regretMedian": 420.239604271683,
+     "reward": 250.58387501010318,
+     "ratio": 0.38285140359325015,
+     "left": 0,
+     "stopT": 389.92,
+     "msPerRun": 0.12559642000000168
+    }
+   }
+  ],
+  "ctx": [
+   {
+    "id": "cbwk",
+    "name": "CBwK (linear, simplified)",
+    "family": "contextual",
+    "params": {
+     "alpha": 0.5,
+     "eta": 1
+    },
+    "summary": {
+     "regret": 54.97747899593904,
+     "regretSE": 5.903520403190341,
+     "regretMedian": 47.30504299323093,
+     "reward": 364.1405336364601,
+     "ratio": 0.8587660883733466,
+     "left": 0.09815999999999997,
+     "stopT": 999.56,
+     "msPerRun": 0.4750844399999983
+    }
+   },
+   {
+    "id": "pd-bwk",
+    "name": "PD-BwK",
+    "family": "primal-dual",
+    "params": {
+     "cr": 0.5
+    },
+    "summary": {
+     "regret": 77.4604813268022,
+     "regretSE": 4.346224912543569,
+     "regretMedian": 74.65439129920354,
+     "reward": 341.65753130559693,
+     "ratio": 0.8053106301030555,
+     "left": 0.012159999999999999,
+     "stopT": 789.42,
+     "msPerRun": 0.30445876000000455
+    }
+   },
+   {
+    "id": "ucb-bwk",
+    "name": "UCB-BwK",
+    "family": "optimistic-lp",
+    "params": {
+     "cr": 0.5
+    },
+    "summary": {
+     "regret": 79.12767293235385,
+     "regretSE": 5.2585971154098745,
+     "regretMedian": 71.40470232365652,
+     "reward": 339.99033970004524,
+     "ratio": 0.8070664260201228,
+     "left": 0.015199999999999998,
+     "stopT": 974.38,
+     "msPerRun": 0.471717340000007
+    }
+   },
+   {
+    "id": "ucb-ratio",
+    "name": "Reward-per-cost UCB",
+    "family": "baseline",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "regret": 103.89910634595911,
+     "regretSE": 6.853451415848329,
+     "regretMedian": 93.94063094845433,
+     "reward": 315.2189062864399,
+     "ratio": 0.7536725616255697,
+     "left": 0.054799999999999995,
+     "stopT": 867.7,
+     "msPerRun": 0.1515906599999971
+    }
+   },
+   {
+    "id": "ucb1",
+    "name": "UCB1 (ignores costs)",
+    "family": "baseline",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "regret": 114.76700798788676,
+     "regretSE": 6.886055068544544,
+     "regretMedian": 106.206302260108,
+     "reward": 304.3510046445124,
+     "ratio": 0.7270733805212454,
+     "left": 0.0064800000000000005,
+     "stopT": 753.18,
+     "msPerRun": 0.20660105999999132
+    }
+   },
+   {
+    "id": "lagrange-bwk",
+    "name": "LagrangeBwK",
+    "family": "primal-dual",
+    "params": {
+     "primal": 0,
+     "eta": 1
+    },
+    "summary": {
+     "regret": 155.09211083398083,
+     "regretSE": 8.228160977602373,
+     "regretMedian": 149.65492956639065,
+     "reward": 264.02590179841815,
+     "ratio": 0.6351471680491713,
+     "left": 0.06816000000000003,
+     "stopT": 944.1,
+     "msPerRun": 0.24182679999999437
+    }
+   }
+  ]
+ }
+}

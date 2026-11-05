@@ -1,0 +1,332 @@
+{
+ "setting": "restless",
+ "config": {
+  "K": 10,
+  "T": 500,
+  "runs": 50,
+  "seed": 7,
+  "extra": {
+   "M": 3
+  }
+ },
+ "environments": {
+  "adherence": [
+   {
+    "id": "whittle-oracle",
+    "name": "Whittle index (oracle)",
+    "family": "oracle",
+    "params": {
+     "gamma": 0.95
+    },
+    "summary": {
+     "regret": 0,
+     "regretSE": 0,
+     "regretMedian": 0,
+     "meanReward": 6.451307940376973,
+     "goodShare": 0.6451307940376972,
+     "msPerRun": 0.6171709599999997
+    }
+   },
+   {
+    "id": "ucwhittle",
+    "name": "UCWhittle (simplified)",
+    "family": "index-learning",
+    "params": {
+     "c": 0.5
+    },
+    "summary": {
+     "regret": 66.78590432403331,
+     "regretSE": 4.293375697052686,
+     "regretMedian": 59.05939522960148,
+     "meanReward": 6.3177361317289025,
+     "goodShare": 0.6317736131728903,
+     "msPerRun": 1.0611743399999989
+    }
+   },
+   {
+    "id": "ce-whittle",
+    "name": "Plug-in Whittle (greedy)",
+    "family": "index-learning",
+    "params": {},
+    "summary": {
+     "regret": 93.59645747785288,
+     "regretSE": 6.027952096196825,
+     "regretMedian": 84.43440332784382,
+     "meanReward": 6.2641150254212645,
+     "goodShare": 0.6264115025421264,
+     "msPerRun": 0.8056026599999973
+    }
+   },
+   {
+    "id": "ts-whittle",
+    "name": "Thompson-sampling Whittle",
+    "family": "index-learning",
+    "params": {
+     "H": 1
+    },
+    "summary": {
+     "regret": 103.07400170187111,
+     "regretSE": 3.692380330338676,
+     "regretMedian": 103.1837968021602,
+     "meanReward": 6.245159936973229,
+     "goodShare": 0.6245159936973229,
+     "msPerRun": 4.08703052
+    }
+   },
+   {
+    "id": "myopic",
+    "name": "Myopic (greedy one-step)",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "regret": 223.75974083552165,
+     "regretSE": 15.657201486161098,
+     "regretMedian": 193.91804956736644,
+     "meanReward": 6.0037884587059285,
+     "goodShare": 0.6003788458705929,
+     "msPerRun": 0.6688202200000023
+    }
+   },
+   {
+    "id": "round-robin",
+    "name": "Round-robin",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "regret": 435.6087543002973,
+     "regretSE": 8.611750971310043,
+     "regretMedian": 442.0404700212491,
+     "meanReward": 5.5800904317763775,
+     "goodShare": 0.5580090431776378,
+     "msPerRun": 0.09673427999999888
+    }
+   },
+   {
+    "id": "random",
+    "name": "Random",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "regret": 485.29766250350696,
+     "regretSE": 8.856187836374556,
+     "regretMedian": 479.4601304155954,
+     "meanReward": 5.480712615369956,
+     "goodShare": 0.5480712615369956,
+     "msPerRun": 0.6031670800000001
+    }
+   }
+  ],
+  "hetero": [
+   {
+    "id": "whittle-oracle",
+    "name": "Whittle index (oracle)",
+    "family": "oracle",
+    "params": {
+     "gamma": 0.95
+    },
+    "summary": {
+     "regret": 0,
+     "regretSE": 0,
+     "regretMedian": 0,
+     "meanReward": 5.9622917970787705,
+     "goodShare": 0.596229179707877,
+     "msPerRun": 0.5805060599999843
+    }
+   },
+   {
+    "id": "ts-whittle",
+    "name": "Thompson-sampling Whittle",
+    "family": "index-learning",
+    "params": {
+     "H": 1
+    },
+    "summary": {
+     "regret": 97.06667082785926,
+     "regretSE": 5.256076348359488,
+     "regretMedian": 92.09379528623539,
+     "meanReward": 5.768158455423051,
+     "goodShare": 0.5768158455423051,
+     "msPerRun": 3.7016514199999984
+    }
+   },
+   {
+    "id": "ce-whittle",
+    "name": "Plug-in Whittle (greedy)",
+    "family": "index-learning",
+    "params": {},
+    "summary": {
+     "regret": 110.13298958564366,
+     "regretSE": 11.573417769179095,
+     "regretMedian": 97.54359003553441,
+     "meanReward": 5.74202581790748,
+     "goodShare": 0.574202581790748,
+     "msPerRun": 0.7884900999999968
+    }
+   },
+   {
+    "id": "myopic",
+    "name": "Myopic (greedy one-step)",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "regret": 113.69929642185565,
+     "regretSE": 13.064451283927971,
+     "regretMedian": 86.5448858365881,
+     "meanReward": 5.734893204235058,
+     "goodShare": 0.5734893204235058,
+     "msPerRun": 0.6681331400000068
+    }
+   },
+   {
+    "id": "ucwhittle",
+    "name": "UCWhittle (simplified)",
+    "family": "index-learning",
+    "params": {
+     "c": 0.5
+    },
+    "summary": {
+     "regret": 187.59280976991232,
+     "regretSE": 12.796963956654526,
+     "regretMedian": 177.26717602838968,
+     "meanReward": 5.587106177538945,
+     "goodShare": 0.5587106177538945,
+     "msPerRun": 0.9506676600000106
+    }
+   },
+   {
+    "id": "round-robin",
+    "name": "Round-robin",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "regret": 563.1549043544323,
+     "regretSE": 17.146041711304047,
+     "regretMedian": 560.5958958739457,
+     "meanReward": 4.835981988369905,
+     "goodShare": 0.4835981988369905,
+     "msPerRun": 0.10311313999999584
+    }
+   },
+   {
+    "id": "random",
+    "name": "Random",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "regret": 579.0777954819245,
+     "regretSE": 16.232995161197113,
+     "regretMedian": 597.0914236477739,
+     "meanReward": 4.804136206114917,
+     "goodShare": 0.4804136206114917,
+     "msPerRun": 0.6896270800000047
+    }
+   }
+  ],
+  "fatigue": [
+   {
+    "id": "whittle-oracle",
+    "name": "Whittle index (oracle)",
+    "family": "oracle",
+    "params": {
+     "gamma": 0.95
+    },
+    "summary": {
+     "regret": 0,
+     "regretSE": 0,
+     "regretMedian": 0,
+     "meanReward": 7.26452983292803,
+     "goodShare": 0.7264529832928031,
+     "msPerRun": 0.8129605200000105
+    }
+   },
+   {
+    "id": "ucwhittle",
+    "name": "UCWhittle (simplified)",
+    "family": "index-learning",
+    "params": {
+     "c": 0.5
+    },
+    "summary": {
+     "regret": 58.057578551506815,
+     "regretSE": 3.0187958409493842,
+     "regretMedian": 55.45521198546041,
+     "meanReward": 7.148414675825012,
+     "goodShare": 0.7148414675825012,
+     "msPerRun": 1.2566172800000004
+    }
+   },
+   {
+    "id": "ce-whittle",
+    "name": "Plug-in Whittle (greedy)",
+    "family": "index-learning",
+    "params": {},
+    "summary": {
+     "regret": 58.22819718931276,
+     "regretSE": 3.883540820582281,
+     "regretMedian": 56.42409613712684,
+     "meanReward": 7.1480734385494005,
+     "goodShare": 0.71480734385494,
+     "msPerRun": 1.1440064600000186
+    }
+   },
+   {
+    "id": "myopic",
+    "name": "Myopic (greedy one-step)",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "regret": 79.4380804933258,
+     "regretSE": 6.316389390150385,
+     "regretMedian": 75.61582895926901,
+     "meanReward": 7.105653671941377,
+     "goodShare": 0.7105653671941378,
+     "msPerRun": 0.873270240000004
+    }
+   },
+   {
+    "id": "ts-whittle",
+    "name": "Thompson-sampling Whittle",
+    "family": "index-learning",
+    "params": {
+     "H": 1
+    },
+    "summary": {
+     "regret": 83.21575150889612,
+     "regretSE": 3.0693960646968748,
+     "regretMedian": 84.04450992567936,
+     "meanReward": 7.098098329910233,
+     "goodShare": 0.7098098329910233,
+     "msPerRun": 4.858031880000019
+    }
+   },
+   {
+    "id": "round-robin",
+    "name": "Round-robin",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "regret": 783.2164888818296,
+     "regretSE": 10.077658005199138,
+     "regretMedian": 775.8751194670197,
+     "meanReward": 5.698096855164368,
+     "goodShare": 0.5698096855164368,
+     "msPerRun": 0.16329347999999072
+    }
+   },
+   {
+    "id": "random",
+    "name": "Random",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "regret": 831.0488256512956,
+     "regretSE": 10.60633783023713,
+     "regretMedian": 825.2423092993438,
+     "meanReward": 5.602432181625436,
+     "goodShare": 0.5602432181625436,
+     "msPerRun": 0.9286913000000004
+    }
+   }
+  ]
+ }
+}

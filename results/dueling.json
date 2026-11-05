@@ -1,0 +1,1729 @@
+{
+ "setting": "dueling",
+ "config": {
+  "K": 8,
+  "T": 2000,
+  "runs": 50,
+  "seed": 7,
+  "extra": {
+   "strength": 1
+  }
+ },
+ "environments": {
+  "bt": [
+   {
+    "id": "dts",
+    "name": "Double Thompson Sampling",
+    "family": "thompson",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 48.49954355029883,
+     "finalSE": 2.7082470412991633,
+     "finalMedian": 42.64353042579959,
+     "finalWeak": 16.613869847884324,
+     "finalWeakSE": 1.5658337720400732,
+     "winnerTail": 0.9409000000000021,
+     "winnerShare": 0.7642199999999989,
+     "msPerRun": 16.786949940000007
+    }
+   },
+   {
+    "id": "rcs",
+    "name": "RCS",
+    "family": "thompson",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 93.9063837241714,
+     "finalSE": 3.733499747333613,
+     "finalMedian": 88.72435904466643,
+     "finalWeak": 15.805446557692939,
+     "finalWeakSE": 2.131278443962293,
+     "winnerTail": 0.8829999999999995,
+     "winnerShare": 0.4539600000000004,
+     "msPerRun": 12.614387399999972
+    }
+   },
+   {
+    "id": "vdb",
+    "name": "Versatile-DB (Tsallis-INF)",
+    "family": "reduction",
+    "params": {
+     "eta": 1
+    },
+    "summary": {
+     "finalRegret": 105.08693464004914,
+     "finalSE": 2.6606721522840826,
+     "finalMedian": 104.02499449643054,
+     "finalWeak": 39.786478364053615,
+     "finalWeakSE": 2.0016929077457677,
+     "winnerTail": 0.7388000000000005,
+     "winnerShare": 0.5157400000000029,
+     "msPerRun": 1.3324986999999788
+    }
+   },
+   {
+    "id": "rmed2",
+    "name": "RMED2",
+    "family": "confidence",
+    "params": {
+     "alpha": 3,
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 130.4080689203769,
+     "finalSE": 5.069601205330235,
+     "finalMedian": 126.43935038001189,
+     "finalWeak": 46.21903059956293,
+     "finalWeakSE": 4.299699604724324,
+     "winnerTail": 0.6526999999999997,
+     "winnerShare": 0.3487099999999996,
+     "msPerRun": 3.2982240000000185
+    }
+   },
+   {
+    "id": "rmed1",
+    "name": "RMED1",
+    "family": "confidence",
+    "params": {
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 148.05631861426727,
+     "finalSE": 6.207423064867514,
+     "finalMedian": 147.57793196951215,
+     "finalWeak": 63.944882779937785,
+     "finalWeakSE": 5.583048032781063,
+     "winnerTail": 0.5815000000000001,
+     "winnerShare": 0.31673999999999963,
+     "msPerRun": 2.5723109799999837
+    }
+   },
+   {
+    "id": "cw-rmed",
+    "name": "CW-RMED",
+    "family": "copeland-borda",
+    "params": {
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 173.756155234834,
+     "finalSE": 8.170540117620584,
+     "finalMedian": 172.03875565481903,
+     "finalWeak": 86.32651883084924,
+     "finalWeakSE": 7.55980829687483,
+     "winnerTail": 0.5866000000000005,
+     "winnerShare": 0.24022000000000038,
+     "msPerRun": 13.467996100000015
+    }
+   },
+   {
+    "id": "rmed2fh",
+    "name": "RMED2FH",
+    "family": "confidence",
+    "params": {
+     "alpha": 3,
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 182.45770848682346,
+     "finalSE": 7.969278979814539,
+     "finalMedian": 175.726766958471,
+     "finalWeak": 101.59320024822799,
+     "finalWeakSE": 7.946600216036229,
+     "winnerTail": 0.4613000000000001,
+     "winnerShare": 0.2597700000000002,
+     "msPerRun": 2.5359972800000112
+    }
+   },
+   {
+    "id": "borda-se",
+    "name": "Borda successive elimination",
+    "family": "copeland-borda",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "finalRegret": 189.52492741841533,
+     "finalSE": 10.230418168654797,
+     "finalMedian": 210.03092849175422,
+     "finalWeak": 106.97790579771721,
+     "finalWeakSE": 5.538800414811643,
+     "winnerTail": 0.7286000000000007,
+     "winnerShare": 0.33739000000000247,
+     "msPerRun": 0.6078362599999911
+    }
+   },
+   {
+    "id": "sparring-ucb",
+    "name": "Sparring UCB1",
+    "family": "reduction",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "finalRegret": 191.78264574459675,
+     "finalSE": 2.355497390105949,
+     "finalMedian": 193.8956475915713,
+     "finalWeak": 86.48053313613484,
+     "finalWeakSE": 1.9941755614563685,
+     "winnerTail": 0.3197000000000003,
+     "winnerShare": 0.20008000000000073,
+     "msPerRun": 0.8941602000000455
+    }
+   },
+   {
+    "id": "ccb",
+    "name": "CCB",
+    "family": "copeland-borda",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 193.6826456402745,
+     "finalSE": 6.503103380349029,
+     "finalMedian": 200.415180994212,
+     "finalWeak": 101.37537650273731,
+     "finalWeakSE": 4.6751743088030855,
+     "winnerTail": 0.5885999999999996,
+     "winnerShare": 0.21949000000000043,
+     "msPerRun": 3.354957779999947
+    }
+   },
+   {
+    "id": "rucb",
+    "name": "RUCB",
+    "family": "confidence",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 197.68743349524578,
+     "finalSE": 6.333186570359366,
+     "finalMedian": 201.09561593475553,
+     "finalWeak": 103.88082233768333,
+     "finalWeakSE": 4.1816440741319365,
+     "winnerTail": 0.47059999999999974,
+     "winnerShare": 0.20265999999999992,
+     "msPerRun": 1.7071084199999944
+    }
+   },
+   {
+    "id": "sparring-exp3",
+    "name": "Sparring EXP3",
+    "family": "reduction",
+    "params": {
+     "g": 1
+    },
+    "summary": {
+     "finalRegret": 223.43094304846602,
+     "finalSE": 4.063636539657105,
+     "finalMedian": 230.80790394110167,
+     "finalWeak": 125.46012062912706,
+     "finalWeakSE": 3.361079045756514,
+     "winnerTail": 0.34230000000000005,
+     "winnerShare": 0.15438999999999983,
+     "msPerRun": 1.282080219999972
+    }
+   },
+   {
+    "id": "dbgd",
+    "name": "DBGD",
+    "family": "gradient",
+    "params": {
+     "delta": 0.3,
+     "gamma": 0.02
+    },
+    "summary": {
+     "finalRegret": 231.37628547320298,
+     "finalSE": 6.023514729064941,
+     "finalMedian": 230.39831094109564,
+     "finalWeak": 133.08134090709387,
+     "finalWeakSE": 4.800144271904857,
+     "winnerTail": 0.13330000000000014,
+     "winnerShare": 0.10598000000000012,
+     "msPerRun": 1.787206460000026
+    }
+   },
+   {
+    "id": "doubler",
+    "name": "Doubler",
+    "family": "reduction",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "finalRegret": 274.962133526881,
+     "finalSE": 4.859726745115881,
+     "finalMedian": 276.86490734207496,
+     "finalWeak": 165.90007217772282,
+     "finalWeakSE": 3.325068789683177,
+     "winnerTail": 0.12690000000000004,
+     "winnerShare": 0.07124999999999956,
+     "msPerRun": 0.6471096799999788
+    }
+   },
+   {
+    "id": "multisbm",
+    "name": "MultiSBM",
+    "family": "reduction",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "finalRegret": 288.7435187995625,
+     "finalSE": 4.915209634145132,
+     "finalMedian": 290.0715727066708,
+     "finalWeak": 185.7972345781161,
+     "finalWeakSE": 3.813734054410029,
+     "winnerTail": 0.09690000000000006,
+     "winnerShare": 0.06189999999999979,
+     "msPerRun": 0.562982999999993
+    }
+   },
+   {
+    "id": "if",
+    "name": "Interleaved Filter",
+    "family": "explore-then-exploit",
+    "params": {},
+    "summary": {
+     "finalRegret": 296.2934151456343,
+     "finalSE": 9.426017707674411,
+     "finalMedian": 311.7487145795333,
+     "finalWeak": 177.02037219812826,
+     "finalWeakSE": 12.799498610966856,
+     "winnerTail": 0.02569999999999991,
+     "winnerShare": 0.0030900000000000072,
+     "msPerRun": 0.26302493999999427
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform pairs",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "finalRegret": 353.6727053386649,
+     "finalSE": 7.088514987965719,
+     "finalMedian": 357.1539497144905,
+     "finalWeak": 258.0481353624168,
+     "finalWeakSE": 6.463632440449346,
+     "winnerTail": 0.01749999999999998,
+     "winnerShare": 0.015909999999999695,
+     "msPerRun": 0.3426273600000434
+    }
+   },
+   {
+    "id": "btm",
+    "name": "Beat the Mean",
+    "family": "explore-then-exploit",
+    "params": {
+     "gamma": 1
+    },
+    "summary": {
+     "finalRegret": 354.0699642083311,
+     "finalSE": 7.048454754072179,
+     "finalMedian": 354.0333145821085,
+     "finalWeak": 258.5989642407923,
+     "finalWeakSE": 6.446361910343209,
+     "winnerTail": 0.01699999999999999,
+     "winnerShare": 0.015789999999999693,
+     "msPerRun": 0.983861960000012
+    }
+   },
+   {
+    "id": "savage",
+    "name": "SAVAGE",
+    "family": "explore-then-exploit",
+    "params": {
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 354.42522962695955,
+     "finalSE": 7.026314167459507,
+     "finalMedian": 355.7993004105068,
+     "finalWeak": 245.97522009225963,
+     "finalWeakSE": 6.3702258664203315,
+     "winnerTail": 0,
+     "winnerShare": 0,
+     "msPerRun": 2.0995191600000402
+    }
+   }
+  ],
+  "cyclic": [
+   {
+    "id": "rmed1",
+    "name": "RMED1",
+    "family": "confidence",
+    "params": {
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 47.954838423730806,
+     "finalSE": 2.477989477926371,
+     "finalMedian": 43.4535599334632,
+     "finalWeak": 31.50365420167525,
+     "finalWeakSE": 1.5014595347058397,
+     "winnerTail": 0.9419000000000016,
+     "winnerShare": 0.7601099999999996,
+     "msPerRun": 3.1136337399999867
+    }
+   },
+   {
+    "id": "rmed2",
+    "name": "RMED2",
+    "family": "confidence",
+    "params": {
+     "alpha": 3,
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 48.43284956862882,
+     "finalSE": 2.0530267421146515,
+     "finalMedian": 47.17079467200117,
+     "finalWeak": 27.63070673512038,
+     "finalWeakSE": 1.3511456033863642,
+     "winnerTail": 0.9318000000000014,
+     "winnerShare": 0.7295400000000006,
+     "msPerRun": 3.387010039999977
+    }
+   },
+   {
+    "id": "rmed2fh",
+    "name": "RMED2FH",
+    "family": "confidence",
+    "params": {
+     "alpha": 3,
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 53.92464158636727,
+     "finalSE": 2.230968784473044,
+     "finalMedian": 54.14691517933362,
+     "finalWeak": 30.09967828651754,
+     "finalWeakSE": 1.3075846976638479,
+     "winnerTail": 0.9289999999999998,
+     "winnerShare": 0.6876099999999982,
+     "msPerRun": 3.2565961000000514
+    }
+   },
+   {
+    "id": "dts",
+    "name": "Double Thompson Sampling",
+    "family": "thompson",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 55.08485247670478,
+     "finalSE": 2.058537443067775,
+     "finalMedian": 53.41635371286526,
+     "finalWeak": 17.393356247131713,
+     "finalWeakSE": 1.0755123860955673,
+     "winnerTail": 0.8290999999999993,
+     "winnerShare": 0.5856300000000004,
+     "msPerRun": 17.605842719999963
+    }
+   },
+   {
+    "id": "rcs",
+    "name": "RCS",
+    "family": "thompson",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 107.59233334623514,
+     "finalSE": 2.237393336307814,
+     "finalMedian": 106.45732219411803,
+     "finalWeak": 17.039700837682243,
+     "finalWeakSE": 1.6971672783009217,
+     "winnerTail": 0.2262000000000003,
+     "winnerShare": 0.05137000000000014,
+     "msPerRun": 13.667125760000008
+    }
+   },
+   {
+    "id": "vdb",
+    "name": "Versatile-DB (Tsallis-INF)",
+    "family": "reduction",
+    "params": {
+     "eta": 1
+    },
+    "summary": {
+     "finalRegret": 112.17031827142598,
+     "finalSE": 4.498954456545102,
+     "finalMedian": 110.2662197338945,
+     "finalWeak": 55.33326863420339,
+     "finalWeakSE": 4.05457905323692,
+     "winnerTail": 0.5031000000000004,
+     "winnerShare": 0.31672999999999946,
+     "msPerRun": 1.1781969199999913
+    }
+   },
+   {
+    "id": "ccb",
+    "name": "CCB",
+    "family": "copeland-borda",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 129.1535079428553,
+     "finalSE": 2.8215913150283987,
+     "finalMedian": 128.07752623885563,
+     "finalWeak": 42.1264314081902,
+     "finalWeakSE": 2.0950493288904855,
+     "winnerTail": 0.1468,
+     "winnerShare": 0.03489000000000017,
+     "msPerRun": 3.0878368199999295
+    }
+   },
+   {
+    "id": "rucb",
+    "name": "RUCB",
+    "family": "confidence",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 130.1958360024809,
+     "finalSE": 2.335790248715022,
+     "finalMedian": 131.29468263740875,
+     "finalWeak": 40.91648774866201,
+     "finalWeakSE": 1.513149624757915,
+     "winnerTail": 0.14250000000000013,
+     "winnerShare": 0.028070000000000032,
+     "msPerRun": 1.5262906800000382
+    }
+   },
+   {
+    "id": "if",
+    "name": "Interleaved Filter",
+    "family": "explore-then-exploit",
+    "params": {},
+    "summary": {
+     "finalRegret": 160.13487254078228,
+     "finalSE": 5.21119482147353,
+     "finalMedian": 155.7800678481766,
+     "finalWeak": 80.08095710653377,
+     "finalWeakSE": 6.152126311080478,
+     "winnerTail": 0.30289999999999934,
+     "winnerShare": 0.06354000000000007,
+     "msPerRun": 0.1885945200000333
+    }
+   },
+   {
+    "id": "borda-se",
+    "name": "Borda successive elimination",
+    "family": "copeland-borda",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "finalRegret": 163.76862691777143,
+     "finalSE": 7.219555927810303,
+     "finalMedian": 172.31552708808312,
+     "finalWeak": 106.03112978733537,
+     "finalWeakSE": 5.132766748592356,
+     "winnerTail": 0.4517,
+     "winnerShare": 0.1896200000000005,
+     "msPerRun": 0.6314354800000456
+    }
+   },
+   {
+    "id": "sparring-ucb",
+    "name": "Sparring UCB1",
+    "family": "reduction",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "finalRegret": 165.27384668606066,
+     "finalSE": 2.555910027784436,
+     "finalMedian": 163.28114581753007,
+     "finalWeak": 94.80928799353615,
+     "finalWeakSE": 1.7656801928878774,
+     "winnerTail": 0.17310000000000011,
+     "winnerShare": 0.09905000000000021,
+     "msPerRun": 0.926908060000078
+    }
+   },
+   {
+    "id": "cw-rmed",
+    "name": "CW-RMED",
+    "family": "copeland-borda",
+    "params": {
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 166.4582739293253,
+     "finalSE": 5.48235354649146,
+     "finalMedian": 166.13498548675412,
+     "finalWeak": 98.23707658827348,
+     "finalWeakSE": 4.2036707246069565,
+     "winnerTail": 0.24870000000000034,
+     "winnerShare": 0.08755999999999978,
+     "msPerRun": 13.197065720000037
+    }
+   },
+   {
+    "id": "sparring-exp3",
+    "name": "Sparring EXP3",
+    "family": "reduction",
+    "params": {
+     "g": 1
+    },
+    "summary": {
+     "finalRegret": 173.01203116080274,
+     "finalSE": 3.238430049251231,
+     "finalMedian": 175.65576016728835,
+     "finalWeak": 105.29798713767596,
+     "finalWeakSE": 3.0681387658872348,
+     "winnerTail": 0.20410000000000011,
+     "winnerShare": 0.09116999999999983,
+     "msPerRun": 1.1963476399999673
+    }
+   },
+   {
+    "id": "dbgd",
+    "name": "DBGD",
+    "family": "gradient",
+    "params": {
+     "delta": 0.3,
+     "gamma": 0.02
+    },
+    "summary": {
+     "finalRegret": 175.25916082485423,
+     "finalSE": 4.006211507369766,
+     "finalMedian": 175.09844885020556,
+     "finalWeak": 114.48325270632802,
+     "finalWeakSE": 3.6349823951300837,
+     "winnerTail": 0.0854,
+     "winnerShare": 0.07750999999999995,
+     "msPerRun": 1.4944941799999925
+    }
+   },
+   {
+    "id": "doubler",
+    "name": "Doubler",
+    "family": "reduction",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "finalRegret": 192.80502532824445,
+     "finalSE": 3.4953501852844386,
+     "finalMedian": 195.4233222824226,
+     "finalWeak": 127.92980909816374,
+     "finalWeakSE": 2.7908085984087427,
+     "winnerTail": 0.06410000000000003,
+     "winnerShare": 0.04201999999999958,
+     "msPerRun": 0.721537599999956
+    }
+   },
+   {
+    "id": "savage",
+    "name": "SAVAGE",
+    "family": "explore-then-exploit",
+    "params": {
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 196.63707555888578,
+     "finalSE": 4.447637892107944,
+     "finalMedian": 202.24091543144823,
+     "finalWeak": 129.80384511467153,
+     "finalWeakSE": 3.5272275159298516,
+     "winnerTail": 0.3167999999999992,
+     "winnerShare": 0.052329999999999884,
+     "msPerRun": 1.8114859599999271
+    }
+   },
+   {
+    "id": "multisbm",
+    "name": "MultiSBM",
+    "family": "reduction",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "finalRegret": 213.51175364910625,
+     "finalSE": 4.086561835070505,
+     "finalMedian": 214.37833184294857,
+     "finalWeak": 154.7163094247556,
+     "finalWeakSE": 3.4988078145007933,
+     "winnerTail": 0.02289999999999998,
+     "winnerShare": 0.023469999999999467,
+     "msPerRun": 0.5395970600000237
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform pairs",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "finalRegret": 214.64562892668155,
+     "finalSE": 4.298650871145535,
+     "finalMedian": 212.3958773701621,
+     "finalWeak": 156.48664374870697,
+     "finalWeakSE": 3.706030864807708,
+     "winnerTail": 0.014299999999999981,
+     "winnerShare": 0.01536999999999969,
+     "msPerRun": 0.2750880000000325
+    }
+   },
+   {
+    "id": "btm",
+    "name": "Beat the Mean",
+    "family": "explore-then-exploit",
+    "params": {
+     "gamma": 1
+    },
+    "summary": {
+     "finalRegret": 215.06409154261976,
+     "finalSE": 4.362256624271497,
+     "finalMedian": 215.429631822242,
+     "finalWeak": 156.95718543940018,
+     "finalWeakSE": 3.7885542023757623,
+     "winnerTail": 0.01519999999999999,
+     "winnerShare": 0.015519999999999692,
+     "msPerRun": 0.6837756199999512
+    }
+   }
+  ],
+  "copeland": [
+   {
+    "id": "dts",
+    "name": "Double Thompson Sampling",
+    "family": "thompson",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 253.552857142857,
+     "finalSE": 7.43684412932748,
+     "finalMedian": 242.14285714285737,
+     "finalWeak": 133.5914285714285,
+     "finalWeakSE": 4.637587967622163,
+     "winnerTail": 0.914500000000002,
+     "winnerShare": 0.5803700000000016,
+     "msPerRun": 14.538734099999875
+    }
+   },
+   {
+    "id": "rcs",
+    "name": "RCS",
+    "family": "thompson",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 366.994285714297,
+     "finalSE": 5.053569688572195,
+     "finalMedian": 356.00000000001194,
+     "finalWeak": 81.27428571428577,
+     "finalWeakSE": 5.153668325522702,
+     "winnerTail": 0,
+     "winnerShare": 0,
+     "msPerRun": 12.836705039999943
+    }
+   },
+   {
+    "id": "cw-rmed",
+    "name": "CW-RMED",
+    "family": "copeland-borda",
+    "params": {
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 369.06857142857035,
+     "finalSE": 17.562209527805233,
+     "finalMedian": 363.49999999999636,
+     "finalWeak": 215.24857142856996,
+     "finalWeakSE": 14.314048175726125,
+     "winnerTail": 0.8933999999999993,
+     "winnerShare": 0.44072000000000117,
+     "msPerRun": 12.553841699999975
+    }
+   },
+   {
+    "id": "ccb",
+    "name": "CCB",
+    "family": "copeland-borda",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 403.7857142857131,
+     "finalSE": 12.296002540147105,
+     "finalMedian": 413.7142857142861,
+     "finalWeak": 219.63142857142765,
+     "finalWeakSE": 8.646683334938906,
+     "winnerTail": 0.9062000000000011,
+     "winnerShare": 0.3696100000000016,
+     "msPerRun": 2.878542300000063
+    }
+   },
+   {
+    "id": "vdb",
+    "name": "Versatile-DB (Tsallis-INF)",
+    "family": "reduction",
+    "params": {
+     "eta": 1
+    },
+    "summary": {
+     "finalRegret": 441.8200000000008,
+     "finalSE": 11.8219570385606,
+     "finalMedian": 430.714285714289,
+     "finalWeak": 251.59714285714136,
+     "finalWeakSE": 10.212634529835194,
+     "winnerTail": 0.14980000000000013,
+     "winnerShare": 0.15106999999999973,
+     "msPerRun": 1.2339747600000737
+    }
+   },
+   {
+    "id": "sparring-exp3",
+    "name": "Sparring EXP3",
+    "family": "reduction",
+    "params": {
+     "g": 1
+    },
+    "summary": {
+     "finalRegret": 466.62857142857365,
+     "finalSE": 5.850450916527357,
+     "finalMedian": 469.6428571428589,
+     "finalWeak": 247.7857142857126,
+     "finalWeakSE": 5.215018918856699,
+     "winnerTail": 0.18300000000000005,
+     "winnerShare": 0.10856000000000014,
+     "msPerRun": 1.1835504999999102
+    }
+   },
+   {
+    "id": "rmed1",
+    "name": "RMED1",
+    "family": "confidence",
+    "params": {
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 467.95714285714416,
+     "finalSE": 28.037956141447992,
+     "finalMedian": 538.0714285714294,
+     "finalWeak": 239.05714285714188,
+     "finalWeakSE": 18.120861761712288,
+     "winnerTail": 0.2512,
+     "winnerShare": 0.19087999999999966,
+     "msPerRun": 2.792023379999955
+    }
+   },
+   {
+    "id": "sparring-ucb",
+    "name": "Sparring UCB1",
+    "family": "reduction",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "finalRegret": 481.98142857143046,
+     "finalSE": 4.825903574922591,
+     "finalMedian": 483.5714285714311,
+     "finalWeak": 245.98285714285544,
+     "finalWeakSE": 4.449701570327335,
+     "winnerTail": 0.10540000000000008,
+     "winnerShare": 0.09260000000000004,
+     "msPerRun": 0.8229335799999898
+    }
+   },
+   {
+    "id": "borda-se",
+    "name": "Borda successive elimination",
+    "family": "copeland-borda",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "finalRegret": 493.8499999999973,
+     "finalSE": 12.09215434870905,
+     "finalMedian": 517.3571428571395,
+     "finalWeak": 212.57428571428395,
+     "finalWeakSE": 6.573482363811336,
+     "winnerTail": 0.28959999999999936,
+     "winnerShare": 0.08942000000000001,
+     "msPerRun": 0.5809557800000948
+    }
+   },
+   {
+    "id": "rmed2",
+    "name": "RMED2",
+    "family": "confidence",
+    "params": {
+     "alpha": 3,
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 510.38285714285803,
+     "finalSE": 19.875098511906327,
+     "finalMedian": 549.7142857142868,
+     "finalWeak": 232.65714285714114,
+     "finalWeakSE": 12.530517183711762,
+     "winnerTail": 0.09720000000000005,
+     "winnerShare": 0.07748999999999905,
+     "msPerRun": 3.570030579999839
+    }
+   },
+   {
+    "id": "dbgd",
+    "name": "DBGD",
+    "family": "gradient",
+    "params": {
+     "delta": 0.3,
+     "gamma": 0.02
+    },
+    "summary": {
+     "finalRegret": 527.7414285714299,
+     "finalSE": 11.884013055601509,
+     "finalMedian": 531.6428571428561,
+     "finalWeak": 306.90571428571303,
+     "finalWeakSE": 11.290536379867206,
+     "winnerTail": 0.10960000000000004,
+     "winnerShare": 0.08768999999999975,
+     "msPerRun": 1.419355240000077
+    }
+   },
+   {
+    "id": "rmed2fh",
+    "name": "RMED2FH",
+    "family": "confidence",
+    "params": {
+     "alpha": 3,
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 546.534285714286,
+     "finalSE": 22.48536061676128,
+     "finalMedian": 570.5000000000047,
+     "finalWeak": 294.5199999999988,
+     "finalWeakSE": 19.51562121020802,
+     "winnerTail": 0.09720000000000005,
+     "winnerShare": 0.07424999999999957,
+     "msPerRun": 2.7610092399999484
+    }
+   },
+   {
+    "id": "doubler",
+    "name": "Doubler",
+    "family": "reduction",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "finalRegret": 562.9799999999999,
+     "finalSE": 4.185491909435028,
+     "finalMedian": 565.6428571428563,
+     "finalWeak": 325.9628571428572,
+     "finalWeakSE": 4.4997937108532575,
+     "winnerTail": 0.09019999999999997,
+     "winnerShare": 0.055939999999999546,
+     "msPerRun": 0.6217413200000556
+    }
+   },
+   {
+    "id": "if",
+    "name": "Interleaved Filter",
+    "family": "explore-then-exploit",
+    "params": {},
+    "summary": {
+     "finalRegret": 574.8757142857124,
+     "finalSE": 22.185745994281696,
+     "finalMedian": 589.07142857143,
+     "finalWeak": 372.8200000000007,
+     "finalWeakSE": 21.222800486147165,
+     "winnerTail": 0.3805000000000015,
+     "winnerShare": 0.10936999999999944,
+     "msPerRun": 0.17056326000001718
+    }
+   },
+   {
+    "id": "rucb",
+    "name": "RUCB",
+    "family": "confidence",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 601.4814285714294,
+     "finalSE": 4.369886639965855,
+     "finalMedian": 604.7142857142828,
+     "finalWeak": 315.61142857142755,
+     "finalWeakSE": 5.033920822825995,
+     "winnerTail": 0,
+     "winnerShare": 0,
+     "msPerRun": 1.3111091199999465
+    }
+   },
+   {
+    "id": "multisbm",
+    "name": "MultiSBM",
+    "family": "reduction",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "finalRegret": 619.1200000000016,
+     "finalSE": 2.879656517300915,
+     "finalMedian": 622.7857142857148,
+     "finalWeak": 379.1257142857144,
+     "finalWeakSE": 2.840777151970414,
+     "winnerTail": 0.020099999999999972,
+     "winnerShare": 0.027279999999999374,
+     "msPerRun": 0.5616008199999305
+    }
+   },
+   {
+    "id": "savage",
+    "name": "SAVAGE",
+    "family": "explore-then-exploit",
+    "params": {
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 705.8457142857166,
+     "finalSE": 2.3005082103374095,
+     "finalMedian": 710.5714285714303,
+     "finalWeak": 451.8371428571437,
+     "finalWeakSE": 2.4391333013951426,
+     "winnerTail": 0.012500000000000008,
+     "winnerShare": 0.001250000000000002,
+     "msPerRun": 1.6893907000000945
+    }
+   },
+   {
+    "id": "btm",
+    "name": "Beat the Mean",
+    "family": "explore-then-exploit",
+    "params": {
+     "gamma": 1
+    },
+    "summary": {
+     "finalRegret": 714.6042857142886,
+     "finalSE": 0.7121548682937592,
+     "finalMedian": 715.1428571428604,
+     "finalWeak": 491.38285714285763,
+     "finalWeakSE": 1.013235525798048,
+     "winnerTail": 0.01499999999999998,
+     "winnerShare": 0.015259999999999697,
+     "msPerRun": 0.6005918199999906
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform pairs",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "finalRegret": 715.5600000000028,
+     "finalSE": 0.8908773619110799,
+     "finalMedian": 716.3571428571444,
+     "finalWeak": 492.42285714285777,
+     "finalWeakSE": 1.116078097937126,
+     "winnerTail": 0.014599999999999988,
+     "winnerShare": 0.015049999999999696,
+     "msPerRun": 0.22899719999993975
+    }
+   }
+  ],
+  "borda": [
+   {
+    "id": "borda-se",
+    "name": "Borda successive elimination",
+    "family": "copeland-borda",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "finalRegret": 114.20614039152815,
+     "finalSE": 6.154407977433493,
+     "finalMedian": 112.75250513995293,
+     "finalWeak": 75.02773621872575,
+     "finalWeakSE": 3.9140250371527303,
+     "winnerTail": 1.0000000000000007,
+     "winnerShare": 0.7830199999999681,
+     "msPerRun": 0.23075540000001638
+    }
+   },
+   {
+    "id": "vdb",
+    "name": "Versatile-DB (Tsallis-INF)",
+    "family": "reduction",
+    "params": {
+     "eta": 1
+    },
+    "summary": {
+     "finalRegret": 259.4666835039954,
+     "finalSE": 10.006192464545688,
+     "finalMedian": 264.9572007028466,
+     "finalWeak": 136.53757887732618,
+     "finalWeakSE": 9.462479640048269,
+     "winnerTail": 0.2619000000000001,
+     "winnerShare": 0.3211299999999993,
+     "msPerRun": 1.117503499999948
+    }
+   },
+   {
+    "id": "sparring-ucb",
+    "name": "Sparring UCB1",
+    "family": "reduction",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "finalRegret": 318.07050005565253,
+     "finalSE": 3.7271206610283145,
+     "finalMedian": 319.8944226926,
+     "finalWeak": 151.49559816838314,
+     "finalWeakSE": 3.493133752817075,
+     "winnerTail": 0.2777000000000003,
+     "winnerShare": 0.22348000000000048,
+     "msPerRun": 0.7326989400001548
+    }
+   },
+   {
+    "id": "rcs",
+    "name": "RCS",
+    "family": "thompson",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 326.98487029133315,
+     "finalSE": 8.814604971371809,
+     "finalMedian": 302.2616881730277,
+     "finalWeak": 106.7394026712296,
+     "finalWeakSE": 12.479236358881714,
+     "winnerTail": 0,
+     "winnerShare": 0,
+     "msPerRun": 11.722217339999952
+    }
+   },
+   {
+    "id": "sparring-exp3",
+    "name": "Sparring EXP3",
+    "family": "reduction",
+    "params": {
+     "g": 1
+    },
+    "summary": {
+     "finalRegret": 327.6511773970001,
+     "finalSE": 4.57483831455921,
+     "finalMedian": 332.367005064039,
+     "finalWeak": 175.8328295441378,
+     "finalWeakSE": 4.261988774630756,
+     "winnerTail": 0.45930000000000043,
+     "winnerShare": 0.24940999999999983,
+     "msPerRun": 1.0095749199999773
+    }
+   },
+   {
+    "id": "dts",
+    "name": "Double Thompson Sampling",
+    "family": "thompson",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 333.0496074269858,
+     "finalSE": 14.642877658812115,
+     "finalMedian": 330.5540868494633,
+     "finalWeak": 176.11876020568081,
+     "finalWeakSE": 16.371150690224297,
+     "winnerTail": 0.08380000000000003,
+     "winnerShare": 0.13608000000000084,
+     "msPerRun": 14.703199860000131
+    }
+   },
+   {
+    "id": "if",
+    "name": "Interleaved Filter",
+    "family": "explore-then-exploit",
+    "params": {},
+    "summary": {
+     "finalRegret": 364.6792986039709,
+     "finalSE": 10.020519870436845,
+     "finalMedian": 374.5571102119707,
+     "finalWeak": 162.0221222711163,
+     "finalWeakSE": 10.496049635899391,
+     "winnerTail": 0.15999999999999948,
+     "winnerShare": 0.07526999999999831,
+     "msPerRun": 0.18669776000006094
+    }
+   },
+   {
+    "id": "rmed1",
+    "name": "RMED1",
+    "family": "confidence",
+    "params": {
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 384.48925411560987,
+     "finalSE": 8.659180970858696,
+     "finalMedian": 394.45340192280173,
+     "finalWeak": 250.0109158497453,
+     "finalWeakSE": 9.888266843913026,
+     "winnerTail": 0.020199999999999992,
+     "winnerShare": 0.04502000000000112,
+     "msPerRun": 2.5934701400002087
+    }
+   },
+   {
+    "id": "rmed2",
+    "name": "RMED2",
+    "family": "confidence",
+    "params": {
+     "alpha": 3,
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 385.95743268333536,
+     "finalSE": 6.062164491677604,
+     "finalMedian": 383.91637620236656,
+     "finalWeak": 246.11378878561504,
+     "finalWeakSE": 6.495029083766,
+     "winnerTail": 0.0031999999999999984,
+     "winnerShare": 0.025779999999999626,
+     "msPerRun": 2.785687319999888
+    }
+   },
+   {
+    "id": "rmed2fh",
+    "name": "RMED2FH",
+    "family": "confidence",
+    "params": {
+     "alpha": 3,
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 400.770710936763,
+     "finalSE": 9.914308505552377,
+     "finalMedian": 403.4427541274195,
+     "finalWeak": 274.39910489803276,
+     "finalWeakSE": 10.518923921684086,
+     "winnerTail": 0.05309999999999998,
+     "winnerShare": 0.07729000000000105,
+     "msPerRun": 2.4696357399999034
+    }
+   },
+   {
+    "id": "dbgd",
+    "name": "DBGD",
+    "family": "gradient",
+    "params": {
+     "delta": 0.3,
+     "gamma": 0.02
+    },
+    "summary": {
+     "finalRegret": 402.8399005893193,
+     "finalSE": 6.458969547650138,
+     "finalMedian": 409.1083209014276,
+     "finalWeak": 243.9923897622278,
+     "finalWeakSE": 7.9992780712971046,
+     "winnerTail": 0.12920000000000012,
+     "winnerShare": 0.11165000000000014,
+     "msPerRun": 1.2639787800001796
+    }
+   },
+   {
+    "id": "doubler",
+    "name": "Doubler",
+    "family": "reduction",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "finalRegret": 412.9138303425063,
+     "finalSE": 2.858083317944706,
+     "finalMedian": 410.51699223107,
+     "finalWeak": 237.3487551130462,
+     "finalWeakSE": 2.8522404454695636,
+     "winnerTail": 0.21920000000000012,
+     "winnerShare": 0.12365000000000013,
+     "msPerRun": 0.5883420000000115
+    }
+   },
+   {
+    "id": "ccb",
+    "name": "CCB",
+    "family": "copeland-borda",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 448.93579557572957,
+     "finalSE": 6.183522170435937,
+     "finalMedian": 438.2902123169682,
+     "finalWeak": 268.71649012646515,
+     "finalWeakSE": 7.290055679237527,
+     "winnerTail": 0,
+     "winnerShare": 0,
+     "msPerRun": 2.5635015200002815
+    }
+   },
+   {
+    "id": "rucb",
+    "name": "RUCB",
+    "family": "confidence",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 449.6322513977648,
+     "finalSE": 5.862554044425444,
+     "finalMedian": 438.14033848382047,
+     "finalWeak": 270.2135733072178,
+     "finalWeakSE": 6.93432129823944,
+     "winnerTail": 0,
+     "winnerShare": 0,
+     "msPerRun": 1.1652737999999954
+    }
+   },
+   {
+    "id": "multisbm",
+    "name": "MultiSBM",
+    "family": "reduction",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "finalRegret": 463.5675293259844,
+     "finalSE": 2.606158191523932,
+     "finalMedian": 465.58607914399335,
+     "finalWeak": 300.15723630352784,
+     "finalWeakSE": 2.4969625773652493,
+     "winnerTail": 0.08400000000000005,
+     "winnerShare": 0.07367999999999984,
+     "msPerRun": 0.47836072000005514
+    }
+   },
+   {
+    "id": "cw-rmed",
+    "name": "CW-RMED",
+    "family": "copeland-borda",
+    "params": {
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 467.60218110826884,
+     "finalSE": 12.941270406259736,
+     "finalMedian": 502.0983579167099,
+     "finalWeak": 335.21618330508625,
+     "finalWeakSE": 17.8400416739475,
+     "winnerTail": 0.039500000000000014,
+     "winnerShare": 0.04652000000000022,
+     "msPerRun": 12.57057138
+    }
+   },
+   {
+    "id": "savage",
+    "name": "SAVAGE",
+    "family": "explore-then-exploit",
+    "params": {
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 584.8744122151235,
+     "finalSE": 3.052984899778351,
+     "finalMedian": 584.6080945110964,
+     "finalWeak": 435.86754288202087,
+     "finalWeakSE": 3.285608643466995,
+     "winnerTail": 0,
+     "winnerShare": 0,
+     "msPerRun": 1.5946950599999399
+    }
+   },
+   {
+    "id": "btm",
+    "name": "Beat the Mean",
+    "family": "explore-then-exploit",
+    "params": {
+     "gamma": 1
+    },
+    "summary": {
+     "finalRegret": 585.4359722049488,
+     "finalSE": 3.0342197755782845,
+     "finalMedian": 585.7860070574893,
+     "finalWeak": 447.45492299073436,
+     "finalWeakSE": 3.0262542503696115,
+     "winnerTail": 0.016899999999999978,
+     "winnerShare": 0.016129999999999683,
+     "msPerRun": 0.5827901999999086
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform pairs",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "finalRegret": 585.955295160673,
+     "finalSE": 3.0263218927797073,
+     "finalMedian": 585.4652143009906,
+     "finalWeak": 447.5809428231428,
+     "finalWeakSE": 3.103466944993514,
+     "winnerTail": 0.01399999999999999,
+     "winnerShare": 0.015129999999999684,
+     "msPerRun": 0.21125218000001042
+    }
+   }
+  ],
+  "continuous": [
+   {
+    "id": "dts",
+    "name": "Double Thompson Sampling",
+    "family": "thompson",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 36.9851483143098,
+     "finalSE": 1.7627001647638931,
+     "finalMedian": 32.63580582559886,
+     "finalWeak": 10.804083035875662,
+     "finalWeakSE": 0.9430183966735433,
+     "winnerTail": 0.9709000000000024,
+     "winnerShare": 0.8841999999999953,
+     "msPerRun": 15.197428080000137
+    }
+   },
+   {
+    "id": "rcs",
+    "name": "RCS",
+    "family": "thompson",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 55.29482515297162,
+     "finalSE": 2.4281301058203213,
+     "finalMedian": 50.29894090898109,
+     "finalWeak": 7.840175640927734,
+     "finalWeakSE": 0.7875612139807263,
+     "winnerTail": 0.9576000000000029,
+     "winnerShare": 0.7855400000000079,
+     "msPerRun": 11.65103158000009
+    }
+   },
+   {
+    "id": "rmed2",
+    "name": "RMED2",
+    "family": "confidence",
+    "params": {
+     "alpha": 3,
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 62.70451058649708,
+     "finalSE": 2.008271651974053,
+     "finalMedian": 63.58039113092498,
+     "finalWeak": 18.173688038673404,
+     "finalWeakSE": 0.9754118979877922,
+     "winnerTail": 0.9732000000000021,
+     "winnerShare": 0.7817999999999969,
+     "msPerRun": 2.717000060000137
+    }
+   },
+   {
+    "id": "rmed1",
+    "name": "RMED1",
+    "family": "confidence",
+    "params": {
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 83.85468569240025,
+     "finalSE": 3.649885488479231,
+     "finalMedian": 78.23991250369527,
+     "finalWeak": 37.018119322031254,
+     "finalWeakSE": 2.993332032441735,
+     "winnerTail": 0.9592000000000027,
+     "winnerShare": 0.7415700000000027,
+     "msPerRun": 2.639596379999857
+    }
+   },
+   {
+    "id": "ccb",
+    "name": "CCB",
+    "family": "copeland-borda",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 91.42517840489413,
+     "finalSE": 3.657718100702517,
+     "finalMedian": 88.20640457717332,
+     "finalWeak": 36.56819275839936,
+     "finalWeakSE": 2.258016761360979,
+     "winnerTail": 0.9640000000000021,
+     "winnerShare": 0.730130000000003,
+     "msPerRun": 2.3993234000000303
+    }
+   },
+   {
+    "id": "vdb",
+    "name": "Versatile-DB (Tsallis-INF)",
+    "family": "reduction",
+    "params": {
+     "eta": 1
+    },
+    "summary": {
+     "finalRegret": 94.94447570378212,
+     "finalSE": 2.174676920435985,
+     "finalMedian": 93.58804885390023,
+     "finalWeak": 27.873145564970333,
+     "finalWeakSE": 1.5148516918131851,
+     "winnerTail": 0.8824999999999988,
+     "winnerShare": 0.7070399999999968,
+     "msPerRun": 0.9080920600001263
+    }
+   },
+   {
+    "id": "cw-rmed",
+    "name": "CW-RMED",
+    "family": "copeland-borda",
+    "params": {
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 98.348564068901,
+     "finalSE": 5.69050078451619,
+     "finalMedian": 85.08279696165418,
+     "finalWeak": 48.37496624760103,
+     "finalWeakSE": 4.516783813243239,
+     "winnerTail": 0.9342000000000023,
+     "winnerShare": 0.7079500000000042,
+     "msPerRun": 12.598333879999846
+    }
+   },
+   {
+    "id": "rucb",
+    "name": "RUCB",
+    "family": "confidence",
+    "params": {
+     "alpha": 0.51
+    },
+    "summary": {
+     "finalRegret": 99.31213040802277,
+     "finalSE": 4.896470724901543,
+     "finalMedian": 98.89104808527438,
+     "finalWeak": 40.91081140885292,
+     "finalWeakSE": 2.834488299570141,
+     "winnerTail": 0.949400000000003,
+     "winnerShare": 0.7021500000000082,
+     "msPerRun": 1.1607560799999919
+    }
+   },
+   {
+    "id": "rmed2fh",
+    "name": "RMED2FH",
+    "family": "confidence",
+    "params": {
+     "alpha": 3,
+     "f": 0.3
+    },
+    "summary": {
+     "finalRegret": 125.54871563565563,
+     "finalSE": 8.907198303658308,
+     "finalMedian": 103.77470875826657,
+     "finalWeak": 76.9270879974164,
+     "finalWeakSE": 8.188901975716478,
+     "winnerTail": 0.8902999999999973,
+     "winnerShare": 0.6788499999999952,
+     "msPerRun": 2.6468295200000282
+    }
+   },
+   {
+    "id": "dbgd",
+    "name": "DBGD",
+    "family": "gradient",
+    "params": {
+     "delta": 0.3,
+     "gamma": 0.02
+    },
+    "summary": {
+     "finalRegret": 173.11062635953164,
+     "finalSE": 8.067126464773468,
+     "finalMedian": 164.6346306288131,
+     "finalWeak": 122.29653581336035,
+     "finalWeakSE": 7.615101819653674,
+     "winnerTail": 0.6389999999999998,
+     "winnerShare": 0.49099000000000026,
+     "msPerRun": 0.9524092599999858
+    }
+   },
+   {
+    "id": "sparring-ucb",
+    "name": "Sparring UCB1",
+    "family": "reduction",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "finalRegret": 184.19737579547763,
+     "finalSE": 1.8597038697068227,
+     "finalMedian": 182.25922030939802,
+     "finalWeak": 51.15263180159757,
+     "finalWeakSE": 1.6100309212176849,
+     "winnerTail": 0.6574999999999998,
+     "winnerShare": 0.4591000000000008,
+     "msPerRun": 0.7189226199999758
+    }
+   },
+   {
+    "id": "borda-se",
+    "name": "Borda successive elimination",
+    "family": "copeland-borda",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "finalRegret": 187.72020282016274,
+     "finalSE": 16.099277144866885,
+     "finalMedian": 148.38284067782234,
+     "finalWeak": 89.78892197952351,
+     "finalWeakSE": 5.280607903742456,
+     "winnerTail": 0.856599999999999,
+     "winnerShare": 0.5880099999999963,
+     "msPerRun": 0.31201243999992584
+    }
+   },
+   {
+    "id": "if",
+    "name": "Interleaved Filter",
+    "family": "explore-then-exploit",
+    "params": {},
+    "summary": {
+     "finalRegret": 253.5607959436087,
+     "finalSE": 10.585930474040564,
+     "finalMedian": 246.99103563030644,
+     "finalWeak": 141.20879056511458,
+     "finalWeakSE": 11.244797372333299,
+     "winnerTail": 0.844899999999997,
+     "winnerShare": 0.3596999999999996,
+     "msPerRun": 0.18338537999981783
+    }
+   },
+   {
+    "id": "sparring-exp3",
+    "name": "Sparring EXP3",
+    "family": "reduction",
+    "params": {
+     "g": 1
+    },
+    "summary": {
+     "finalRegret": 262.0470805707137,
+     "finalSE": 3.995758156498527,
+     "finalMedian": 255.62671106846395,
+     "finalWeak": 129.6736257725751,
+     "finalWeakSE": 3.4125882239273957,
+     "winnerTail": 0.6832000000000001,
+     "winnerShare": 0.35277000000000014,
+     "msPerRun": 1.050477319999918
+    }
+   },
+   {
+    "id": "doubler",
+    "name": "Doubler",
+    "family": "reduction",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "finalRegret": 364.1444194653663,
+     "finalSE": 4.495924349417816,
+     "finalMedian": 367.1182588836824,
+     "finalWeak": 185.96340856575043,
+     "finalWeakSE": 3.728605296112699,
+     "winnerTail": 0.3130000000000001,
+     "winnerShare": 0.17354000000000055,
+     "msPerRun": 0.5381056800000078
+    }
+   },
+   {
+    "id": "multisbm",
+    "name": "MultiSBM",
+    "family": "reduction",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "finalRegret": 368.2729528907385,
+     "finalSE": 3.4250324904512626,
+     "finalMedian": 372.59804414531897,
+     "finalWeak": 217.22233535559883,
+     "finalWeakSE": 3.7783989235062543,
+     "winnerTail": 0.4096000000000004,
+     "winnerShare": 0.20901000000000017,
+     "msPerRun": 0.5126977200001056
+    }
+   },
+   {
+    "id": "savage",
+    "name": "SAVAGE",
+    "family": "explore-then-exploit",
+    "params": {
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 503.4406512469033,
+     "finalSE": 8.663263453023484,
+     "finalMedian": 494.8889315101791,
+     "finalWeak": 364.9515581069479,
+     "finalWeakSE": 9.277924263533551,
+     "winnerTail": 0.3827000000000008,
+     "winnerShare": 0.09114999999999952,
+     "msPerRun": 1.466781979999978
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform pairs",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "finalRegret": 609.3491049906163,
+     "finalSE": 10.289161591495885,
+     "finalMedian": 611.5177635071359,
+     "finalWeak": 462.1337932300093,
+     "finalWeakSE": 10.823160082087586,
+     "winnerTail": 0.015299999999999989,
+     "winnerShare": 0.01614999999999966,
+     "msPerRun": 0.2626229600001534
+    }
+   },
+   {
+    "id": "btm",
+    "name": "Beat the Mean",
+    "family": "explore-then-exploit",
+    "params": {
+     "gamma": 1
+    },
+    "summary": {
+     "finalRegret": 609.6749195712663,
+     "finalSE": 9.985299224718613,
+     "finalMedian": 613.0590165789,
+     "finalWeak": 462.389529326075,
+     "finalWeakSE": 10.286742372918752,
+     "winnerTail": 0.01499999999999998,
+     "winnerShare": 0.016009999999999695,
+     "msPerRun": 0.6426961799999481
+    }
+   }
+  ]
+ }
+}

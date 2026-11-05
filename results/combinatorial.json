@@ -1,0 +1,2303 @@
+{
+ "setting": "combinatorial",
+ "config": {
+  "K": 16,
+  "T": 2000,
+  "runs": 50,
+  "seed": 7,
+  "extra": {
+   "m": 4
+  }
+ },
+ "environments": {
+  "topm": [
+   {
+    "id": "cascadelints",
+    "name": "CascadeLinTS",
+    "family": "cascading",
+    "params": {
+     "v": 0.5,
+     "lambda": 1
+    },
+    "summary": {
+     "finalRegret": 102.54111872075617,
+     "finalSE": 3.220648205264025,
+     "finalMedian": 102.6877108643764,
+     "meanReward": 2.705947301147397,
+     "optimalTail": 0.6673999999999995,
+     "msPerRun": 3.0872190400000115
+    }
+   },
+   {
+    "id": "cts",
+    "name": "CTS",
+    "family": "semi-bandit",
+    "params": {},
+    "summary": {
+     "finalRegret": 109.46662323571171,
+     "finalSE": 5.1415254002610595,
+     "finalMedian": 100.79975456199712,
+     "meanReward": 2.702484548889925,
+     "optimalTail": 0.7021999999999999,
+     "msPerRun": 6.626342759999989
+    }
+   },
+   {
+    "id": "escb",
+    "name": "ESCB",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 116.16950871961093,
+     "finalSE": 3.6453082483753354,
+     "finalMedian": 115.14232451245057,
+     "meanReward": 2.699133106147971,
+     "optimalTail": 0.5799000000000002,
+     "msPerRun": 3.3124349999999856
+    }
+   },
+   {
+    "id": "pbmucb",
+    "name": "PBM-UCB",
+    "family": "click-models",
+    "params": {
+     "delta": 1
+    },
+    "summary": {
+     "finalRegret": 131.98237134541804,
+     "finalSE": 3.7948599285456184,
+     "finalMedian": 130.67923765173188,
+     "meanReward": 2.69122667483507,
+     "optimalTail": 0.6185999999999999,
+     "msPerRun": 1.3550673000000324
+    }
+   },
+   {
+    "id": "pbmpie",
+    "name": "PBM-PIE",
+    "family": "click-models",
+    "params": {},
+    "summary": {
+     "finalRegret": 177.95814881463585,
+     "finalSE": 10.296302279817358,
+     "finalMedian": 166.6320886364681,
+     "meanReward": 2.668238786100465,
+     "optimalTail": 0.19260000000000013,
+     "msPerRun": 8.422603980000009
+    }
+   },
+   {
+    "id": "cascadets",
+    "name": "CascadeTS",
+    "family": "cascading",
+    "params": {},
+    "summary": {
+     "finalRegret": 180.17773555580553,
+     "finalSE": 3.792324371638691,
+     "finalMedian": 178.73685121617723,
+     "meanReward": 2.667128992729875,
+     "optimalTail": 0.6100000000000003,
+     "msPerRun": 1.4607197000000212
+    }
+   },
+   {
+    "id": "dcmklucb",
+    "name": "dcmKL-UCB",
+    "family": "click-models",
+    "params": {},
+    "summary": {
+     "finalRegret": 182.84965774377855,
+     "finalSE": 3.673034687099284,
+     "finalMedian": 184.8409939738896,
+     "meanReward": 2.665793031635896,
+     "optimalTail": 0.5153000000000004,
+     "msPerRun": 12.550013780000029
+    }
+   },
+   {
+    "id": "cascadeklucb",
+    "name": "CascadeKL-UCB",
+    "family": "cascading",
+    "params": {},
+    "summary": {
+     "finalRegret": 182.92609649151694,
+     "finalSE": 4.102787793938085,
+     "finalMedian": 180.764946706314,
+     "meanReward": 2.6657548122620196,
+     "optimalTail": 0.5068000000000001,
+     "msPerRun": 12.04584040000005
+    }
+   },
+   {
+    "id": "dcmucb",
+    "name": "DCM-UCB",
+    "family": "click-models",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 259.8830014959798,
+     "finalSE": 4.1643970014840646,
+     "finalMedian": 261.46155061453993,
+     "meanReward": 2.6272763597597955,
+     "optimalTail": 0.3578,
+     "msPerRun": 1.8706023600000448
+    }
+   },
+   {
+    "id": "combucb1",
+    "name": "CombUCB1",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 263.77993272459537,
+     "finalSE": 4.805190931860755,
+     "finalMedian": 260.87599223389014,
+     "meanReward": 2.625327894145476,
+     "optimalTail": 0.3837000000000003,
+     "msPerRun": 1.7941664200000214
+    }
+   },
+   {
+    "id": "cascadeucb1",
+    "name": "CascadeUCB1",
+    "family": "cascading",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 264.81660770872344,
+     "finalSE": 5.153048585872566,
+     "finalMedian": 265.7922558340494,
+     "meanReward": 2.624809556653422,
+     "optimalTail": 0.36820000000000025,
+     "msPerRun": 2.0258504799999675
+    }
+   },
+   {
+    "id": "cucb",
+    "name": "CUCB",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 267.33536057802775,
+     "finalSE": 4.8321330325161425,
+     "finalMedian": 268.6346629185587,
+     "meanReward": 2.623550180218764,
+     "optimalTail": 0.38340000000000024,
+     "msPerRun": 1.9535826800000264
+    }
+   },
+   {
+    "id": "osmd",
+    "name": "OSMD (negentropy)",
+    "family": "adversarial",
+    "params": {
+     "eta": 1
+    },
+    "summary": {
+     "finalRegret": 300.2523103003432,
+     "finalSE": 4.684139705449178,
+     "finalMedian": 301.4200803479637,
+     "meanReward": 2.6070917053576106,
+     "optimalTail": 0.4963000000000004,
+     "msPerRun": 3.2454588799999873
+    }
+   },
+   {
+    "id": "omm",
+    "name": "OMM",
+    "family": "semi-bandit",
+    "params": {
+     "c": 2
+    },
+    "summary": {
+     "finalRegret": 306.81307163757737,
+     "finalSE": 4.51911452135856,
+     "finalMedian": 308.76399547038477,
+     "meanReward": 2.603811324688992,
+     "optimalTail": 0.32570000000000027,
+     "msPerRun": 1.6736162400000085
+    }
+   },
+   {
+    "id": "cascadelinucb",
+    "name": "CascadeLinUCB",
+    "family": "cascading",
+    "params": {
+     "alpha": 0.5,
+     "lambda": 1
+    },
+    "summary": {
+     "finalRegret": 405.76204779289185,
+     "finalSE": 38.508844355884776,
+     "finalMedian": 421.3468191109449,
+     "meanReward": 2.554336836611353,
+     "optimalTail": 0.07999999999999974,
+     "msPerRun": 1.5562699199999919
+    }
+   },
+   {
+    "id": "exp3m",
+    "name": "EXP3.M",
+    "family": "adversarial",
+    "params": {
+     "gamma": 0
+    },
+    "summary": {
+     "finalRegret": 542.3915671208231,
+     "finalSE": 7.249247083192894,
+     "finalMedian": 553.8361097816975,
+     "meanReward": 2.4860220769473673,
+     "optimalTail": 0.35710000000000014,
+     "msPerRun": 3.1171792200000112
+    }
+   },
+   {
+    "id": "greedy",
+    "name": "Greedy",
+    "family": "baselines",
+    "params": {
+     "eps": 0
+    },
+    "summary": {
+     "finalRegret": 545.6238424557615,
+     "finalSE": 66.37241572913503,
+     "finalMedian": 449.3299295277184,
+     "meanReward": 2.4844059392798172,
+     "optimalTail": 0.07999999999999974,
+     "msPerRun": 1.7387996400000134
+    }
+   },
+   {
+    "id": "toprank",
+    "name": "TopRank",
+    "family": "ranking",
+    "params": {
+     "c": 3.43
+    },
+    "summary": {
+     "finalRegret": 595.081821226058,
+     "finalSE": 15.876268742708891,
+     "finalMedian": 588.7101061423801,
+     "meanReward": 2.459676949894747,
+     "optimalTail": 0.21270000000000006,
+     "msPerRun": 3.5323645399999952
+    }
+   },
+   {
+    "id": "comband",
+    "name": "ComBand (CExp3)",
+    "family": "adversarial",
+    "params": {
+     "eta": 1,
+     "gamma": 0.05
+    },
+    "summary": {
+     "finalRegret": 886.6561076630053,
+     "finalSE": 27.780961204510866,
+     "finalMedian": 846.1084302709659,
+     "meanReward": 2.3138898066762743,
+     "optimalTail": 0.08420000000000007,
+     "msPerRun": 17.439571879999995
+    }
+   },
+   {
+    "id": "rba",
+    "name": "Ranked bandits (RBA)",
+    "family": "ranking",
+    "params": {},
+    "summary": {
+     "finalRegret": 1047.1514761450298,
+     "finalSE": 16.601130635821953,
+     "finalMedian": 1051.3312674685405,
+     "meanReward": 2.2336421224352647,
+     "optimalTail": 0.036100000000000014,
+     "msPerRun": 2.5976585799999885
+    }
+   },
+   {
+    "id": "random",
+    "name": "Random",
+    "family": "baselines",
+    "params": {},
+    "summary": {
+     "finalRegret": 1965.948761740453,
+     "finalSE": 39.12345733055716,
+     "finalMedian": 2008.539112087523,
+     "meanReward": 1.7742434796375526,
+     "optimalTail": 0.0006000000000000001,
+     "msPerRun": 1.818729380000045
+    }
+   }
+  ],
+  "matroid": [
+   {
+    "id": "cascadelints",
+    "name": "CascadeLinTS",
+    "family": "cascading",
+    "params": {
+     "v": 0.5,
+     "lambda": 1
+    },
+    "summary": {
+     "finalRegret": 93.34072610545871,
+     "finalSE": 4.8561934998229095,
+     "finalMedian": 85.53140996727167,
+     "meanReward": 2.6480696245758066,
+     "optimalTail": 0.6581999999999995,
+     "msPerRun": 2.759075759999996
+    }
+   },
+   {
+    "id": "cts",
+    "name": "CTS",
+    "family": "semi-bandit",
+    "params": {},
+    "summary": {
+     "finalRegret": 98.38537597182658,
+     "finalSE": 4.5040629565980845,
+     "finalMedian": 90.5557914957411,
+     "meanReward": 2.6455472996426197,
+     "optimalTail": 0.6543999999999992,
+     "msPerRun": 5.957545999999911
+    }
+   },
+   {
+    "id": "escb",
+    "name": "ESCB",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 110.23280597330499,
+     "finalSE": 3.8409574081539164,
+     "finalMedian": 105.12849546647675,
+     "meanReward": 2.6396235846418827,
+     "optimalTail": 0.7179999999999993,
+     "msPerRun": 2.9630159199999615
+    }
+   },
+   {
+    "id": "pbmucb",
+    "name": "PBM-UCB",
+    "family": "click-models",
+    "params": {
+     "delta": 1
+    },
+    "summary": {
+     "finalRegret": 129.86409612048524,
+     "finalSE": 3.6486297097448888,
+     "finalMedian": 128.13686554112945,
+     "meanReward": 2.62980793956829,
+     "optimalTail": 0.6659999999999996,
+     "msPerRun": 1.0445008600000982
+    }
+   },
+   {
+    "id": "cascadeklucb",
+    "name": "CascadeKL-UCB",
+    "family": "cascading",
+    "params": {},
+    "summary": {
+     "finalRegret": 174.49067879775978,
+     "finalSE": 3.8555540966091564,
+     "finalMedian": 171.57747658097722,
+     "meanReward": 2.6074946482296553,
+     "optimalTail": 0.6085000000000005,
+     "msPerRun": 12.671256139999969
+    }
+   },
+   {
+    "id": "dcmklucb",
+    "name": "dcmKL-UCB",
+    "family": "click-models",
+    "params": {},
+    "summary": {
+     "finalRegret": 177.31671552467967,
+     "finalSE": 3.4915319635760262,
+     "finalMedian": 171.92229182501399,
+     "meanReward": 2.606081629866195,
+     "optimalTail": 0.5820999999999998,
+     "msPerRun": 12.117448140000052
+    }
+   },
+   {
+    "id": "cascadets",
+    "name": "CascadeTS",
+    "family": "cascading",
+    "params": {},
+    "summary": {
+     "finalRegret": 180.0247902480636,
+     "finalSE": 2.6066660565271382,
+     "finalMedian": 178.79375563778433,
+     "meanReward": 2.6047275925044984,
+     "optimalTail": 0.7324000000000004,
+     "msPerRun": 1.1725228600001174
+    }
+   },
+   {
+    "id": "pbmpie",
+    "name": "PBM-PIE",
+    "family": "click-models",
+    "params": {},
+    "summary": {
+     "finalRegret": 199.60047773904932,
+     "finalSE": 21.617491144616093,
+     "finalMedian": 154.79581278234392,
+     "meanReward": 2.5949397487590122,
+     "optimalTail": 0.2483,
+     "msPerRun": 2.88146094000007
+    }
+   },
+   {
+    "id": "cucb",
+    "name": "CUCB",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 265.571303897024,
+     "finalSE": 4.078523464725636,
+     "finalMedian": 260.64781379413085,
+     "meanReward": 2.5619543356800167,
+     "optimalTail": 0.4899,
+     "msPerRun": 1.6895198199999504
+    }
+   },
+   {
+    "id": "cascadeucb1",
+    "name": "CascadeUCB1",
+    "family": "cascading",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 267.01101943455126,
+     "finalSE": 4.149475743352892,
+     "finalMedian": 266.5634809596476,
+     "meanReward": 2.561234477911265,
+     "optimalTail": 0.47210000000000046,
+     "msPerRun": 1.6193705799999407
+    }
+   },
+   {
+    "id": "dcmucb",
+    "name": "DCM-UCB",
+    "family": "click-models",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 267.01677958500943,
+     "finalSE": 3.9611189520871917,
+     "finalMedian": 265.53232820092245,
+     "meanReward": 2.561231597836036,
+     "optimalTail": 0.47400000000000014,
+     "msPerRun": 1.4642483000001085
+    }
+   },
+   {
+    "id": "combucb1",
+    "name": "CombUCB1",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 268.7142001906002,
+     "finalSE": 4.330716399708066,
+     "finalMedian": 269.39679088131516,
+     "meanReward": 2.560382887533233,
+     "optimalTail": 0.46649999999999997,
+     "msPerRun": 1.3457367800000066
+    }
+   },
+   {
+    "id": "osmd",
+    "name": "OSMD (negentropy)",
+    "family": "adversarial",
+    "params": {
+     "eta": 1
+    },
+    "summary": {
+     "finalRegret": 282.07546639949635,
+     "finalSE": 4.132977516888497,
+     "finalMedian": 278.8765262936474,
+     "meanReward": 2.5537022544287886,
+     "optimalTail": 0.5607000000000001,
+     "msPerRun": 2.6441980600001624
+    }
+   },
+   {
+    "id": "rba",
+    "name": "Ranked bandits (RBA)",
+    "family": "ranking",
+    "params": {},
+    "summary": {
+     "finalRegret": 319.1725623395463,
+     "finalSE": 4.592415018069304,
+     "finalMedian": 321.0393398152844,
+     "meanReward": 2.535153706458758,
+     "optimalTail": 0.4377000000000003,
+     "msPerRun": 1.0578667200000382
+    }
+   },
+   {
+    "id": "omm",
+    "name": "OMM",
+    "family": "semi-bandit",
+    "params": {
+     "c": 2
+    },
+    "summary": {
+     "finalRegret": 320.85886819213795,
+     "finalSE": 3.877218855521774,
+     "finalMedian": 318.66332055921623,
+     "meanReward": 2.5343105535324693,
+     "optimalTail": 0.3998999999999999,
+     "msPerRun": 1.622648640000043
+    }
+   },
+   {
+    "id": "toprank",
+    "name": "TopRank",
+    "family": "ranking",
+    "params": {
+     "c": 3.43
+    },
+    "summary": {
+     "finalRegret": 401.7900872558664,
+     "finalSE": 12.243901679243761,
+     "finalMedian": 399.35027040741727,
+     "meanReward": 2.4938449440006067,
+     "optimalTail": 0.44370000000000037,
+     "msPerRun": 2.2584642200000964
+    }
+   },
+   {
+    "id": "cascadelinucb",
+    "name": "CascadeLinUCB",
+    "family": "cascading",
+    "params": {
+     "alpha": 0.5,
+     "lambda": 1
+    },
+    "summary": {
+     "finalRegret": 410.1934196943281,
+     "finalSE": 53.90427235843817,
+     "finalMedian": 327.9890327248723,
+     "meanReward": 2.489643277781394,
+     "optimalTail": 0.18000000000000055,
+     "msPerRun": 1.0957137799998782
+    }
+   },
+   {
+    "id": "greedy",
+    "name": "Greedy",
+    "family": "baselines",
+    "params": {
+     "eps": 0
+    },
+    "summary": {
+     "finalRegret": 517.4974583618834,
+     "finalSE": 67.30371004691953,
+     "finalMedian": 353.68099303133783,
+     "meanReward": 2.435991258447597,
+     "optimalTail": 0.07999999999999974,
+     "msPerRun": 1.22210268000008
+    }
+   },
+   {
+    "id": "exp3m",
+    "name": "EXP3.M",
+    "family": "adversarial",
+    "params": {
+     "gamma": 0
+    },
+    "summary": {
+     "finalRegret": 546.7878329967491,
+     "finalSE": 9.534452916412322,
+     "finalMedian": 546.7274563108559,
+     "meanReward": 2.4213460711301593,
+     "optimalTail": 0.36320000000000013,
+     "msPerRun": 2.319591420000106
+    }
+   },
+   {
+    "id": "comband",
+    "name": "ComBand (CExp3)",
+    "family": "adversarial",
+    "params": {
+     "eta": 1,
+     "gamma": 0.05
+    },
+    "summary": {
+     "finalRegret": 729.1971901079974,
+     "finalSE": 22.71263935977536,
+     "finalMedian": 695.271174959321,
+     "meanReward": 2.3301413925745385,
+     "optimalTail": 0.22760000000000027,
+     "msPerRun": 10.524575680000106
+    }
+   },
+   {
+    "id": "random",
+    "name": "Random",
+    "family": "baselines",
+    "params": {},
+    "summary": {
+     "finalRegret": 1780.7174682382458,
+     "finalSE": 44.20116565891794,
+     "finalMedian": 1791.4600751479009,
+     "meanReward": 1.8043812535094088,
+     "optimalTail": 0.003999999999999998,
+     "msPerRun": 1.2632356000000435
+    }
+   }
+  ],
+  "cascade": [
+   {
+    "id": "escb",
+    "name": "ESCB",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 52.46942460819063,
+     "finalSE": 1.622491638147037,
+     "finalMedian": 52.18174275853277,
+     "meanReward": 0.7364427362689618,
+     "optimalTail": 0.28780000000000017,
+     "msPerRun": 3.4680154599999513
+    }
+   },
+   {
+    "id": "cascadelinucb",
+    "name": "CascadeLinUCB",
+    "family": "cascading",
+    "params": {
+     "alpha": 0.5,
+     "lambda": 1
+    },
+    "summary": {
+     "finalRegret": 64.02165592101643,
+     "finalSE": 4.834812799973742,
+     "finalMedian": 60.8566343522337,
+     "meanReward": 0.7306666206125559,
+     "optimalTail": 0.1765000000000005,
+     "msPerRun": 1.5075432600000567
+    }
+   },
+   {
+    "id": "cts",
+    "name": "CTS",
+    "family": "semi-bandit",
+    "params": {},
+    "summary": {
+     "finalRegret": 66.4900546955101,
+     "finalSE": 2.210577406185145,
+     "finalMedian": 66.43003590890982,
+     "meanReward": 0.7294324212253039,
+     "optimalTail": 0.29670000000000013,
+     "msPerRun": 6.099344020000099
+    }
+   },
+   {
+    "id": "cascadelints",
+    "name": "CascadeLinTS",
+    "family": "cascading",
+    "params": {
+     "v": 0.5,
+     "lambda": 1
+    },
+    "summary": {
+     "finalRegret": 70.43284396963355,
+     "finalSE": 2.01575554605547,
+     "finalMedian": 67.4183832417188,
+     "meanReward": 0.7274610265882402,
+     "optimalTail": 0.25030000000000024,
+     "msPerRun": 3.1800587200000154
+    }
+   },
+   {
+    "id": "cascadets",
+    "name": "CascadeTS",
+    "family": "cascading",
+    "params": {},
+    "summary": {
+     "finalRegret": 78.83688043890764,
+     "finalSE": 1.786095374130806,
+     "finalMedian": 78.2280437581973,
+     "meanReward": 0.7232590083536056,
+     "optimalTail": 0.22649999999999995,
+     "msPerRun": 1.4506994200001646
+    }
+   },
+   {
+    "id": "pbmpie",
+    "name": "PBM-PIE",
+    "family": "click-models",
+    "params": {},
+    "summary": {
+     "finalRegret": 94.01665049369355,
+     "finalSE": 4.1389777086567445,
+     "finalMedian": 89.44144121173493,
+     "meanReward": 0.7156691233262121,
+     "optimalTail": 0.1537000000000001,
+     "msPerRun": 7.2230960799999595
+    }
+   },
+   {
+    "id": "cascadeklucb",
+    "name": "CascadeKL-UCB",
+    "family": "cascading",
+    "params": {},
+    "summary": {
+     "finalRegret": 104.1300220860245,
+     "finalSE": 2.0227363071188273,
+     "finalMedian": 102.648280861205,
+     "meanReward": 0.710612437530046,
+     "optimalTail": 0.19770000000000032,
+     "msPerRun": 11.09242259999999
+    }
+   },
+   {
+    "id": "dcmklucb",
+    "name": "dcmKL-UCB",
+    "family": "click-models",
+    "params": {},
+    "summary": {
+     "finalRegret": 104.50729595063339,
+     "finalSE": 1.954832711341542,
+     "finalMedian": 102.91043888264038,
+     "meanReward": 0.7104238005977408,
+     "optimalTail": 0.17700000000000002,
+     "msPerRun": 10.978575580000106
+    }
+   },
+   {
+    "id": "pbmucb",
+    "name": "PBM-UCB",
+    "family": "click-models",
+    "params": {
+     "delta": 1
+    },
+    "summary": {
+     "finalRegret": 105.25445737228743,
+     "finalSE": 2.278931007284157,
+     "finalMedian": 107.13567253398085,
+     "meanReward": 0.710050219886915,
+     "optimalTail": 0.08070000000000002,
+     "msPerRun": 1.3914008800000375
+    }
+   },
+   {
+    "id": "cascadeucb1",
+    "name": "CascadeUCB1",
+    "family": "cascading",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 148.73999254128276,
+     "finalSE": 2.5065179989923108,
+     "finalMedian": 147.65240311728104,
+     "meanReward": 0.6883074523024162,
+     "optimalTail": 0.08010000000000005,
+     "msPerRun": 2.079764280000163
+    }
+   },
+   {
+    "id": "dcmucb",
+    "name": "DCM-UCB",
+    "family": "click-models",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 148.96017231092497,
+     "finalSE": 2.7832357212430283,
+     "finalMedian": 149.3668389622197,
+     "meanReward": 0.6881973624175969,
+     "optimalTail": 0.06690000000000006,
+     "msPerRun": 2.126332819999916
+    }
+   },
+   {
+    "id": "combucb1",
+    "name": "CombUCB1",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 150.04179123883503,
+     "finalSE": 2.5704772712789725,
+     "finalMedian": 148.11162243934936,
+     "meanReward": 0.6876565529536414,
+     "optimalTail": 0.07510000000000001,
+     "msPerRun": 1.9819115399999283
+    }
+   },
+   {
+    "id": "cucb",
+    "name": "CUCB",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 150.52404879172153,
+     "finalSE": 2.5466992395146013,
+     "finalMedian": 154.14052487027485,
+     "meanReward": 0.6874154241771977,
+     "optimalTail": 0.07370000000000003,
+     "msPerRun": 1.993019979999881
+    }
+   },
+   {
+    "id": "omm",
+    "name": "OMM",
+    "family": "semi-bandit",
+    "params": {
+     "c": 2
+    },
+    "summary": {
+     "finalRegret": 168.74488233763753,
+     "finalSE": 3.0257747813129114,
+     "finalMedian": 170.25160332188233,
+     "meanReward": 0.678305007404239,
+     "optimalTail": 0.039999999999999966,
+     "msPerRun": 2.0074598799999874
+    }
+   },
+   {
+    "id": "exp3m",
+    "name": "EXP3.M",
+    "family": "adversarial",
+    "params": {
+     "gamma": 0
+    },
+    "summary": {
+     "finalRegret": 169.34202031022517,
+     "finalSE": 4.263519557400819,
+     "finalMedian": 168.2652613297369,
+     "meanReward": 0.6780064384179458,
+     "optimalTail": 0.07330000000000005,
+     "msPerRun": 2.826859399999921
+    }
+   },
+   {
+    "id": "comband",
+    "name": "ComBand (CExp3)",
+    "family": "adversarial",
+    "params": {
+     "eta": 1,
+     "gamma": 0.05
+    },
+    "summary": {
+     "finalRegret": 178.04438284392126,
+     "finalSE": 4.600216402125822,
+     "finalMedian": 181.33517155017188,
+     "meanReward": 0.6736552571510982,
+     "optimalTail": 0.030499999999999958,
+     "msPerRun": 16.98357930000009
+    }
+   },
+   {
+    "id": "toprank",
+    "name": "TopRank",
+    "family": "ranking",
+    "params": {
+     "c": 3.43
+    },
+    "summary": {
+     "finalRegret": 208.38196446584175,
+     "finalSE": 5.386768335016432,
+     "finalMedian": 201.55938284557618,
+     "meanReward": 0.6584864663401385,
+     "optimalTail": 0.07649999999999998,
+     "msPerRun": 3.406155280000166
+    }
+   },
+   {
+    "id": "greedy",
+    "name": "Greedy",
+    "family": "baselines",
+    "params": {
+     "eps": 0
+    },
+    "summary": {
+     "finalRegret": 231.16514650076687,
+     "finalSE": 18.356865839960214,
+     "finalMedian": 224.4088035162924,
+     "meanReward": 0.647094875322669,
+     "optimalTail": 0.019999999999999934,
+     "msPerRun": 1.819521839999943
+    }
+   },
+   {
+    "id": "rba",
+    "name": "Ranked bandits (RBA)",
+    "family": "ranking",
+    "params": {},
+    "summary": {
+     "finalRegret": 279.0062385732208,
+     "finalSE": 5.933097200850346,
+     "finalMedian": 283.30592504826217,
+     "meanReward": 0.6231743292864477,
+     "optimalTail": 0.0030999999999999986,
+     "msPerRun": 2.7313190400000167
+    }
+   },
+   {
+    "id": "osmd",
+    "name": "OSMD (negentropy)",
+    "family": "adversarial",
+    "params": {
+     "eta": 1
+    },
+    "summary": {
+     "finalRegret": 318.8514534162056,
+     "finalSE": 6.8164483673086975,
+     "finalMedian": 329.1277758173018,
+     "meanReward": 0.6032517218649561,
+     "optimalTail": 0.0019000000000000004,
+     "msPerRun": 3.44058341999993
+    }
+   },
+   {
+    "id": "random",
+    "name": "Random",
+    "family": "baselines",
+    "params": {},
+    "summary": {
+     "finalRegret": 355.7873400818203,
+     "finalSE": 8.149632243502035,
+     "finalMedian": 366.2740858382946,
+     "meanReward": 0.584783778532148,
+     "optimalTail": 0.0006000000000000001,
+     "msPerRun": 1.7211815800000112
+    }
+   }
+  ],
+  "dcm": [
+   {
+    "id": "escb",
+    "name": "ESCB",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 55.818702691549824,
+     "finalSE": 1.4409320008178494,
+     "finalMedian": 53.68041090837243,
+     "meanReward": 0.6318632199624894,
+     "optimalTail": 0.1546000000000001,
+     "msPerRun": 3.554480360000016
+    }
+   },
+   {
+    "id": "cascadelinucb",
+    "name": "CascadeLinUCB",
+    "family": "cascading",
+    "params": {
+     "alpha": 0.5,
+     "lambda": 1
+    },
+    "summary": {
+     "finalRegret": 59.0402017564738,
+     "finalSE": 4.413045462947475,
+     "finalMedian": 63.7276993056324,
+     "meanReward": 0.6302524704300282,
+     "optimalTail": 0.026999999999999906,
+     "msPerRun": 1.4436082600000009
+    }
+   },
+   {
+    "id": "cts",
+    "name": "CTS",
+    "family": "semi-bandit",
+    "params": {},
+    "summary": {
+     "finalRegret": 59.660645926289824,
+     "finalSE": 1.8435223437383645,
+     "finalMedian": 57.74610351680002,
+     "meanReward": 0.6299422483451204,
+     "optimalTail": 0.07170000000000003,
+     "msPerRun": 6.181711659999928
+    }
+   },
+   {
+    "id": "cascadelints",
+    "name": "CascadeLinTS",
+    "family": "cascading",
+    "params": {
+     "v": 0.5,
+     "lambda": 1
+    },
+    "summary": {
+     "finalRegret": 65.63206411529445,
+     "finalSE": 1.8837544773174761,
+     "finalMedian": 61.89001879735729,
+     "meanReward": 0.6269565392506189,
+     "optimalTail": 0.062000000000000076,
+     "msPerRun": 3.120125260000168
+    }
+   },
+   {
+    "id": "cascadets",
+    "name": "CascadeTS",
+    "family": "cascading",
+    "params": {},
+    "summary": {
+     "finalRegret": 70.08557113479466,
+     "finalSE": 1.5264848163322202,
+     "finalMedian": 68.14820992928783,
+     "meanReward": 0.6247297857408689,
+     "optimalTail": 0.09129999999999996,
+     "msPerRun": 1.4539864200000738
+    }
+   },
+   {
+    "id": "pbmpie",
+    "name": "PBM-PIE",
+    "family": "click-models",
+    "params": {},
+    "summary": {
+     "finalRegret": 71.61242132506825,
+     "finalSE": 3.1310193830300066,
+     "finalMedian": 69.80079677769855,
+     "meanReward": 0.6239663606457309,
+     "optimalTail": 0.027199999999999946,
+     "msPerRun": 7.1242119799998544
+    }
+   },
+   {
+    "id": "pbmucb",
+    "name": "PBM-UCB",
+    "family": "click-models",
+    "params": {
+     "delta": 1
+    },
+    "summary": {
+     "finalRegret": 84.4492403681785,
+     "finalSE": 2.498823499963117,
+     "finalMedian": 81.47613091920059,
+     "meanReward": 0.6175479511241755,
+     "optimalTail": 0.010699999999999993,
+     "msPerRun": 1.3988383799997246
+    }
+   },
+   {
+    "id": "cascadeklucb",
+    "name": "CascadeKL-UCB",
+    "family": "cascading",
+    "params": {},
+    "summary": {
+     "finalRegret": 95.55710536617343,
+     "finalSE": 1.940966908923686,
+     "finalMedian": 93.96686220347952,
+     "meanReward": 0.6119940186251782,
+     "optimalTail": 0.03500000000000002,
+     "msPerRun": 10.705139360000103
+    }
+   },
+   {
+    "id": "dcmklucb",
+    "name": "dcmKL-UCB",
+    "family": "click-models",
+    "params": {},
+    "summary": {
+     "finalRegret": 96.78553857107771,
+     "finalSE": 1.5463285973277534,
+     "finalMedian": 97.93542562717833,
+     "meanReward": 0.611379802022725,
+     "optimalTail": 0.04200000000000007,
+     "msPerRun": 10.648669659999795
+    }
+   },
+   {
+    "id": "exp3m",
+    "name": "EXP3.M",
+    "family": "adversarial",
+    "params": {
+     "gamma": 0
+    },
+    "summary": {
+     "finalRegret": 134.11414174868648,
+     "finalSE": 3.4733343717754317,
+     "finalMedian": 136.365804473073,
+     "meanReward": 0.5927155004339222,
+     "optimalTail": 0.010899999999999995,
+     "msPerRun": 2.7023972800000773
+    }
+   },
+   {
+    "id": "cucb",
+    "name": "CUCB",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 135.6524529954673,
+     "finalSE": 1.8645670505456338,
+     "finalMedian": 134.82357585276716,
+     "meanReward": 0.5919463448105315,
+     "optimalTail": 0.014699999999999979,
+     "msPerRun": 2.1375038400002087
+    }
+   },
+   {
+    "id": "dcmucb",
+    "name": "DCM-UCB",
+    "family": "click-models",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 136.4333738978761,
+     "finalSE": 1.9870057673652626,
+     "finalMedian": 138.23731236380453,
+     "meanReward": 0.5915558843593274,
+     "optimalTail": 0.014899999999999986,
+     "msPerRun": 2.1501776799999788
+    }
+   },
+   {
+    "id": "cascadeucb1",
+    "name": "CascadeUCB1",
+    "family": "cascading",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 137.0680007843819,
+     "finalSE": 2.1335263433019844,
+     "finalMedian": 137.46670517959234,
+     "meanReward": 0.5912385709160739,
+     "optimalTail": 0.012499999999999992,
+     "msPerRun": 2.1821455199997946
+    }
+   },
+   {
+    "id": "combucb1",
+    "name": "CombUCB1",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 137.11401951116656,
+     "finalSE": 1.6478854537219971,
+     "finalMedian": 138.0738848399474,
+     "meanReward": 0.5912155615526814,
+     "optimalTail": 0.007400000000000005,
+     "msPerRun": 1.9401120800002172
+    }
+   },
+   {
+    "id": "omm",
+    "name": "OMM",
+    "family": "semi-bandit",
+    "params": {
+     "c": 2
+    },
+    "summary": {
+     "finalRegret": 154.10430070306796,
+     "finalSE": 2.1600410496834557,
+     "finalMedian": 155.99286809989096,
+     "meanReward": 0.5827204209567312,
+     "optimalTail": 0.006200000000000004,
+     "msPerRun": 1.9972648400001345
+    }
+   },
+   {
+    "id": "comband",
+    "name": "ComBand (CExp3)",
+    "family": "adversarial",
+    "params": {
+     "eta": 1,
+     "gamma": 0.05
+    },
+    "summary": {
+     "finalRegret": 163.8985051941874,
+     "finalSE": 5.218060898195846,
+     "finalMedian": 160.40809542469552,
+     "meanReward": 0.5778233187111697,
+     "optimalTail": 0.0024,
+     "msPerRun": 16.256830720000035
+    }
+   },
+   {
+    "id": "greedy",
+    "name": "Greedy",
+    "family": "baselines",
+    "params": {
+     "eps": 0
+    },
+    "summary": {
+     "finalRegret": 176.06755739040548,
+     "finalSE": 13.817313884669444,
+     "finalMedian": 168.46704142894615,
+     "meanReward": 0.5717387926130623,
+     "optimalTail": 0,
+     "msPerRun": 1.6353280199997606
+    }
+   },
+   {
+    "id": "toprank",
+    "name": "TopRank",
+    "family": "ranking",
+    "params": {
+     "c": 3.43
+    },
+    "summary": {
+     "finalRegret": 202.7292581260418,
+     "finalSE": 4.7488091314040295,
+     "finalMedian": 201.48675977141906,
+     "meanReward": 0.5584079422452436,
+     "optimalTail": 0.004900000000000001,
+     "msPerRun": 2.864857179999817
+    }
+   },
+   {
+    "id": "rba",
+    "name": "Ranked bandits (RBA)",
+    "family": "ranking",
+    "params": {},
+    "summary": {
+     "finalRegret": 278.4546735624127,
+     "finalSE": 5.222866094247722,
+     "finalMedian": 281.202637225903,
+     "meanReward": 0.520545234527059,
+     "optimalTail": 0.00030000000000000003,
+     "msPerRun": 2.5639054799999212
+    }
+   },
+   {
+    "id": "osmd",
+    "name": "OSMD (negentropy)",
+    "family": "adversarial",
+    "params": {
+     "eta": 1
+    },
+    "summary": {
+     "finalRegret": 305.6600242009851,
+     "finalSE": 6.012898406116608,
+     "finalMedian": 318.0891746422484,
+     "meanReward": 0.5069425592077722,
+     "optimalTail": 0,
+     "msPerRun": 3.509451139999874
+    }
+   },
+   {
+    "id": "random",
+    "name": "Random",
+    "family": "baselines",
+    "params": {},
+    "summary": {
+     "finalRegret": 372.7954393992212,
+     "finalSE": 7.896036317954629,
+     "finalMedian": 382.3870781996141,
+     "meanReward": 0.4733748516086545,
+     "optimalTail": 0,
+     "msPerRun": 1.6721787999998923
+    }
+   }
+  ],
+  "pbm": [
+   {
+    "id": "pbmpie",
+    "name": "PBM-PIE",
+    "family": "click-models",
+    "params": {},
+    "summary": {
+     "finalRegret": 140.31096753707845,
+     "finalSE": 5.594597643595068,
+     "finalMedian": 132.33873911909535,
+     "meanReward": 1.5038194199229138,
+     "optimalTail": 0.18900000000000014,
+     "msPerRun": 6.831798080000226
+    }
+   },
+   {
+    "id": "cts",
+    "name": "CTS",
+    "family": "semi-bandit",
+    "params": {},
+    "summary": {
+     "finalRegret": 166.6999227553399,
+     "finalSE": 7.566494415967229,
+     "finalMedian": 154.25787226258453,
+     "meanReward": 1.4906249423137812,
+     "optimalTail": 0.08320000000000004,
+     "msPerRun": 5.8034373599998075
+    }
+   },
+   {
+    "id": "pbmucb",
+    "name": "PBM-UCB",
+    "family": "click-models",
+    "params": {
+     "delta": 1
+    },
+    "summary": {
+     "finalRegret": 201.69969275313323,
+     "finalSE": 3.44364612654202,
+     "finalMedian": 202.22319870824137,
+     "meanReward": 1.4731250573148833,
+     "optimalTail": 0.09320000000000005,
+     "msPerRun": 1.1592596199997205
+    }
+   },
+   {
+    "id": "cascadelinucb",
+    "name": "CascadeLinUCB",
+    "family": "cascading",
+    "params": {
+     "alpha": 0.5,
+     "lambda": 1
+    },
+    "summary": {
+     "finalRegret": 260.2545094553313,
+     "finalSE": 16.70158696648675,
+     "finalMedian": 264.31896285141767,
+     "meanReward": 1.4438476489637846,
+     "optimalTail": 0,
+     "msPerRun": 1.3866856400004326
+    }
+   },
+   {
+    "id": "cascadelints",
+    "name": "CascadeLinTS",
+    "family": "cascading",
+    "params": {
+     "v": 0.5,
+     "lambda": 1
+    },
+    "summary": {
+     "finalRegret": 273.6083401293568,
+     "finalSE": 8.288175957113408,
+     "finalMedian": 274.6513264822807,
+     "meanReward": 1.4371707336267723,
+     "optimalTail": 0.02579999999999995,
+     "msPerRun": 2.991510300000227
+    }
+   },
+   {
+    "id": "cascadets",
+    "name": "CascadeTS",
+    "family": "cascading",
+    "params": {},
+    "summary": {
+     "finalRegret": 273.70412591909115,
+     "finalSE": 8.595938626146658,
+     "finalMedian": 267.0013940844836,
+     "meanReward": 1.4371228407319068,
+     "optimalTail": 0.03249999999999996,
+     "msPerRun": 1.3677638600000501
+    }
+   },
+   {
+    "id": "dcmklucb",
+    "name": "dcmKL-UCB",
+    "family": "click-models",
+    "params": {},
+    "summary": {
+     "finalRegret": 274.4180690671582,
+     "finalSE": 5.221988272083099,
+     "finalMedian": 280.56159079903176,
+     "meanReward": 1.436765869157872,
+     "optimalTail": 0.037800000000000035,
+     "msPerRun": 11.515850659999996
+    }
+   },
+   {
+    "id": "cucb",
+    "name": "CUCB",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 282.05962032330507,
+     "finalSE": 6.2479856502914695,
+     "finalMedian": 280.14554079159626,
+     "meanReward": 1.4329450935297976,
+     "optimalTail": 0.02289999999999997,
+     "msPerRun": 1.8875341399998433
+    }
+   },
+   {
+    "id": "escb",
+    "name": "ESCB",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 283.29069739304026,
+     "finalSE": 15.17171985281472,
+     "finalMedian": 257.6070011760469,
+     "meanReward": 1.4323295549949326,
+     "optimalTail": 0.0032999999999999982,
+     "msPerRun": 3.244301819999673
+    }
+   },
+   {
+    "id": "combucb1",
+    "name": "CombUCB1",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 287.2188208470268,
+     "finalSE": 7.979451033329864,
+     "finalMedian": 283.3620296703659,
+     "meanReward": 1.4303654932679375,
+     "optimalTail": 0.01769999999999997,
+     "msPerRun": 1.7735146800000803
+    }
+   },
+   {
+    "id": "osmd",
+    "name": "OSMD (negentropy)",
+    "family": "adversarial",
+    "params": {
+     "eta": 1
+    },
+    "summary": {
+     "finalRegret": 309.5864308971034,
+     "finalSE": 9.987766540901827,
+     "finalMedian": 295.14519325966,
+     "meanReward": 1.4191816882428987,
+     "optimalTail": 0.01269999999999999,
+     "msPerRun": 2.8456679600000645
+    }
+   },
+   {
+    "id": "omm",
+    "name": "OMM",
+    "family": "semi-bandit",
+    "params": {
+     "c": 2
+    },
+    "summary": {
+     "finalRegret": 317.73233407392183,
+     "finalSE": 7.842805960011538,
+     "finalMedian": 307.37357331997185,
+     "meanReward": 1.4151087366544894,
+     "optimalTail": 0.010899999999999986,
+     "msPerRun": 1.8787201600001573
+    }
+   },
+   {
+    "id": "dcmucb",
+    "name": "DCM-UCB",
+    "family": "click-models",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 343.9723112642538,
+     "finalSE": 5.401542846678411,
+     "finalMedian": 347.81381357749376,
+     "meanReward": 1.4019887480593263,
+     "optimalTail": 0.041100000000000046,
+     "msPerRun": 1.9052062399996794
+    }
+   },
+   {
+    "id": "exp3m",
+    "name": "EXP3.M",
+    "family": "adversarial",
+    "params": {
+     "gamma": 0
+    },
+    "summary": {
+     "finalRegret": 345.36037178734534,
+     "finalSE": 9.74596055944097,
+     "finalMedian": 322.86646228578513,
+     "meanReward": 1.4012947177977755,
+     "optimalTail": 0.02279999999999997,
+     "msPerRun": 2.682910320000374
+    }
+   },
+   {
+    "id": "cascadeklucb",
+    "name": "CascadeKL-UCB",
+    "family": "cascading",
+    "params": {},
+    "summary": {
+     "finalRegret": 348.5024904265003,
+     "finalSE": 8.309820462123042,
+     "finalMedian": 350.513505667345,
+     "meanReward": 1.3997236584782007,
+     "optimalTail": 0.0136,
+     "msPerRun": 9.952180839999928
+    }
+   },
+   {
+    "id": "cascadeucb1",
+    "name": "CascadeUCB1",
+    "family": "cascading",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 429.685452929648,
+     "finalSE": 6.778406051686346,
+     "finalMedian": 435.2637399280886,
+     "meanReward": 1.3591321772266276,
+     "optimalTail": 0.006800000000000001,
+     "msPerRun": 1.8548056999999245
+    }
+   },
+   {
+    "id": "greedy",
+    "name": "Greedy",
+    "family": "baselines",
+    "params": {
+     "eps": 0
+    },
+    "summary": {
+     "finalRegret": 522.3109432236798,
+     "finalSE": 42.085178309575284,
+     "finalMedian": 460.91084209262146,
+     "meanReward": 1.3128194320796276,
+     "optimalTail": 0,
+     "msPerRun": 1.5701125799997682
+    }
+   },
+   {
+    "id": "toprank",
+    "name": "TopRank",
+    "family": "ranking",
+    "params": {
+     "c": 3.43
+    },
+    "summary": {
+     "finalRegret": 536.0290199314461,
+     "finalSE": 13.058054034456413,
+     "finalMedian": 530.9010390719228,
+     "meanReward": 1.3059603937257303,
+     "optimalTail": 0.0083,
+     "msPerRun": 2.7499664000000483
+    }
+   },
+   {
+    "id": "comband",
+    "name": "ComBand (CExp3)",
+    "family": "adversarial",
+    "params": {
+     "eta": 1,
+     "gamma": 0.05
+    },
+    "summary": {
+     "finalRegret": 835.1995936353811,
+     "finalSE": 26.799417334358793,
+     "finalMedian": 814.4283482433553,
+     "meanReward": 1.1563751068737593,
+     "optimalTail": 0.0007000000000000001,
+     "msPerRun": 15.479820560000007
+    }
+   },
+   {
+    "id": "rba",
+    "name": "Ranked bandits (RBA)",
+    "family": "ranking",
+    "params": {},
+    "summary": {
+     "finalRegret": 890.3048656065886,
+     "finalSE": 14.38576170630831,
+     "finalMedian": 894.3621863554938,
+     "meanReward": 1.1288224708881576,
+     "optimalTail": 0.0002,
+     "msPerRun": 2.6100606999999583
+    }
+   },
+   {
+    "id": "random",
+    "name": "Random",
+    "family": "baselines",
+    "params": {},
+    "summary": {
+     "finalRegret": 1253.414119666246,
+     "finalSE": 23.426982888203025,
+     "finalMedian": 1308.1517052510367,
+     "meanReward": 0.9472678438583293,
+     "optimalTail": 0,
+     "msPerRun": 1.6273615200000495
+    }
+   }
+  ],
+  "cascade-lin": [
+   {
+    "id": "cascadelinucb",
+    "name": "CascadeLinUCB",
+    "family": "cascading",
+    "params": {
+     "alpha": 0.5,
+     "lambda": 1
+    },
+    "summary": {
+     "finalRegret": 26.492867038529827,
+     "finalSE": 3.0296417626568,
+     "finalMedian": 19.02009306794358,
+     "meanReward": 0.7273857111618486,
+     "optimalTail": 0.3817000000000011,
+     "msPerRun": 5.9916477800002035
+    }
+   },
+   {
+    "id": "cascadelints",
+    "name": "CascadeLinTS",
+    "family": "cascading",
+    "params": {
+     "v": 0.5,
+     "lambda": 1
+    },
+    "summary": {
+     "finalRegret": 30.86199339686428,
+     "finalSE": 1.8835884737640038,
+     "finalMedian": 28.330122269743832,
+     "meanReward": 0.7252011479826825,
+     "optimalTail": 0.36749999999999994,
+     "msPerRun": 4.059278979999944
+    }
+   },
+   {
+    "id": "escb",
+    "name": "ESCB",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 52.550799383531974,
+     "finalSE": 2.5372528296383567,
+     "finalMedian": 54.70001937400587,
+     "meanReward": 0.7143567449893472,
+     "optimalTail": 0.13820000000000024,
+     "msPerRun": 3.7746462200000677
+    }
+   },
+   {
+    "id": "cts",
+    "name": "CTS",
+    "family": "semi-bandit",
+    "params": {},
+    "summary": {
+     "finalRegret": 59.40258088216654,
+     "finalSE": 2.3982915460357166,
+     "finalMedian": 59.35996528156622,
+     "meanReward": 0.7109308542400282,
+     "optimalTail": 0.11370000000000001,
+     "msPerRun": 6.09339948000008
+    }
+   },
+   {
+    "id": "cascadets",
+    "name": "CascadeTS",
+    "family": "cascading",
+    "params": {},
+    "summary": {
+     "finalRegret": 64.61580968163787,
+     "finalSE": 2.231287163711501,
+     "finalMedian": 65.05774691478075,
+     "meanReward": 0.7083242398402936,
+     "optimalTail": 0.12050000000000016,
+     "msPerRun": 1.5568217000000732
+    }
+   },
+   {
+    "id": "pbmpie",
+    "name": "PBM-PIE",
+    "family": "click-models",
+    "params": {},
+    "summary": {
+     "finalRegret": 67.89143356169983,
+     "finalSE": 3.178955677177538,
+     "finalMedian": 66.32915753720552,
+     "meanReward": 0.7066864279002637,
+     "optimalTail": 0.030799999999999956,
+     "msPerRun": 7.506211519999997
+    }
+   },
+   {
+    "id": "pbmucb",
+    "name": "PBM-UCB",
+    "family": "click-models",
+    "params": {
+     "delta": 1
+    },
+    "summary": {
+     "finalRegret": 78.66685824693683,
+     "finalSE": 2.5985602719245695,
+     "finalMedian": 77.79783409381142,
+     "meanReward": 0.7012987155576467,
+     "optimalTail": 0.043799999999999985,
+     "msPerRun": 1.545184139999692
+    }
+   },
+   {
+    "id": "dcmklucb",
+    "name": "dcmKL-UCB",
+    "family": "click-models",
+    "params": {},
+    "summary": {
+     "finalRegret": 86.25175777166868,
+     "finalSE": 3.05136157453093,
+     "finalMedian": 88.3817841501441,
+     "meanReward": 0.6975062657952797,
+     "optimalTail": 0.04099999999999996,
+     "msPerRun": 10.8459442400001
+    }
+   },
+   {
+    "id": "cascadeklucb",
+    "name": "CascadeKL-UCB",
+    "family": "cascading",
+    "params": {},
+    "summary": {
+     "finalRegret": 86.36180171832025,
+     "finalSE": 3.1526634765635015,
+     "finalMedian": 86.494838155521,
+     "meanReward": 0.6974512438219531,
+     "optimalTail": 0.0432,
+     "msPerRun": 10.536940739999991
+    }
+   },
+   {
+    "id": "dcmucb",
+    "name": "DCM-UCB",
+    "family": "click-models",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 110.24732013746147,
+     "finalSE": 4.392233353596761,
+     "finalMedian": 113.65122626188119,
+     "meanReward": 0.6855084846123831,
+     "optimalTail": 0.009500000000000001,
+     "msPerRun": 2.051172540000116
+    }
+   },
+   {
+    "id": "cucb",
+    "name": "CUCB",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 110.28221801587421,
+     "finalSE": 4.533633555415625,
+     "finalMedian": 112.51714913002168,
+     "meanReward": 0.6854910356731767,
+     "optimalTail": 0.016499999999999976,
+     "msPerRun": 2.110852960000266
+    }
+   },
+   {
+    "id": "combucb1",
+    "name": "CombUCB1",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 110.43931276529045,
+     "finalSE": 4.595479171671048,
+     "finalMedian": 115.49871355097024,
+     "meanReward": 0.6854124882984677,
+     "optimalTail": 0.020299999999999967,
+     "msPerRun": 2.10273529999984
+    }
+   },
+   {
+    "id": "cascadeucb1",
+    "name": "CascadeUCB1",
+    "family": "cascading",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 110.66279903880364,
+     "finalSE": 4.437200778793199,
+     "finalMedian": 114.70711328049347,
+     "meanReward": 0.6853007451617129,
+     "optimalTail": 0.009099999999999997,
+     "msPerRun": 2.0141381799998634
+    }
+   },
+   {
+    "id": "exp3m",
+    "name": "EXP3.M",
+    "family": "adversarial",
+    "params": {
+     "gamma": 0
+    },
+    "summary": {
+     "finalRegret": 111.38946028668947,
+     "finalSE": 4.906957667548036,
+     "finalMedian": 118.51460186626366,
+     "meanReward": 0.6849374145377679,
+     "optimalTail": 0.023099999999999957,
+     "msPerRun": 2.879599280000184
+    }
+   },
+   {
+    "id": "omm",
+    "name": "OMM",
+    "family": "semi-bandit",
+    "params": {
+     "c": 2
+    },
+    "summary": {
+     "finalRegret": 118.59663234940153,
+     "finalSE": 4.9809699684480755,
+     "finalMedian": 120.21347903731998,
+     "meanReward": 0.6813338285064124,
+     "optimalTail": 0.010199999999999987,
+     "msPerRun": 2.0902318799998465
+    }
+   },
+   {
+    "id": "comband",
+    "name": "ComBand (CExp3)",
+    "family": "adversarial",
+    "params": {
+     "eta": 1,
+     "gamma": 0.05
+    },
+    "summary": {
+     "finalRegret": 125.59853835881461,
+     "finalSE": 6.037460618927512,
+     "finalMedian": 121.89651732278537,
+     "meanReward": 0.6778328755017058,
+     "optimalTail": 0.01509999999999999,
+     "msPerRun": 16.765294939999947
+    }
+   },
+   {
+    "id": "greedy",
+    "name": "Greedy",
+    "family": "baselines",
+    "params": {
+     "eps": 0
+    },
+    "summary": {
+     "finalRegret": 143.23340907144137,
+     "finalSE": 11.981208649631265,
+     "finalMedian": 134.19323165273502,
+     "meanReward": 0.6690154401453782,
+     "optimalTail": 0,
+     "msPerRun": 1.6481732799997553
+    }
+   },
+   {
+    "id": "rba",
+    "name": "Ranked bandits (RBA)",
+    "family": "ranking",
+    "params": {},
+    "summary": {
+     "finalRegret": 158.0091768396367,
+     "finalSE": 7.685886471260852,
+     "finalMedian": 159.99801242075804,
+     "meanReward": 0.6616275562612958,
+     "optimalTail": 0.0019000000000000006,
+     "msPerRun": 2.794046760000274
+    }
+   },
+   {
+    "id": "toprank",
+    "name": "TopRank",
+    "family": "ranking",
+    "params": {
+     "c": 3.43
+    },
+    "summary": {
+     "finalRegret": 161.07722515642496,
+     "finalSE": 7.254248924770579,
+     "finalMedian": 167.73094864583155,
+     "meanReward": 0.6600935321029008,
+     "optimalTail": 0.004199999999999999,
+     "msPerRun": 3.8589557399999466
+    }
+   },
+   {
+    "id": "osmd",
+    "name": "OSMD (negentropy)",
+    "family": "adversarial",
+    "params": {
+     "eta": 1
+    },
+    "summary": {
+     "finalRegret": 172.27912624612384,
+     "finalSE": 8.632588753135572,
+     "finalMedian": 171.52945336641383,
+     "meanReward": 0.6544925815580513,
+     "optimalTail": 0.0008000000000000001,
+     "msPerRun": 3.2901868599999577
+    }
+   },
+   {
+    "id": "random",
+    "name": "Random",
+    "family": "baselines",
+    "params": {},
+    "summary": {
+     "finalRegret": 180.59293779325785,
+     "finalSE": 9.414618938969301,
+     "finalMedian": 181.04479791022575,
+     "meanReward": 0.6503356757844851,
+     "optimalTail": 0.0007000000000000001,
+     "msPerRun": 1.5992139400002634
+    }
+   }
+  ],
+  "adversarial": [
+   {
+    "id": "cucb",
+    "name": "CUCB",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 203.48846649445386,
+     "finalSE": 47.327865217660154,
+     "finalMedian": 229.73687767833343,
+     "meanReward": 2.3654557667527727,
+     "optimalTail": 0.3726000000000013,
+     "msPerRun": 2.2831850199995096
+    }
+   },
+   {
+    "id": "escb",
+    "name": "ESCB",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 690.0382739487754,
+     "finalSE": 92.79285055042858,
+     "finalMedian": 625.3150277122056,
+     "meanReward": 2.1221808630256134,
+     "optimalTail": 0.10000000000000007,
+     "msPerRun": 3.524330860000191
+    }
+   },
+   {
+    "id": "comband",
+    "name": "ComBand (CExp3)",
+    "family": "adversarial",
+    "params": {
+     "eta": 1,
+     "gamma": 0.05
+    },
+    "summary": {
+     "finalRegret": 715.6648189699526,
+     "finalSE": 36.43769291068647,
+     "finalMedian": 668.812973254456,
+     "meanReward": 2.109367590515026,
+     "optimalTail": 0.14400000000000013,
+     "msPerRun": 15.292291200000255
+    }
+   },
+   {
+    "id": "pbmpie",
+    "name": "PBM-PIE",
+    "family": "click-models",
+    "params": {},
+    "summary": {
+     "finalRegret": 736.8481465455048,
+     "finalSE": 63.849803064586084,
+     "finalMedian": 729.1345551633283,
+     "meanReward": 2.0987759267272463,
+     "optimalTail": 0.02889999999999995,
+     "msPerRun": 9.173326220000163
+    }
+   },
+   {
+    "id": "pbmucb",
+    "name": "PBM-UCB",
+    "family": "click-models",
+    "params": {
+     "delta": 1
+    },
+    "summary": {
+     "finalRegret": 758.0884715095982,
+     "finalSE": 65.34396800302507,
+     "finalMedian": 911.8862691807402,
+     "meanReward": 2.0881557642452027,
+     "optimalTail": 0.019999999999999934,
+     "msPerRun": 1.6968497000003844
+    }
+   },
+   {
+    "id": "dcmklucb",
+    "name": "dcmKL-UCB",
+    "family": "click-models",
+    "params": {},
+    "summary": {
+     "finalRegret": 873.3398938242838,
+     "finalSE": 61.50007289308739,
+     "finalMedian": 897.6610611562803,
+     "meanReward": 2.030530053087859,
+     "optimalTail": 0,
+     "msPerRun": 11.825017899999875
+    }
+   },
+   {
+    "id": "combucb1",
+    "name": "CombUCB1",
+    "family": "semi-bandit",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 913.649596741241,
+     "finalSE": 57.63266985279769,
+     "finalMedian": 1021.1553165370706,
+     "meanReward": 2.0103752016293783,
+     "optimalTail": 0,
+     "msPerRun": 2.346139639999892
+    }
+   },
+   {
+    "id": "cascadeklucb",
+    "name": "CascadeKL-UCB",
+    "family": "cascading",
+    "params": {},
+    "summary": {
+     "finalRegret": 934.4124317398824,
+     "finalSE": 46.048726459792356,
+     "finalMedian": 970.4233090981871,
+     "meanReward": 1.9999937841300564,
+     "optimalTail": 0,
+     "msPerRun": 11.70539493999997
+    }
+   },
+   {
+    "id": "cascadeucb1",
+    "name": "CascadeUCB1",
+    "family": "cascading",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 945.3962557883441,
+     "finalSE": 55.799702747839056,
+     "finalMedian": 1027.210346944904,
+     "meanReward": 1.9945018721058299,
+     "optimalTail": 0,
+     "msPerRun": 2.2186168600003295
+    }
+   },
+   {
+    "id": "omm",
+    "name": "OMM",
+    "family": "semi-bandit",
+    "params": {
+     "c": 2
+    },
+    "summary": {
+     "finalRegret": 968.3627704959508,
+     "finalSE": 62.14544264650248,
+     "finalMedian": 1063.0623674628382,
+     "meanReward": 1.9830186147520217,
+     "optimalTail": 0.038899999999999886,
+     "msPerRun": 2.29309908000032
+    }
+   },
+   {
+    "id": "dcmucb",
+    "name": "DCM-UCB",
+    "family": "click-models",
+    "params": {
+     "c": 1.5
+    },
+    "summary": {
+     "finalRegret": 1042.0519941768155,
+     "finalSE": 49.57673337255215,
+     "finalMedian": 1078.0117001437652,
+     "meanReward": 1.9461740029115908,
+     "optimalTail": 0,
+     "msPerRun": 2.2457907999998863
+    }
+   },
+   {
+    "id": "cascadelinucb",
+    "name": "CascadeLinUCB",
+    "family": "cascading",
+    "params": {
+     "alpha": 0.5,
+     "lambda": 1
+    },
+    "summary": {
+     "finalRegret": 1092.7459634568947,
+     "finalSE": 48.38067754726147,
+     "finalMedian": 1075.9387530063516,
+     "meanReward": 1.9208270182715672,
+     "optimalTail": 0,
+     "msPerRun": 2.5278014599999734
+    }
+   },
+   {
+    "id": "cascadets",
+    "name": "CascadeTS",
+    "family": "cascading",
+    "params": {},
+    "summary": {
+     "finalRegret": 1096.2888665225692,
+     "finalSE": 54.61403727450729,
+     "finalMedian": 1131.9723628970664,
+     "meanReward": 1.9190555667387188,
+     "optimalTail": 0,
+     "msPerRun": 1.8451105400002417
+    }
+   },
+   {
+    "id": "osmd",
+    "name": "OSMD (negentropy)",
+    "family": "adversarial",
+    "params": {
+     "eta": 1
+    },
+    "summary": {
+     "finalRegret": 1098.8598817059565,
+     "finalSE": 27.589467694624947,
+     "finalMedian": 1124.2130142185938,
+     "meanReward": 1.9177700591470233,
+     "optimalTail": 0.03599999999999998,
+     "msPerRun": 3.218289499999955
+    }
+   },
+   {
+    "id": "rba",
+    "name": "Ranked bandits (RBA)",
+    "family": "ranking",
+    "params": {},
+    "summary": {
+     "finalRegret": 1134.6799874290755,
+     "finalSE": 33.023471136576276,
+     "finalMedian": 1178.7613595054468,
+     "meanReward": 1.8998600062854623,
+     "optimalTail": 0.1601000000000001,
+     "msPerRun": 2.2624828200000047
+    }
+   },
+   {
+    "id": "cts",
+    "name": "CTS",
+    "family": "semi-bandit",
+    "params": {},
+    "summary": {
+     "finalRegret": 1176.9181048364233,
+     "finalSE": 49.77359603520027,
+     "finalMedian": 1227.2989526627664,
+     "meanReward": 1.8787409475817907,
+     "optimalTail": 0.08220000000000002,
+     "msPerRun": 6.359765360000238
+    }
+   },
+   {
+    "id": "cascadelints",
+    "name": "CascadeLinTS",
+    "family": "cascading",
+    "params": {
+     "v": 0.5,
+     "lambda": 1
+    },
+    "summary": {
+     "finalRegret": 1340.0040335101558,
+     "finalSE": 28.505429929737893,
+     "finalMedian": 1378.4482956497852,
+     "meanReward": 1.7971979832449227,
+     "optimalTail": 0.03860000000000002,
+     "msPerRun": 3.199099960000094
+    }
+   },
+   {
+    "id": "exp3m",
+    "name": "EXP3.M",
+    "family": "adversarial",
+    "params": {
+     "gamma": 0
+    },
+    "summary": {
+     "finalRegret": 1419.0119523672925,
+     "finalSE": 24.639708966830547,
+     "finalMedian": 1465.3104123886694,
+     "meanReward": 1.7576940238163548,
+     "optimalTail": 0.009,
+     "msPerRun": 2.808600899999874
+    }
+   },
+   {
+    "id": "greedy",
+    "name": "Greedy",
+    "family": "baselines",
+    "params": {
+     "eps": 0
+    },
+    "summary": {
+     "finalRegret": 1507.983495612142,
+     "finalSE": 70.02476603650912,
+     "finalMedian": 1516.828250409731,
+     "meanReward": 1.713208252193915,
+     "optimalTail": 0,
+     "msPerRun": 1.7815886799996952
+    }
+   },
+   {
+    "id": "random",
+    "name": "Random",
+    "family": "baselines",
+    "params": {},
+    "summary": {
+     "finalRegret": 1720.4556216477943,
+     "finalSE": 25.42262278638671,
+     "finalMedian": 1747.3640640309075,
+     "meanReward": 1.6069721891761044,
+     "optimalTail": 0.0005,
+     "msPerRun": 1.6599060199997622
+    }
+   },
+   {
+    "id": "toprank",
+    "name": "TopRank",
+    "family": "ranking",
+    "params": {
+     "c": 3.43
+    },
+    "summary": {
+     "finalRegret": 1722.8676387269788,
+     "finalSE": 25.56904829310631,
+     "finalMedian": 1726.0230042009632,
+     "meanReward": 1.6057661806365116,
+     "optimalTail": 0.0004,
+     "msPerRun": 6.592776759999688
+    }
+   }
+  ]
+ }
+}

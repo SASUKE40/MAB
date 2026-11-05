@@ -1,0 +1,2210 @@
+{
+ "setting": "bai",
+ "config": {
+  "K": 8,
+  "T": 5000,
+  "runs": 100,
+  "seed": 7,
+  "extra": {
+   "delta": 0.05
+  }
+ },
+ "environments": {
+  "bern-easy": [
+   {
+    "id": "ttucb",
+    "name": "TTUCB",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 328.45,
+     "samplesSE": 17.16878995400807,
+     "samplesMedian": 305,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.19958333333333336,
+     "msPerRun": 2.381486330000024
+    }
+   },
+   {
+    "id": "t3c",
+    "name": "T3C",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 337.97,
+     "samplesSE": 17.73435549002175,
+     "samplesMedian": 292,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.20375000000000001,
+     "msPerRun": 4.996344549999956
+    }
+   },
+   {
+    "id": "gifa",
+    "name": "GIFA (LUCB-type gap index)",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 350.84,
+     "samplesSE": 19.33099108068741,
+     "samplesMedian": 324,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.20083333333333328,
+     "msPerRun": 1.801621240000022
+    }
+   },
+   {
+    "id": "fws",
+    "name": "Frank–Wolfe Sampling",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 360.87,
+     "samplesSE": 18.265763387310486,
+     "samplesMedian": 339,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2504166666666667,
+     "msPerRun": 12.142547679999993
+    }
+   },
+   {
+    "id": "ttts",
+    "name": "TTTS",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 371.34,
+     "samplesSE": 18.891621893786088,
+     "samplesMedian": 328,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.21333333333333335,
+     "msPerRun": 11.75920631
+    }
+   },
+   {
+    "id": "tas-d",
+    "name": "Track-and-Stop (D-tracking)",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 397.21,
+     "samplesSE": 21.355960041471548,
+     "samplesMedian": 361,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.22749999999999998,
+     "msPerRun": 2.9877731699999917
+    }
+   },
+   {
+    "id": "tas-c",
+    "name": "Track-and-Stop (C-tracking)",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 446.64,
+     "samplesSE": 23.33192428645976,
+     "samplesMedian": 421,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.22958333333333336,
+     "msPerRun": 3.14390876000001
+    }
+   },
+   {
+    "id": "sh",
+    "name": "Sequential Halving",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 813.17,
+     "samplesSE": 48.25498572660392,
+     "samplesMedian": 725,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.23625000000000002,
+     "msPerRun": 1.426381489999975
+    }
+   },
+   {
+    "id": "sr",
+    "name": "Successive Rejects",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 828.86,
+     "samplesSE": 52.78436411428572,
+     "samplesMedian": 725,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.22291666666666665,
+     "msPerRun": 2.4123278699999933
+    }
+   },
+   {
+    "id": "sar",
+    "name": "SAR (Successive Accepts and Rejects)",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 828.86,
+     "samplesSE": 52.78436411428572,
+     "samplesMedian": 725,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.22291666666666665,
+     "msPerRun": 2.7592781200000043
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform sampling",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "samples": 831.02,
+     "samplesSE": 53.595316733438345,
+     "samplesMedian": 725,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.27041666666666664,
+     "msPerRun": 0.7299494299999572
+    }
+   },
+   {
+    "id": "xy-static",
+    "name": "XY-Static",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 831.02,
+     "samplesSE": 53.595316733438345,
+     "samplesMedian": 725,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.27041666666666664,
+     "msPerRun": 0.7062170700000274
+    }
+   },
+   {
+    "id": "lilucb",
+    "name": "lil'UCB",
+    "family": "ucb-based",
+    "params": {
+     "beta": 0.5,
+     "eps": 0.01,
+     "lambda": 2.5
+    },
+    "summary": {
+     "samples": 1080.82,
+     "samplesSE": 36.750533233264704,
+     "samplesMedian": 1030,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2304166666666667,
+     "msPerRun": 2.674015210000034
+    }
+   },
+   {
+    "id": "lucbpp",
+    "name": "LUCB++",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 1203.91,
+     "samplesSE": 43.34279639097939,
+     "samplesMedian": 1074,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.19875,
+     "msPerRun": 3.6678132200000455
+    }
+   },
+   {
+    "id": "lingape",
+    "name": "LinGapE",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 1545.18,
+     "samplesSE": 59.442695229621066,
+     "samplesMedian": 1333,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.21333333333333332,
+     "msPerRun": 2.016981689999978
+    }
+   },
+   {
+    "id": "rage",
+    "name": "RAGE",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 1841.8,
+     "samplesSE": 85.25442848179546,
+     "samplesMedian": 1727,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.27041666666666664,
+     "msPerRun": 0.32819850000006284
+    }
+   },
+   {
+    "id": "xy-adaptive",
+    "name": "XY-Adaptive",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 1916.28,
+     "samplesSE": 70.89502280545413,
+     "samplesMedian": 1787,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.27041666666666664,
+     "msPerRun": 0.7816533300000077
+    }
+   },
+   {
+    "id": "peace",
+    "name": "Peace (simplified)",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 2748.78,
+     "samplesSE": 105.07246905605363,
+     "samplesMedian": 2713,
+     "capHit": 0.04,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.27041666666666664,
+     "msPerRun": 0.4399658000000028
+    }
+   },
+   {
+    "id": "se",
+    "name": "Successive Elimination",
+    "family": "elimination",
+    "params": {},
+    "summary": {
+     "samples": 3244.83,
+     "samplesSE": 90.65179585600714,
+     "samplesMedian": 3034,
+     "capHit": 0.07,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.27041666666666664,
+     "msPerRun": 0.9100773400000416
+    }
+   },
+   {
+    "id": "ugape",
+    "name": "UGapE",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 4162.86,
+     "samplesSE": 78.09567043962286,
+     "samplesMedian": 4247,
+     "capHit": 0.27,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2275,
+     "msPerRun": 4.385556590000021
+    }
+   },
+   {
+    "id": "lucb",
+    "name": "LUCB1",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 4719.46,
+     "samplesSE": 56.55018227337141,
+     "samplesMedian": 5000,
+     "capHit": 0.67,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.21208333333333335,
+     "msPerRun": 3.280082030000002
+    }
+   },
+   {
+    "id": "me",
+    "name": "Median Elimination",
+    "family": "elimination",
+    "params": {
+     "eps": 0.3
+    },
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.27041666666666664,
+     "msPerRun": 0.4475157100000067
+    }
+   }
+  ],
+  "bern-close": [
+   {
+    "id": "gifa",
+    "name": "GIFA (LUCB-type gap index)",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 3754.64,
+     "samplesSE": 143.92332029679042,
+     "samplesMedian": 4312,
+     "capHit": 0.37,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.37833333333333335,
+     "msPerRun": 2.1157203299998946
+    }
+   },
+   {
+    "id": "ttucb",
+    "name": "TTUCB",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 3793.76,
+     "samplesSE": 146.50075610519536,
+     "samplesMedian": 4421,
+     "capHit": 0.39,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.38249999999999995,
+     "msPerRun": 2.8158749500000706
+    }
+   },
+   {
+    "id": "fws",
+    "name": "Frank–Wolfe Sampling",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 3846.64,
+     "samplesSE": 138.54947227133945,
+     "samplesMedian": 4511,
+     "capHit": 0.39,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.39499999999999996,
+     "msPerRun": 5.994357740000087
+    }
+   },
+   {
+    "id": "t3c",
+    "name": "T3C",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 3849.81,
+     "samplesSE": 145.0824061864446,
+     "samplesMedian": 4496,
+     "capHit": 0.42,
+     "errorStop": 0,
+     "errorFinal": 0.01,
+     "errorAvg": 0.39166666666666666,
+     "msPerRun": 5.170897929999964
+    }
+   },
+   {
+    "id": "ttts",
+    "name": "TTTS",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 3947.26,
+     "samplesSE": 138.15422038468824,
+     "samplesMedian": 4587,
+     "capHit": 0.45,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.39208333333333345,
+     "msPerRun": 10.218264630000004
+    }
+   },
+   {
+    "id": "tas-c",
+    "name": "Track-and-Stop (C-tracking)",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 4101.42,
+     "samplesSE": 128.04067391957045,
+     "samplesMedian": 4986,
+     "capHit": 0.5,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.3920833333333334,
+     "msPerRun": 3.600262880000064
+    }
+   },
+   {
+    "id": "tas-d",
+    "name": "Track-and-Stop (D-tracking)",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 4174.19,
+     "samplesSE": 126.23671422843654,
+     "samplesMedian": 5000,
+     "capHit": 0.59,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.3941666666666668,
+     "msPerRun": 3.3223668500000074
+    }
+   },
+   {
+    "id": "sh",
+    "name": "Sequential Halving",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 4475.73,
+     "samplesSE": 96.3482832637865,
+     "samplesMedian": 5000,
+     "capHit": 0.67,
+     "errorStop": 0,
+     "errorFinal": 0.02,
+     "errorAvg": 0.43208333333333343,
+     "msPerRun": 2.38076060000014
+    }
+   },
+   {
+    "id": "sr",
+    "name": "Successive Rejects",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 4640.3,
+     "samplesSE": 82.44242741685763,
+     "samplesMedian": 5000,
+     "capHit": 0.74,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.42250000000000015,
+     "msPerRun": 3.252785640000084
+    }
+   },
+   {
+    "id": "sar",
+    "name": "SAR (Successive Accepts and Rejects)",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 4640.3,
+     "samplesSE": 82.44242741685763,
+     "samplesMedian": 5000,
+     "capHit": 0.74,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.42250000000000015,
+     "msPerRun": 3.4170927400000437
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform sampling",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "samples": 4728.28,
+     "samplesSE": 78.4461496824416,
+     "samplesMedian": 5000,
+     "capHit": 0.87,
+     "errorStop": 0,
+     "errorFinal": 0.05,
+     "errorAvg": 0.4545833333333333,
+     "msPerRun": 1.9236256500001128
+    }
+   },
+   {
+    "id": "xy-static",
+    "name": "XY-Static",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 4728.28,
+     "samplesSE": 78.4461496824416,
+     "samplesMedian": 5000,
+     "capHit": 0.87,
+     "errorStop": 0,
+     "errorFinal": 0.05,
+     "errorAvg": 0.4545833333333333,
+     "msPerRun": 1.7782826400000067
+    }
+   },
+   {
+    "id": "lilucb",
+    "name": "lil'UCB",
+    "family": "ucb-based",
+    "params": {
+     "beta": 0.5,
+     "eps": 0.01,
+     "lambda": 2.5
+    },
+    "summary": {
+     "samples": 4895.18,
+     "samplesSE": 33.33033434993959,
+     "samplesMedian": 5000,
+     "capHit": 0.88,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.4029166666666666,
+     "msPerRun": 2.4401704299999163
+    }
+   },
+   {
+    "id": "rage",
+    "name": "RAGE",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 4958.15,
+     "samplesSE": 30.35666227444138,
+     "samplesMedian": 5000,
+     "capHit": 0.97,
+     "errorStop": 0,
+     "errorFinal": 0.03,
+     "errorAvg": 0.4533333333333333,
+     "msPerRun": 0.4038205399999697
+    }
+   },
+   {
+    "id": "se",
+    "name": "Successive Elimination",
+    "family": "elimination",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0.05,
+     "errorAvg": 0.45499999999999996,
+     "msPerRun": 0.8519118899999194
+    }
+   },
+   {
+    "id": "me",
+    "name": "Median Elimination",
+    "family": "elimination",
+    "params": {
+     "eps": 0.3
+    },
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0.05,
+     "errorAvg": 0.4545833333333333,
+     "msPerRun": 0.3242775399998845
+    }
+   },
+   {
+    "id": "lucb",
+    "name": "LUCB1",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.40458333333333335,
+     "msPerRun": 2.541591610000087
+    }
+   },
+   {
+    "id": "lucbpp",
+    "name": "LUCB++",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.38875,
+     "msPerRun": 5.956243010000008
+    }
+   },
+   {
+    "id": "ugape",
+    "name": "UGapE",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.41375,
+     "msPerRun": 3.361001640000022
+    }
+   },
+   {
+    "id": "xy-adaptive",
+    "name": "XY-Adaptive",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0.02,
+     "errorAvg": 0.45333333333333337,
+     "msPerRun": 0.7420326500000647
+    }
+   },
+   {
+    "id": "peace",
+    "name": "Peace (simplified)",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0.02,
+     "errorAvg": 0.45458333333333334,
+     "msPerRun": 0.4310128699999314
+    }
+   },
+   {
+    "id": "lingape",
+    "name": "LinGapE",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.4,
+     "msPerRun": 2.2592553400000814
+    }
+   }
+  ],
+  "gauss-arith": [
+   {
+    "id": "gifa",
+    "name": "GIFA (LUCB-type gap index)",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 674.52,
+     "samplesSE": 37.872781409835376,
+     "samplesMedian": 668,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.16874999999999998,
+     "msPerRun": 1.4674587900000369
+    }
+   },
+   {
+    "id": "ttucb",
+    "name": "TTUCB",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 686.47,
+     "samplesSE": 37.566265908969896,
+     "samplesMedian": 675,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.17041666666666666,
+     "msPerRun": 1.9375793899998826
+    }
+   },
+   {
+    "id": "t3c",
+    "name": "T3C",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 687.62,
+     "samplesSE": 36.38068857251194,
+     "samplesMedian": 684,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.1675,
+     "msPerRun": 4.46817705999998
+    }
+   },
+   {
+    "id": "ttts",
+    "name": "TTTS",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 718.01,
+     "samplesSE": 37.005267151713646,
+     "samplesMedian": 694,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.18166666666666667,
+     "msPerRun": 10.386769979999917
+    }
+   },
+   {
+    "id": "fws",
+    "name": "Frank–Wolfe Sampling",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 774.3,
+     "samplesSE": 41.474700819666054,
+     "samplesMedian": 759,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.21000000000000002,
+     "msPerRun": 5.8939453000000865
+    }
+   },
+   {
+    "id": "tas-c",
+    "name": "Track-and-Stop (C-tracking)",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 846.19,
+     "samplesSE": 43.41851463524879,
+     "samplesMedian": 836,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.17250000000000001,
+     "msPerRun": 0.7788948499997241
+    }
+   },
+   {
+    "id": "tas-d",
+    "name": "Track-and-Stop (D-tracking)",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 917.54,
+     "samplesSE": 47.93809227440211,
+     "samplesMedian": 898,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.17083333333333334,
+     "msPerRun": 0.7274555499998678
+    }
+   },
+   {
+    "id": "lilucb",
+    "name": "lil'UCB",
+    "family": "ucb-based",
+    "params": {
+     "beta": 0.5,
+     "eps": 0.01,
+     "lambda": 2.5
+    },
+    "summary": {
+     "samples": 1155.04,
+     "samplesSE": 43.147767993585525,
+     "samplesMedian": 1139,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.18416666666666665,
+     "msPerRun": 2.3658683899999415
+    }
+   },
+   {
+    "id": "sh",
+    "name": "Sequential Halving",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 1997.76,
+     "samplesSE": 84.07146565496369,
+     "samplesMedian": 2062,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.22416666666666668,
+     "msPerRun": 1.5266251799999009
+    }
+   },
+   {
+    "id": "sr",
+    "name": "Successive Rejects",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 2304.58,
+     "samplesSE": 106.98743264250406,
+     "samplesMedian": 2435,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.21291666666666667,
+     "msPerRun": 2.552670330000019
+    }
+   },
+   {
+    "id": "sar",
+    "name": "SAR (Successive Accepts and Rejects)",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 2304.58,
+     "samplesSE": 106.98743264250406,
+     "samplesMedian": 2435,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.21291666666666667,
+     "msPerRun": 2.680933249999853
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform sampling",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "samples": 2492.28,
+     "samplesSE": 131.49925458174863,
+     "samplesMedian": 2461,
+     "capHit": 0.08,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2416666666666667,
+     "msPerRun": 1.1408048899999266
+    }
+   },
+   {
+    "id": "xy-static",
+    "name": "XY-Static",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 2492.28,
+     "samplesSE": 131.49925458174863,
+     "samplesMedian": 2461,
+     "capHit": 0.08,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2416666666666667,
+     "msPerRun": 1.1729586600001858
+    }
+   },
+   {
+    "id": "lucbpp",
+    "name": "LUCB++",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 2539.94,
+     "samplesSE": 80.57368522982644,
+     "samplesMedian": 2427,
+     "capHit": 0.02,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.1754166666666667,
+     "msPerRun": 4.051912369999936
+    }
+   },
+   {
+    "id": "lingape",
+    "name": "LinGapE",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 3076.46,
+     "samplesSE": 86.659734478003,
+     "samplesMedian": 3067,
+     "capHit": 0.04,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.1816666666666667,
+     "msPerRun": 1.9336448899999958
+    }
+   },
+   {
+    "id": "xy-adaptive",
+    "name": "XY-Adaptive",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 3419.14,
+     "samplesSE": 87.66742599048962,
+     "samplesMedian": 3344,
+     "capHit": 0.08,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.23583333333333334,
+     "msPerRun": 0.5593143999999302
+    }
+   },
+   {
+    "id": "rage",
+    "name": "RAGE",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 4475,
+     "samplesSE": 52.76448530110863,
+     "samplesMedian": 3950,
+     "capHit": 0.5,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2416666666666667,
+     "msPerRun": 0.4502299000000312
+    }
+   },
+   {
+    "id": "se",
+    "name": "Successive Elimination",
+    "family": "elimination",
+    "params": {},
+    "summary": {
+     "samples": 4943.53,
+     "samplesSE": 22.1280226149676,
+     "samplesMedian": 5000,
+     "capHit": 0.89,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.23958333333333337,
+     "msPerRun": 0.8872761000000537
+    }
+   },
+   {
+    "id": "me",
+    "name": "Median Elimination",
+    "family": "elimination",
+    "params": {
+     "eps": 0.3
+    },
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2416666666666667,
+     "msPerRun": 0.3068941600000471
+    }
+   },
+   {
+    "id": "lucb",
+    "name": "LUCB1",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.18166666666666673,
+     "msPerRun": 2.5660782300000755
+    }
+   },
+   {
+    "id": "ugape",
+    "name": "UGapE",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.1879166666666667,
+     "msPerRun": 3.546339670000034
+    }
+   },
+   {
+    "id": "peace",
+    "name": "Peace (simplified)",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2416666666666667,
+     "msPerRun": 0.4621480099999462
+    }
+   }
+  ],
+  "gauss-one": [
+   {
+    "id": "gifa",
+    "name": "GIFA (LUCB-type gap index)",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 530.49,
+     "samplesSE": 22.257725908687583,
+     "samplesMedian": 510,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.20375000000000001,
+     "msPerRun": 1.44677073999992
+    }
+   },
+   {
+    "id": "fws",
+    "name": "Frank–Wolfe Sampling",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 549.22,
+     "samplesSE": 19.650597338441795,
+     "samplesMedian": 524,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.24083333333333334,
+     "msPerRun": 8.61759108000002
+    }
+   },
+   {
+    "id": "ttucb",
+    "name": "TTUCB",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 573.05,
+     "samplesSE": 19.291874957969746,
+     "samplesMedian": 575,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2083333333333333,
+     "msPerRun": 1.8728694600000744
+    }
+   },
+   {
+    "id": "t3c",
+    "name": "T3C",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 577.56,
+     "samplesSE": 19.739307654187556,
+     "samplesMedian": 571,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.20958333333333337,
+     "msPerRun": 4.304449099999765
+    }
+   },
+   {
+    "id": "tas-d",
+    "name": "Track-and-Stop (D-tracking)",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 636.51,
+     "samplesSE": 23.622940805988414,
+     "samplesMedian": 595,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.21791666666666668,
+     "msPerRun": 0.6072139100000277
+    }
+   },
+   {
+    "id": "ttts",
+    "name": "TTTS",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 682.25,
+     "samplesSE": 21.807520596011244,
+     "samplesMedian": 673,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.21625,
+     "msPerRun": 10.415833249999887
+    }
+   },
+   {
+    "id": "tas-c",
+    "name": "Track-and-Stop (C-tracking)",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 735.42,
+     "samplesSE": 25.32751599874466,
+     "samplesMedian": 720,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.21291666666666664,
+     "msPerRun": 0.7089204300001074
+    }
+   },
+   {
+    "id": "sh",
+    "name": "Sequential Halving",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 1065.56,
+     "samplesSE": 38.378869712434735,
+     "samplesMedian": 1069,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.25458333333333344,
+     "msPerRun": 1.1096173599998291
+    }
+   },
+   {
+    "id": "sr",
+    "name": "Successive Rejects",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 1080.63,
+     "samplesSE": 41.83347133865921,
+     "samplesMedian": 1069,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.23541666666666664,
+     "msPerRun": 1.8444139799999175
+    }
+   },
+   {
+    "id": "sar",
+    "name": "SAR (Successive Accepts and Rejects)",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 1080.63,
+     "samplesSE": 41.83347133865921,
+     "samplesMedian": 1069,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.23541666666666664,
+     "msPerRun": 2.1104879300000903
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform sampling",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "samples": 1080.71,
+     "samplesSE": 41.85738484015174,
+     "samplesMedian": 1069,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.265,
+     "msPerRun": 0.5832077000001664
+    }
+   },
+   {
+    "id": "xy-static",
+    "name": "XY-Static",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 1080.71,
+     "samplesSE": 41.85738484015174,
+     "samplesMedian": 1069,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.265,
+     "msPerRun": 0.5621868399997038
+    }
+   },
+   {
+    "id": "lucbpp",
+    "name": "LUCB++",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 1825.46,
+     "samplesSE": 35.92951129389571,
+     "samplesMedian": 1852,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2070833333333333,
+     "msPerRun": 3.486097540000046
+    }
+   },
+   {
+    "id": "lilucb",
+    "name": "lil'UCB",
+    "family": "ucb-based",
+    "params": {
+     "beta": 0.5,
+     "eps": 0.01,
+     "lambda": 2.5
+    },
+    "summary": {
+     "samples": 1867.22,
+     "samplesSE": 42.788249071279544,
+     "samplesMedian": 1874,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.22708333333333333,
+     "msPerRun": 2.3379038600002606
+    }
+   },
+   {
+    "id": "lingape",
+    "name": "LinGapE",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 2418.24,
+     "samplesSE": 47.16801073146555,
+     "samplesMedian": 2373,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.22375,
+     "msPerRun": 1.7369711499997356
+    }
+   },
+   {
+    "id": "xy-adaptive",
+    "name": "XY-Adaptive",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 2991.33,
+     "samplesSE": 58.65446507928766,
+     "samplesMedian": 2914,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.265,
+     "msPerRun": 0.6187339000000793
+    }
+   },
+   {
+    "id": "rage",
+    "name": "RAGE",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 3950,
+     "samplesSE": 0,
+     "samplesMedian": 3950,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.265,
+     "msPerRun": 0.3885428299998603
+    }
+   },
+   {
+    "id": "se",
+    "name": "Successive Elimination",
+    "family": "elimination",
+    "params": {},
+    "summary": {
+     "samples": 4659.35,
+     "samplesSE": 44.49333936079309,
+     "samplesMedian": 4848,
+     "capHit": 0.41,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.265,
+     "msPerRun": 0.8209513899998637
+    }
+   },
+   {
+    "id": "me",
+    "name": "Median Elimination",
+    "family": "elimination",
+    "params": {
+     "eps": 0.3
+    },
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.265,
+     "msPerRun": 0.28352451000017026
+    }
+   },
+   {
+    "id": "lucb",
+    "name": "LUCB1",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.22083333333333335,
+     "msPerRun": 2.5829907800000727
+    }
+   },
+   {
+    "id": "ugape",
+    "name": "UGapE",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.23833333333333334,
+     "msPerRun": 3.4687583899998207
+    }
+   },
+   {
+    "id": "peace",
+    "name": "Peace (simplified)",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.265,
+     "msPerRun": 0.39245304999996733
+    }
+   }
+  ],
+  "linear": [
+   {
+    "id": "xy-static",
+    "name": "XY-Static",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 492.01,
+     "samplesSE": 35.649348655984724,
+     "samplesMedian": 394,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.11916666666666668,
+     "msPerRun": 1.9679441299999962
+    }
+   },
+   {
+    "id": "lingape",
+    "name": "LinGapE",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 850.6,
+     "samplesSE": 27.113189604047886,
+     "samplesMedian": 800,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.11750000000000001,
+     "msPerRun": 8.579274500000064
+    }
+   },
+   {
+    "id": "xy-adaptive",
+    "name": "XY-Adaptive",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 955.07,
+     "samplesSE": 28.481222788271406,
+     "samplesMedian": 906,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.11916666666666668,
+     "msPerRun": 3.9155671099999383
+    }
+   },
+   {
+    "id": "gifa",
+    "name": "GIFA (LUCB-type gap index)",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 1102.38,
+     "samplesSE": 73.35591770693254,
+     "samplesMedian": 961,
+     "capHit": 0,
+     "errorStop": 0.01,
+     "errorFinal": 0,
+     "errorAvg": 0.20541666666666666,
+     "msPerRun": 1.5408369400000448
+    }
+   },
+   {
+    "id": "ttucb",
+    "name": "TTUCB",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 1127.7,
+     "samplesSE": 75.70503832825678,
+     "samplesMedian": 992,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.20375000000000001,
+     "msPerRun": 2.1096875799999544
+    }
+   },
+   {
+    "id": "t3c",
+    "name": "T3C",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 1150.15,
+     "samplesSE": 74.89720817847144,
+     "samplesMedian": 1015,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.21166666666666667,
+     "msPerRun": 4.36753073999982
+    }
+   },
+   {
+    "id": "ttts",
+    "name": "TTTS",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 1221.73,
+     "samplesSE": 75.5188341683147,
+     "samplesMedian": 1108,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.21375000000000002,
+     "msPerRun": 10.4853245899998
+    }
+   },
+   {
+    "id": "tas-c",
+    "name": "Track-and-Stop (C-tracking)",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 1282.03,
+     "samplesSE": 83.14592071967952,
+     "samplesMedian": 1157,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.22000000000000003,
+     "msPerRun": 0.921623420000069
+    }
+   },
+   {
+    "id": "fws",
+    "name": "Frank–Wolfe Sampling",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 1309.39,
+     "samplesSE": 79.6244364995997,
+     "samplesMedian": 1153,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.23416666666666663,
+     "msPerRun": 4.391115629999658
+    }
+   },
+   {
+    "id": "tas-d",
+    "name": "Track-and-Stop (D-tracking)",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 1319.11,
+     "samplesSE": 80.36937440607737,
+     "samplesMedian": 1226,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.21166666666666673,
+     "msPerRun": 0.8265538500003095
+    }
+   },
+   {
+    "id": "lilucb",
+    "name": "lil'UCB",
+    "family": "ucb-based",
+    "params": {
+     "beta": 0.5,
+     "eps": 0.01,
+     "lambda": 2.5
+    },
+    "summary": {
+     "samples": 1430.59,
+     "samplesSE": 63.95509329667074,
+     "samplesMedian": 1317,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.21833333333333332,
+     "msPerRun": 2.2967648299998107
+    }
+   },
+   {
+    "id": "sh",
+    "name": "Sequential Halving",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 2730.42,
+     "samplesSE": 119.85229308434512,
+     "samplesMedian": 2742,
+     "capHit": 0.02,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2675,
+     "msPerRun": 1.8068722000000343
+    }
+   },
+   {
+    "id": "sr",
+    "name": "Successive Rejects",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 3142.54,
+     "samplesSE": 139.3919670888136,
+     "samplesMedian": 3341,
+     "capHit": 0.07,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2520833333333333,
+     "msPerRun": 2.730922409999912
+    }
+   },
+   {
+    "id": "sar",
+    "name": "SAR (Successive Accepts and Rejects)",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 3142.54,
+     "samplesSE": 139.3919670888136,
+     "samplesMedian": 3341,
+     "capHit": 0.07,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2520833333333333,
+     "msPerRun": 2.847342439999993
+    }
+   },
+   {
+    "id": "rage",
+    "name": "RAGE",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 3411.75,
+     "samplesSE": 63.71356098614607,
+     "samplesMedian": 3230,
+     "capHit": 0.05,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.11916666666666668,
+     "msPerRun": 1.9085348100002375
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform sampling",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "samples": 3461.05,
+     "samplesSE": 160.8374694867744,
+     "samplesMedian": 3818,
+     "capHit": 0.38,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2733333333333333,
+     "msPerRun": 1.4775953400000434
+    }
+   },
+   {
+    "id": "peace",
+    "name": "Peace (simplified)",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 4288.43,
+     "samplesSE": 39.42657221937631,
+     "samplesMedian": 4284,
+     "capHit": 0.07,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.11916666666666668,
+     "msPerRun": 2.0634256900000763
+    }
+   },
+   {
+    "id": "lucbpp",
+    "name": "LUCB++",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 4358.75,
+     "samplesSE": 73.89493958289428,
+     "samplesMedian": 4654,
+     "capHit": 0.4,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.21291666666666667,
+     "msPerRun": 5.304733319999941
+    }
+   },
+   {
+    "id": "se",
+    "name": "Successive Elimination",
+    "family": "elimination",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.26916666666666667,
+     "msPerRun": 0.9979989700000078
+    }
+   },
+   {
+    "id": "me",
+    "name": "Median Elimination",
+    "family": "elimination",
+    "params": {
+     "eps": 0.3
+    },
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2733333333333333,
+     "msPerRun": 0.2877848299999459
+    }
+   },
+   {
+    "id": "lucb",
+    "name": "LUCB1",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.2325,
+     "msPerRun": 2.5414163099998404
+    }
+   },
+   {
+    "id": "ugape",
+    "name": "UGapE",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.22166666666666668,
+     "msPerRun": 3.3442067800000586
+    }
+   }
+  ],
+  "topm": [
+   {
+    "id": "gifa",
+    "name": "GIFA (LUCB-type gap index)",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 621.04,
+     "samplesSE": 40.065514328207975,
+     "samplesMedian": 474,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.315,
+     "msPerRun": 2.3665076699995553
+    }
+   },
+   {
+    "id": "xy-adaptive",
+    "name": "XY-Adaptive",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 1284.89,
+     "samplesSE": 77.25856089336074,
+     "samplesMedian": 1025,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.37958333333333333,
+     "msPerRun": 2.220816869999908
+    }
+   },
+   {
+    "id": "peace",
+    "name": "Peace (simplified)",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 1463.79,
+     "samplesSE": 86.83405547887932,
+     "samplesMedian": 1203,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.37958333333333333,
+     "msPerRun": 1.8720742399998562
+    }
+   },
+   {
+    "id": "sh",
+    "name": "Sequential Halving",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 1527.75,
+     "samplesSE": 92.18480382121315,
+     "samplesMedian": 1203,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.3979166666666667,
+     "msPerRun": 2.4448762299998634
+    }
+   },
+   {
+    "id": "sar",
+    "name": "SAR (Successive Accepts and Rejects)",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 1542.52,
+     "samplesSE": 94.61541557614417,
+     "samplesMedian": 1203,
+     "capHit": 0,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.34958333333333336,
+     "msPerRun": 3.608756420000209
+    }
+   },
+   {
+    "id": "sr",
+    "name": "Successive Rejects",
+    "family": "fixed-budget",
+    "params": {},
+    "summary": {
+     "samples": 1565.81,
+     "samplesSE": 101.49545812100126,
+     "samplesMedian": 1203,
+     "capHit": 0.02,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.4058333333333333,
+     "msPerRun": 3.268758970000381
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform sampling",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "samples": 1607.38,
+     "samplesSE": 109.0735011009743,
+     "samplesMedian": 1203,
+     "capHit": 0.03,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.37958333333333333,
+     "msPerRun": 2.0406093899995903
+    }
+   },
+   {
+    "id": "xy-static",
+    "name": "XY-Static",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 1607.38,
+     "samplesSE": 109.0735011009743,
+     "samplesMedian": 1203,
+     "capHit": 0.03,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.37958333333333333,
+     "msPerRun": 1.8803661899999133
+    }
+   },
+   {
+    "id": "rage",
+    "name": "RAGE",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 1653.46,
+     "samplesSE": 133.91583850321888,
+     "samplesMedian": 1178,
+     "capHit": 0.11,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.37958333333333333,
+     "msPerRun": 1.997970479999567
+    }
+   },
+   {
+    "id": "lucbpp",
+    "name": "LUCB++",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 2428.11,
+     "samplesSE": 106.5451977834152,
+     "samplesMedian": 2194,
+     "capHit": 0.06,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.31750000000000006,
+     "msPerRun": 4.479591799999871
+    }
+   },
+   {
+    "id": "lingape",
+    "name": "LinGapE",
+    "family": "linear",
+    "params": {},
+    "summary": {
+     "samples": 3193.94,
+     "samplesSE": 156.89894568019108,
+     "samplesMedian": 3251,
+     "capHit": 0.27,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.3837500000000001,
+     "msPerRun": 6.051540729999542
+    }
+   },
+   {
+    "id": "lilucb",
+    "name": "lil'UCB",
+    "family": "ucb-based",
+    "params": {
+     "beta": 0.5,
+     "eps": 0.01,
+     "lambda": 2.5
+    },
+    "summary": {
+     "samples": 3919.89,
+     "samplesSE": 157.09332611572333,
+     "samplesMedian": 5000,
+     "capHit": 0.61,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.3916666666666666,
+     "msPerRun": 6.326787440000226
+    }
+   },
+   {
+    "id": "tas-c",
+    "name": "Track-and-Stop (C-tracking)",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 3990.13,
+     "samplesSE": 130.53298948711947,
+     "samplesMedian": 5000,
+     "capHit": 0.51,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.41458333333333336,
+     "msPerRun": 6.2839675999997056
+    }
+   },
+   {
+    "id": "tas-d",
+    "name": "Track-and-Stop (D-tracking)",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 4143.13,
+     "samplesSE": 150.93978239715665,
+     "samplesMedian": 5000,
+     "capHit": 0.69,
+     "errorStop": 0,
+     "errorFinal": 0.03,
+     "errorAvg": 0.4404166666666666,
+     "msPerRun": 5.674491169999856
+    }
+   },
+   {
+    "id": "fws",
+    "name": "Frank–Wolfe Sampling",
+    "family": "optimal-allocation",
+    "params": {},
+    "summary": {
+     "samples": 4490.02,
+     "samplesSE": 111.36338097517594,
+     "samplesMedian": 5000,
+     "capHit": 0.77,
+     "errorStop": 0,
+     "errorFinal": 0.02,
+     "errorAvg": 0.4487499999999999,
+     "msPerRun": 10.147975920000063
+    }
+   },
+   {
+    "id": "se",
+    "name": "Successive Elimination",
+    "family": "elimination",
+    "params": {},
+    "summary": {
+     "samples": 4738.03,
+     "samplesSE": 60.82488103173968,
+     "samplesMedian": 5000,
+     "capHit": 0.74,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.37958333333333333,
+     "msPerRun": 0.827620339999412
+    }
+   },
+   {
+    "id": "ttts",
+    "name": "TTTS",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 4740.36,
+     "samplesSE": 65.60847678663688,
+     "samplesMedian": 5000,
+     "capHit": 0.8,
+     "errorStop": 0,
+     "errorFinal": 0.03,
+     "errorAvg": 0.4545833333333333,
+     "msPerRun": 12.133399980000359
+    }
+   },
+   {
+    "id": "ttucb",
+    "name": "TTUCB",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 4788.44,
+     "samplesSE": 59.549765827424075,
+     "samplesMedian": 5000,
+     "capHit": 0.84,
+     "errorStop": 0,
+     "errorFinal": 0.01,
+     "errorAvg": 0.4575000000000001,
+     "msPerRun": 6.47236858999986
+    }
+   },
+   {
+    "id": "ugape",
+    "name": "UGapE",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 4878.99,
+     "samplesSE": 41.969785897510285,
+     "samplesMedian": 5000,
+     "capHit": 0.85,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.3470833333333333,
+     "msPerRun": 4.5634642299999175
+    }
+   },
+   {
+    "id": "t3c",
+    "name": "T3C",
+    "family": "top-two",
+    "params": {
+     "beta": 0.5
+    },
+    "summary": {
+     "samples": 4881.81,
+     "samplesSE": 43.39967810474978,
+     "samplesMedian": 5000,
+     "capHit": 0.91,
+     "errorStop": 0,
+     "errorFinal": 0.08,
+     "errorAvg": 0.5291666666666667,
+     "msPerRun": 7.7518749600004595
+    }
+   },
+   {
+    "id": "lucb",
+    "name": "LUCB1",
+    "family": "ucb-based",
+    "params": {},
+    "summary": {
+     "samples": 4959.29,
+     "samplesSE": 26.3262717612749,
+     "samplesMedian": 5000,
+     "capHit": 0.96,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.34125,
+     "msPerRun": 3.0336555599998976
+    }
+   },
+   {
+    "id": "me",
+    "name": "Median Elimination",
+    "family": "elimination",
+    "params": {
+     "eps": 0.3
+    },
+    "summary": {
+     "samples": 5000,
+     "samplesSE": 0,
+     "samplesMedian": 5000,
+     "capHit": 1,
+     "errorStop": 0,
+     "errorFinal": 0,
+     "errorAvg": 0.37958333333333333,
+     "msPerRun": 0.33079291999998534
+    }
+   }
+  ]
+ }
+}

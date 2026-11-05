@@ -1,0 +1,2876 @@
+{
+ "setting": "continuum",
+ "config": {
+  "T": 500,
+  "runs": 20,
+  "seed": 7,
+  "extra": {
+   "sigma": 0.1
+  }
+ },
+ "environments": {
+  "smooth": [
+   {
+    "id": "stageopt",
+    "name": "StageOpt",
+    "family": "safe",
+    "params": {
+     "ell": 0.1,
+     "beta": 2,
+     "L": 5,
+     "stage": 0.3,
+     "betaF": 2
+    },
+    "summary": {
+     "finalRegret": 7.030843148273796,
+     "finalSE": 0.3400019502220516,
+     "finalMedian": 6.829426147117913,
+     "simpleRegret": 0.003684411770556528,
+     "simpleSE": 0.0010321767586031745,
+     "unsafe": 0,
+     "msPerRun": 10.420909299999806
+    }
+   },
+   {
+    "id": "uct",
+    "name": "UCT (dyadic tree)",
+    "family": "tree-search",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 8.095599667339659,
+     "finalSE": 1.3001592281325864,
+     "finalMedian": 6.752198182917065,
+     "simpleRegret": 0.0033386260053782533,
+     "simpleSE": 0.0017516696930738426,
+     "unsafe": 0,
+     "msPerRun": 1.4419425000001218
+    }
+   },
+   {
+    "id": "gp-ucb",
+    "name": "GP-UCB",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "scale": 0.2,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 8.136357022468976,
+     "finalSE": 0.38516997474518117,
+     "finalMedian": 7.626325823195389,
+     "simpleRegret": 0.0011003063063017848,
+     "simpleSE": 0.0003809042429708377,
+     "unsafe": 0,
+     "msPerRun": 9.053551049999799
+    }
+   },
+   {
+    "id": "bkb",
+    "name": "BKB (Nyström GP-UCB)",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "scale": 0.2,
+     "qbar": 2,
+     "mmax": 128
+    },
+    "summary": {
+     "finalRegret": 8.522198982242005,
+     "finalSE": 0.33185766073974104,
+     "finalMedian": 8.289912649879845,
+     "simpleRegret": 0.0018968855241796646,
+     "simpleSE": 0.0005180433458617212,
+     "unsafe": 0,
+     "msPerRun": 4.43964599999989
+    }
+   },
+   {
+    "id": "hoo",
+    "name": "HOO",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 10.175981855521773,
+     "finalSE": 0.40252735226791164,
+     "finalMedian": 10.313666492325643,
+     "simpleRegret": 0.0019622397250710745,
+     "simpleSE": 0.0005177765308231155,
+     "unsafe": 0,
+     "msPerRun": 2.4737620499999458
+    }
+   },
+   {
+    "id": "doo",
+    "name": "DOO",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.333
+    },
+    "summary": {
+     "finalRegret": 11.180162795693569,
+     "finalSE": 2.4068835121502405,
+     "finalMedian": 6.539068922506075,
+     "simpleRegret": 0.01643027087805039,
+     "simpleSE": 0.004592871803094759,
+     "unsafe": 0,
+     "msPerRun": 1.2571671999999565
+    }
+   },
+   {
+    "id": "hct",
+    "name": "HCT",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1,
+     "delta": 0.05
+    },
+    "summary": {
+     "finalRegret": 14.018943605794894,
+     "finalSE": 0.6658251766400111,
+     "finalMedian": 14.292332179907692,
+     "simpleRegret": 0.0017157933834878515,
+     "simpleSE": 0.00040677492720925506,
+     "unsafe": 0,
+     "msPerRun": 0.6380591500000051
+    }
+   },
+   {
+    "id": "igp-ucb",
+    "name": "IGP-UCB",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "B": 0.5,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 14.919903319417163,
+     "finalSE": 0.27569890375617684,
+     "finalMedian": 15.010969477151669,
+     "simpleRegret": 0.0005018903727776747,
+     "simpleSE": 0.00015650911324531085,
+     "unsafe": 0,
+     "msPerRun": 9.229848300000182
+    }
+   },
+   {
+    "id": "safeopt",
+    "name": "SafeOpt",
+    "family": "safe",
+    "params": {
+     "ell": 0.1,
+     "beta": 2,
+     "L": 5
+    },
+    "summary": {
+     "finalRegret": 15.061070502094335,
+     "finalSE": 0.7491488710237622,
+     "finalMedian": 15.54418262275674,
+     "simpleRegret": 0.000616961971301877,
+     "simpleSE": 0.00020977808329757834,
+     "unsafe": 0,
+     "msPerRun": 10.218099300000446
+    }
+   },
+   {
+    "id": "zooming",
+    "name": "Zooming",
+    "family": "discretization",
+    "params": {
+     "L": 3,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 16.086904744471532,
+     "finalSE": 0.32251821323893226,
+     "finalMedian": 15.965995348984467,
+     "simpleRegret": 0.002953376126686613,
+     "simpleSE": 0.0008641584373229201,
+     "unsafe": 0,
+     "msPerRun": 3.598743849999986
+    }
+   },
+   {
+    "id": "contextual-zooming",
+    "name": "Contextual Zooming",
+    "family": "discretization",
+    "params": {
+     "L": 3,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 32.54765997517558,
+     "finalSE": 5.106646339311726,
+     "finalMedian": 26.898153103045683,
+     "simpleRegret": 0.017824793842311365,
+     "simpleSE": 0.010447486347520383,
+     "unsafe": 0,
+     "msPerRun": 5.422139650000133
+    }
+   },
+   {
+    "id": "ucb-grid",
+    "name": "Discretized UCB (Kleinberg)",
+    "family": "discretization",
+    "params": {
+     "mult": 1,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 36.991436817063395,
+     "finalSE": 6.21955165367026,
+     "finalMedian": 32.354151120436775,
+     "simpleRegret": 0.06848656969164431,
+     "simpleSE": 0.012504338558525094,
+     "unsafe": 0,
+     "msPerRun": 0.311506350000036
+    }
+   },
+   {
+    "id": "poo",
+    "name": "POO (with HOO)",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rhoMax": 0.9,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 39.97130101533268,
+     "finalSE": 1.0361525780010539,
+     "finalMedian": 39.66347905629873,
+     "simpleRegret": 0.006492731808483987,
+     "simpleSE": 0.002213156040963159,
+     "unsafe": 0,
+     "msPerRun": 1.3691193499998946
+    }
+   },
+   {
+    "id": "vhct",
+    "name": "VHCT",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1,
+     "delta": 0.05
+    },
+    "summary": {
+     "finalRegret": 43.66431377350069,
+     "finalSE": 1.3338791468808884,
+     "finalMedian": 43.83269603707769,
+     "simpleRegret": 0.004882926478613025,
+     "simpleSE": 0.0013687748169102874,
+     "unsafe": 0,
+     "msPerRun": 0.9777312499999908
+    }
+   },
+   {
+    "id": "soo",
+    "name": "SOO",
+    "family": "tree-search",
+    "params": {},
+    "summary": {
+     "finalRegret": 63.362688582129906,
+     "finalSE": 0.5246107057832283,
+     "finalMedian": 63.19100168938291,
+     "simpleRegret": 0.01664493442222541,
+     "simpleSE": 0.004005671259721461,
+     "unsafe": 0,
+     "msPerRun": 0.9101881499998925
+    }
+   },
+   {
+    "id": "gp-ts",
+    "name": "GP-TS",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "B": 0.5,
+     "delta": 0.1,
+     "v": 1
+    },
+    "summary": {
+     "finalRegret": 78.72785272417686,
+     "finalSE": 0.9747135356453422,
+     "finalMedian": 79.2525713540884,
+     "simpleRegret": 0.0008496079606369888,
+     "simpleSE": 0.00019733808930201248,
+     "unsafe": 0,
+     "msPerRun": 24.31085120000003
+    }
+   },
+   {
+    "id": "kernel-bco",
+    "name": "Kernelized exp. weights (simplified)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "h": 0.05,
+     "gamma": 0.05
+    },
+    "summary": {
+     "finalRegret": 100.42858468452923,
+     "finalSE": 0.6268047111853463,
+     "finalMedian": 100.23582919263194,
+     "simpleRegret": 0.0015461848293654712,
+     "simpleSE": 0.0004689206161618522,
+     "unsafe": 0,
+     "msPerRun": 2.9435769000001555
+    }
+   },
+   {
+    "id": "bgd",
+    "name": "BGD (two-point)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "delta": 0.5
+    },
+    "summary": {
+     "finalRegret": 103.39087268659884,
+     "finalSE": 0.1278997763991386,
+     "finalMedian": 103.29328583736431,
+     "simpleRegret": 0.021666401536673357,
+     "simpleSE": 0.006266043442896478,
+     "unsafe": 0,
+     "msPerRun": 0.2522199000002857
+    }
+   },
+   {
+    "id": "stosoo",
+    "name": "StoSOO",
+    "family": "tree-search",
+    "params": {
+     "k": 2,
+     "c": 1,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 167.62209126875703,
+     "finalSE": 10.013743603697163,
+     "finalMedian": 189.88012653847082,
+     "simpleRegret": 0.0195185627516073,
+     "simpleSE": 0.007339265391420736,
+     "unsafe": 0,
+     "msPerRun": 2.0765228000000833
+    }
+   },
+   {
+    "id": "scr",
+    "name": "SCRiBLe-style (log-barrier)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 0.5,
+     "lam": 5
+    },
+    "summary": {
+     "finalRegret": 208.95265175284106,
+     "finalSE": 3.671001270648011,
+     "finalMedian": 218.80591482364784,
+     "simpleRegret": 0.011023175964581,
+     "simpleSE": 0.003184831172264324,
+     "unsafe": 0,
+     "msPerRun": 0.3142275000000609
+    }
+   },
+   {
+    "id": "fkm",
+    "name": "FKM (one-point gradient)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "delta": 1
+    },
+    "summary": {
+     "finalRegret": 278.90762462521855,
+     "finalSE": 0.541791057306357,
+     "finalMedian": 278.92422310868847,
+     "simpleRegret": 0.011637781082200755,
+     "simpleSE": 0.0038976930577181187,
+     "unsafe": 0,
+     "msPerRun": 0.2688862500000312
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform random",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "finalRegret": 285.3795778857519,
+     "finalSE": 2.0539089966222437,
+     "finalMedian": 286.0096187186955,
+     "simpleRegret": 0.019708289936979796,
+     "simpleSE": 0.00631561233303449,
+     "unsafe": 0,
+     "msPerRun": 0.23521810000012522
+    }
+   }
+  ],
+  "multimodal": [
+   {
+    "id": "gp-ucb",
+    "name": "GP-UCB",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "scale": 0.2,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 21.524901101775942,
+     "finalSE": 6.487039331038393,
+     "finalMedian": 12.85600636370516,
+     "simpleRegret": 0.02060941703755456,
+     "simpleSE": 0.013315130890220716,
+     "unsafe": 0,
+     "msPerRun": 8.529279350000797
+    }
+   },
+   {
+    "id": "stageopt",
+    "name": "StageOpt",
+    "family": "safe",
+    "params": {
+     "ell": 0.1,
+     "beta": 2,
+     "L": 5,
+     "stage": 0.3,
+     "betaF": 2
+    },
+    "summary": {
+     "finalRegret": 30.283762550106086,
+     "finalSE": 9.132039809472642,
+     "finalMedian": 10.516852619015303,
+     "simpleRegret": 0.0440332008266843,
+     "simpleSE": 0.019164646040747416,
+     "unsafe": 0,
+     "msPerRun": 10.067868799999133
+    }
+   },
+   {
+    "id": "bkb",
+    "name": "BKB (Nyström GP-UCB)",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "scale": 0.2,
+     "qbar": 2,
+     "mmax": 128
+    },
+    "summary": {
+     "finalRegret": 34.274602631650055,
+     "finalSE": 10.481357773561621,
+     "finalMedian": 12.571634085410922,
+     "simpleRegret": 0.04625467074854646,
+     "simpleSE": 0.02131937419829288,
+     "unsafe": 0,
+     "msPerRun": 3.0569411499999886
+    }
+   },
+   {
+    "id": "igp-ucb",
+    "name": "IGP-UCB",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "B": 0.5,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 40.40626910322774,
+     "finalSE": 2.672235233432871,
+     "finalMedian": 36.00967584127525,
+     "simpleRegret": 0.0012110324799842753,
+     "simpleSE": 0.0003097571666994325,
+     "unsafe": 0,
+     "msPerRun": 8.908026700000665
+    }
+   },
+   {
+    "id": "safeopt",
+    "name": "SafeOpt",
+    "family": "safe",
+    "params": {
+     "ell": 0.1,
+     "beta": 2,
+     "L": 5
+    },
+    "summary": {
+     "finalRegret": 41.16179813990975,
+     "finalSE": 10.021386714751257,
+     "finalMedian": 19.613457792824185,
+     "simpleRegret": 0.053375039511558905,
+     "simpleSE": 0.02387472441023403,
+     "unsafe": 0,
+     "msPerRun": 9.83209744999981
+    }
+   },
+   {
+    "id": "zooming",
+    "name": "Zooming",
+    "family": "discretization",
+    "params": {
+     "L": 3,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 46.94078873626745,
+     "finalSE": 9.533923131146318,
+     "finalMedian": 28.702087919364725,
+     "simpleRegret": 0.06895864022179594,
+     "simpleSE": 0.02100516972161324,
+     "unsafe": 0,
+     "msPerRun": 3.0357761999999298
+    }
+   },
+   {
+    "id": "doo",
+    "name": "DOO",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.333
+    },
+    "summary": {
+     "finalRegret": 60.12084880336704,
+     "finalSE": 13.401435475948915,
+     "finalMedian": 33.642426494913856,
+     "simpleRegret": 0.10720225058074276,
+     "simpleSE": 0.026597454530341444,
+     "unsafe": 0,
+     "msPerRun": 0.7812619499996913
+    }
+   },
+   {
+    "id": "hoo",
+    "name": "HOO",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 61.04993690147118,
+     "finalSE": 14.354383004155352,
+     "finalMedian": 17.370616622853632,
+     "simpleRegret": 0.09417874155646219,
+     "simpleSE": 0.02908641061015234,
+     "unsafe": 0,
+     "msPerRun": 2.3022129499993524
+    }
+   },
+   {
+    "id": "hct",
+    "name": "HCT",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1,
+     "delta": 0.05
+    },
+    "summary": {
+     "finalRegret": 72.66878888826116,
+     "finalSE": 13.516976571844399,
+     "finalMedian": 41.57855515393441,
+     "simpleRegret": 0.07875407197284333,
+     "simpleSE": 0.027625569353922668,
+     "unsafe": 0,
+     "msPerRun": 0.44125040000070614
+    }
+   },
+   {
+    "id": "soo",
+    "name": "SOO",
+    "family": "tree-search",
+    "params": {},
+    "summary": {
+     "finalRegret": 83.18071926318402,
+     "finalSE": 1.7418483598584065,
+     "finalMedian": 84.66654926161499,
+     "simpleRegret": 0.007379178621142868,
+     "simpleSE": 0.0019090322278013745,
+     "unsafe": 0,
+     "msPerRun": 0.9564888500001644
+    }
+   },
+   {
+    "id": "uct",
+    "name": "UCT (dyadic tree)",
+    "family": "tree-search",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 84.58647768923217,
+     "finalSE": 17.45514137861627,
+     "finalMedian": 101.17529585560327,
+     "simpleRegret": 0.15429326265923918,
+     "simpleSE": 0.03529587986989487,
+     "unsafe": 0,
+     "msPerRun": 0.8085746000001108
+    }
+   },
+   {
+    "id": "contextual-zooming",
+    "name": "Contextual Zooming",
+    "family": "discretization",
+    "params": {
+     "L": 3,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 97.92291869452832,
+     "finalSE": 14.615016577249424,
+     "finalMedian": 102.61390405761652,
+     "simpleRegret": 0.1314053975039649,
+     "simpleSE": 0.029466313980711843,
+     "unsafe": 0,
+     "msPerRun": 3.182903499999827
+    }
+   },
+   {
+    "id": "poo",
+    "name": "POO (with HOO)",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rhoMax": 0.9,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 124.60929414493845,
+     "finalSE": 10.908046670054503,
+     "finalMedian": 126.30950170735669,
+     "simpleRegret": 0.015298549597559103,
+     "simpleSE": 0.012131282255593132,
+     "unsafe": 0,
+     "msPerRun": 0.9608529499999122
+    }
+   },
+   {
+    "id": "gp-ts",
+    "name": "GP-TS",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "B": 0.5,
+     "delta": 0.1,
+     "v": 1
+    },
+    "summary": {
+     "finalRegret": 132.80196071771064,
+     "finalSE": 5.199893467677489,
+     "finalMedian": 131.48788875445214,
+     "simpleRegret": 0.001872230534492042,
+     "simpleSE": 0.0005948653221989528,
+     "unsafe": 0,
+     "msPerRun": 24.792943000000548
+    }
+   },
+   {
+    "id": "vhct",
+    "name": "VHCT",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1,
+     "delta": 0.05
+    },
+    "summary": {
+     "finalRegret": 142.68139224858533,
+     "finalSE": 12.066012528601508,
+     "finalMedian": 141.73352811169656,
+     "simpleRegret": 0.08725531253513517,
+     "simpleSE": 0.027534723080930898,
+     "unsafe": 0,
+     "msPerRun": 0.42466904999985217
+    }
+   },
+   {
+    "id": "ucb-grid",
+    "name": "Discretized UCB (Kleinberg)",
+    "family": "discretization",
+    "params": {
+     "mult": 1,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 149.37221596698828,
+     "finalSE": 23.19239614375294,
+     "finalMedian": 152.5197208215816,
+     "simpleRegret": 0.29255806082189206,
+     "simpleSE": 0.046339814863761715,
+     "unsafe": 0,
+     "msPerRun": 0.23704450000044516
+    }
+   },
+   {
+    "id": "kernel-bco",
+    "name": "Kernelized exp. weights (simplified)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "h": 0.05,
+     "gamma": 0.05
+    },
+    "summary": {
+     "finalRegret": 170.87381310170042,
+     "finalSE": 4.976783925303228,
+     "finalMedian": 169.6727139800003,
+     "simpleRegret": 0.006342796354710978,
+     "simpleSE": 0.0014025925591492458,
+     "unsafe": 0,
+     "msPerRun": 1.6166857999990156
+    }
+   },
+   {
+    "id": "stosoo",
+    "name": "StoSOO",
+    "family": "tree-search",
+    "params": {
+     "k": 2,
+     "c": 1,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 186.1093041300503,
+     "finalSE": 11.941864860333903,
+     "finalMedian": 181.1726647500531,
+     "simpleRegret": 0.02168304817179263,
+     "simpleSE": 0.005449511482176609,
+     "unsafe": 0,
+     "msPerRun": 0.975817049999614
+    }
+   },
+   {
+    "id": "scr",
+    "name": "SCRiBLe-style (log-barrier)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 0.5,
+     "lam": 5
+    },
+    "summary": {
+     "finalRegret": 297.1408970840604,
+     "finalSE": 13.461929598470228,
+     "finalMedian": 287.6564965507108,
+     "simpleRegret": 0.47196002023428,
+     "simpleSE": 0.07533240984420367,
+     "unsafe": 0,
+     "msPerRun": 0.2666427999999428
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform random",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "finalRegret": 314.9560483949057,
+     "finalSE": 4.811905337807996,
+     "finalMedian": 318.5661142792385,
+     "simpleRegret": 0.027794274019124314,
+     "simpleSE": 0.010471604231860892,
+     "unsafe": 0,
+     "msPerRun": 0.20503979999972444
+    }
+   },
+   {
+    "id": "bgd",
+    "name": "BGD (two-point)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "delta": 0.5
+    },
+    "summary": {
+     "finalRegret": 330.48894058097875,
+     "finalSE": 17.272497357822925,
+     "finalMedian": 361.3734376178547,
+     "simpleRegret": 0.3014576199197677,
+     "simpleSE": 0.04589068628563627,
+     "unsafe": 0,
+     "msPerRun": 0.20530279999984485
+    }
+   },
+   {
+    "id": "fkm",
+    "name": "FKM (one-point gradient)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "delta": 1
+    },
+    "summary": {
+     "finalRegret": 387.4010522754536,
+     "finalSE": 13.0553986631709,
+     "finalMedian": 408.31207915086424,
+     "simpleRegret": 0.6347930920250453,
+     "simpleSE": 0.04754325112963668,
+     "unsafe": 0,
+     "msPerRun": 0.22690065000005005
+    }
+   }
+  ],
+  "needle": [
+   {
+    "id": "soo",
+    "name": "SOO",
+    "family": "tree-search",
+    "params": {},
+    "summary": {
+     "finalRegret": 83.86782099441432,
+     "finalSE": 2.382026511233287,
+     "finalMedian": 82.09861790670583,
+     "simpleRegret": 0.0463190473482384,
+     "simpleSE": 0.012041996442174793,
+     "unsafe": 0,
+     "msPerRun": 0.7564302000002499
+    }
+   },
+   {
+    "id": "hoo",
+    "name": "HOO",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 87.13744127965363,
+     "finalSE": 5.1250618333948585,
+     "finalMedian": 93.32509392539286,
+     "simpleRegret": 0.12319114268626137,
+     "simpleSE": 0.017541871690915475,
+     "unsafe": 0,
+     "msPerRun": 2.7112899999995306
+    }
+   },
+   {
+    "id": "doo",
+    "name": "DOO",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.333
+    },
+    "summary": {
+     "finalRegret": 93.35644831439251,
+     "finalSE": 4.192943925861655,
+     "finalMedian": 90.90736208194092,
+     "simpleRegret": 0.17751670214593412,
+     "simpleSE": 0.007803335335339806,
+     "unsafe": 0,
+     "msPerRun": 0.8385488500005295
+    }
+   },
+   {
+    "id": "stageopt",
+    "name": "StageOpt",
+    "family": "safe",
+    "params": {
+     "ell": 0.1,
+     "beta": 2,
+     "L": 5,
+     "stage": 0.3,
+     "betaF": 2
+    },
+    "summary": {
+     "finalRegret": 94.78789174272956,
+     "finalSE": 2.6046231126230177,
+     "finalMedian": 93.50857701789006,
+     "simpleRegret": 0.1756877276793597,
+     "simpleSE": 0.008486591588531855,
+     "unsafe": 0,
+     "msPerRun": 9.403398999999013
+    }
+   },
+   {
+    "id": "uct",
+    "name": "UCT (dyadic tree)",
+    "family": "tree-search",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 94.98935629190291,
+     "finalSE": 2.655085414986483,
+     "finalMedian": 88.97793013993173,
+     "simpleRegret": 0.1821096291917111,
+     "simpleSE": 0.005289733794786909,
+     "unsafe": 0,
+     "msPerRun": 0.8284915500003536
+    }
+   },
+   {
+    "id": "ucb-grid",
+    "name": "Discretized UCB (Kleinberg)",
+    "family": "discretization",
+    "params": {
+     "mult": 1,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 96.91806083557273,
+     "finalSE": 3.2633295565672493,
+     "finalMedian": 94.82493456651078,
+     "simpleRegret": 0.18675205042917392,
+     "simpleSE": 0.006756739436810202,
+     "unsafe": 0,
+     "msPerRun": 0.20783729999923253
+    }
+   },
+   {
+    "id": "gp-ucb",
+    "name": "GP-UCB",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "scale": 0.2,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 97.19905258091498,
+     "finalSE": 2.6573171523539267,
+     "finalMedian": 93.08074024956439,
+     "simpleRegret": 0.18034551968740406,
+     "simpleSE": 0.005169101142424518,
+     "unsafe": 0,
+     "msPerRun": 8.214500599999473
+    }
+   },
+   {
+    "id": "bkb",
+    "name": "BKB (Nyström GP-UCB)",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "scale": 0.2,
+     "qbar": 2,
+     "mmax": 128
+    },
+    "summary": {
+     "finalRegret": 97.62833682277508,
+     "finalSE": 2.7006724417971024,
+     "finalMedian": 97.59629805849728,
+     "simpleRegret": 0.18116728847700533,
+     "simpleSE": 0.005178537804320507,
+     "unsafe": 0,
+     "msPerRun": 5.301509399999873
+    }
+   },
+   {
+    "id": "zooming",
+    "name": "Zooming",
+    "family": "discretization",
+    "params": {
+     "L": 3,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 101.25724682818537,
+     "finalSE": 4.767194706140355,
+     "finalMedian": 101.31791400651116,
+     "simpleRegret": 0.1687550217663838,
+     "simpleSE": 0.01010497726536688,
+     "unsafe": 0,
+     "msPerRun": 3.2135375000004616
+    }
+   },
+   {
+    "id": "safeopt",
+    "name": "SafeOpt",
+    "family": "safe",
+    "params": {
+     "ell": 0.1,
+     "beta": 2,
+     "L": 5
+    },
+    "summary": {
+     "finalRegret": 102.87687616279709,
+     "finalSE": 2.6145716063226265,
+     "finalMedian": 101.07566953208706,
+     "simpleRegret": 0.18473034441823896,
+     "simpleSE": 0.007250358548130111,
+     "unsafe": 0,
+     "msPerRun": 9.619800049999913
+    }
+   },
+   {
+    "id": "contextual-zooming",
+    "name": "Contextual Zooming",
+    "family": "discretization",
+    "params": {
+     "L": 3,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 106.0312930633132,
+     "finalSE": 4.059175209011743,
+     "finalMedian": 110.54902946595446,
+     "simpleRegret": 0.15402234934252465,
+     "simpleSE": 0.013803611639740074,
+     "unsafe": 0,
+     "msPerRun": 5.625350599999774
+    }
+   },
+   {
+    "id": "hct",
+    "name": "HCT",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1,
+     "delta": 0.05
+    },
+    "summary": {
+     "finalRegret": 106.53821434607622,
+     "finalSE": 2.6838319742122247,
+     "finalMedian": 102.36397089750555,
+     "simpleRegret": 0.1840058410560269,
+     "simpleSE": 0.005759452560152513,
+     "unsafe": 0,
+     "msPerRun": 0.4820576500007746
+    }
+   },
+   {
+    "id": "stosoo",
+    "name": "StoSOO",
+    "family": "tree-search",
+    "params": {
+     "k": 2,
+     "c": 1,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 107.35182956935179,
+     "finalSE": 4.344372889824522,
+     "finalMedian": 106.00499492072035,
+     "simpleRegret": 0.07314586050195049,
+     "simpleSE": 0.01713834557908675,
+     "unsafe": 0,
+     "msPerRun": 1.470155850000242
+    }
+   },
+   {
+    "id": "bgd",
+    "name": "BGD (two-point)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "delta": 0.5
+    },
+    "summary": {
+     "finalRegret": 107.37765698938946,
+     "finalSE": 2.5877002358921843,
+     "finalMedian": 103.77649338458528,
+     "simpleRegret": 0.18592757551969707,
+     "simpleSE": 0.005534560416158686,
+     "unsafe": 0,
+     "msPerRun": 0.2625573000010036
+    }
+   },
+   {
+    "id": "igp-ucb",
+    "name": "IGP-UCB",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "B": 0.5,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 116.39281276995004,
+     "finalSE": 2.4637889122405645,
+     "finalMedian": 114.22165808302795,
+     "simpleRegret": 0.18059133665579197,
+     "simpleSE": 0.005459377315671317,
+     "unsafe": 0,
+     "msPerRun": 7.6167888500015355
+    }
+   },
+   {
+    "id": "poo",
+    "name": "POO (with HOO)",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rhoMax": 0.9,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 122.78378808929244,
+     "finalSE": 2.5888402321076254,
+     "finalMedian": 117.29555606389553,
+     "simpleRegret": 0.18224550023039882,
+     "simpleSE": 0.00576407010299489,
+     "unsafe": 0,
+     "msPerRun": 0.7708921500003953
+    }
+   },
+   {
+    "id": "vhct",
+    "name": "VHCT",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1,
+     "delta": 0.05
+    },
+    "summary": {
+     "finalRegret": 124.26454126795781,
+     "finalSE": 2.669800095286717,
+     "finalMedian": 120.16498473121956,
+     "simpleRegret": 0.1642887781167599,
+     "simpleSE": 0.011921471669152944,
+     "unsafe": 0,
+     "msPerRun": 0.656207699998913
+    }
+   },
+   {
+    "id": "scr",
+    "name": "SCRiBLe-style (log-barrier)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 0.5,
+     "lam": 5
+    },
+    "summary": {
+     "finalRegret": 128.80797048601454,
+     "finalSE": 2.6347040285795362,
+     "finalMedian": 126.42648861596555,
+     "simpleRegret": 0.18901199416060077,
+     "simpleSE": 0.005507984805278433,
+     "unsafe": 0,
+     "msPerRun": 0.20071614999953907
+    }
+   },
+   {
+    "id": "kernel-bco",
+    "name": "Kernelized exp. weights (simplified)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "h": 0.05,
+     "gamma": 0.05
+    },
+    "summary": {
+     "finalRegret": 134.55327677484385,
+     "finalSE": 2.6751450054897106,
+     "finalMedian": 131.13753665714216,
+     "simpleRegret": 0.19588329067699944,
+     "simpleSE": 0.007805571777716488,
+     "unsafe": 0,
+     "msPerRun": 2.0661551000006284
+    }
+   },
+   {
+    "id": "gp-ts",
+    "name": "GP-TS",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "B": 0.5,
+     "delta": 0.1,
+     "v": 1
+    },
+    "summary": {
+     "finalRegret": 137.38005986023467,
+     "finalSE": 2.5168949580879927,
+     "finalMedian": 132.72904346101782,
+     "simpleRegret": 0.180022497456503,
+     "simpleSE": 0.005270282569571511,
+     "unsafe": 0,
+     "msPerRun": 21.932999749999908
+    }
+   },
+   {
+    "id": "fkm",
+    "name": "FKM (one-point gradient)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "delta": 1
+    },
+    "summary": {
+     "finalRegret": 140.9520674420608,
+     "finalSE": 2.279854522235866,
+     "finalMedian": 138.7132712577031,
+     "simpleRegret": 0.1885365432916626,
+     "simpleSE": 0.0048785057826068,
+     "unsafe": 0,
+     "msPerRun": 0.17617995000082373
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform random",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "finalRegret": 151.93224956384378,
+     "finalSE": 2.5719097016867893,
+     "finalMedian": 146.7796173010508,
+     "simpleRegret": 0.12113126814231312,
+     "simpleSE": 0.02108036875119446,
+     "unsafe": 0,
+     "msPerRun": 0.1951613499994437
+    }
+   }
+  ],
+  "branin": [
+   {
+    "id": "uct",
+    "name": "UCT (dyadic tree)",
+    "family": "tree-search",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 20.774165732933007,
+     "finalSE": 2.0508704691268167,
+     "finalMedian": 19.778143111084503,
+     "simpleRegret": 0.016641753213317734,
+     "simpleSE": 0.003962703272454639,
+     "unsafe": 0,
+     "msPerRun": 0.8207832499997039
+    }
+   },
+   {
+    "id": "doo",
+    "name": "DOO",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.333
+    },
+    "summary": {
+     "finalRegret": 22.60950216422331,
+     "finalSE": 3.0315637853046287,
+     "finalMedian": 25.217277581181527,
+     "simpleRegret": 0.02784311414260529,
+     "simpleSE": 0.007643230050715441,
+     "unsafe": 0,
+     "msPerRun": 0.8102787499991336
+    }
+   },
+   {
+    "id": "ucb-grid",
+    "name": "Discretized UCB (Kleinberg)",
+    "family": "discretization",
+    "params": {
+     "mult": 1,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 31.962346636479527,
+     "finalSE": 0.1453618302306725,
+     "finalMedian": 32.17616238478719,
+     "simpleRegret": 0.053133406463746535,
+     "simpleSE": 0,
+     "unsafe": 0,
+     "msPerRun": 0.43529239999929814
+    }
+   },
+   {
+    "id": "hoo",
+    "name": "HOO",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 38.854806001048225,
+     "finalSE": 0.6248016074333362,
+     "finalMedian": 38.69134095689932,
+     "simpleRegret": 0.01354053566584626,
+     "simpleSE": 0.0029905814739554747,
+     "unsafe": 0,
+     "msPerRun": 2.204272449999098
+    }
+   },
+   {
+    "id": "stageopt",
+    "name": "StageOpt",
+    "family": "safe",
+    "params": {
+     "ell": 0.1,
+     "beta": 2,
+     "L": 5,
+     "stage": 0.3,
+     "betaF": 2
+    },
+    "summary": {
+     "finalRegret": 43.72976056163682,
+     "finalSE": 0.9069497990912222,
+     "finalMedian": 43.08081372809385,
+     "simpleRegret": 0.00837508779412539,
+     "simpleSE": 0.003656760390875484,
+     "unsafe": 0,
+     "msPerRun": 22.167314299998587
+    }
+   },
+   {
+    "id": "hct",
+    "name": "HCT",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1,
+     "delta": 0.05
+    },
+    "summary": {
+     "finalRegret": 43.74675603401036,
+     "finalSE": 0.9323186104832173,
+     "finalMedian": 44.29808994628288,
+     "simpleRegret": 0.008950686505092138,
+     "simpleSE": 0.001800976886304981,
+     "unsafe": 0,
+     "msPerRun": 0.624244950000184
+    }
+   },
+   {
+    "id": "soo",
+    "name": "SOO",
+    "family": "tree-search",
+    "params": {},
+    "summary": {
+     "finalRegret": 53.565010035754106,
+     "finalSE": 0.7694734635343279,
+     "finalMedian": 53.01986415148784,
+     "simpleRegret": 0.012968892596198706,
+     "simpleSE": 0.00259090162516002,
+     "unsafe": 0,
+     "msPerRun": 0.6524749499978497
+    }
+   },
+   {
+    "id": "gp-ucb",
+    "name": "GP-UCB",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "scale": 0.2,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 58.60723931421579,
+     "finalSE": 0.8541050602063625,
+     "finalMedian": 59.476755816971135,
+     "simpleRegret": 0.00233904754409926,
+     "simpleSE": 0.0017496355352563761,
+     "unsafe": 0,
+     "msPerRun": 20.300999649999405
+    }
+   },
+   {
+    "id": "bkb",
+    "name": "BKB (Nyström GP-UCB)",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "scale": 0.2,
+     "qbar": 2,
+     "mmax": 128
+    },
+    "summary": {
+     "finalRegret": 59.76122014575071,
+     "finalSE": 0.7665390106949213,
+     "finalMedian": 60.1374009636985,
+     "simpleRegret": 0.0020079494348431482,
+     "simpleSE": 0.001418537426000266,
+     "unsafe": 0,
+     "msPerRun": 52.22523464999968
+    }
+   },
+   {
+    "id": "zooming",
+    "name": "Zooming",
+    "family": "discretization",
+    "params": {
+     "L": 3,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 69.4101558181548,
+     "finalSE": 0.9928026435852354,
+     "finalMedian": 68.05856545211948,
+     "simpleRegret": 0.012245629001133879,
+     "simpleSE": 0.002713333579457997,
+     "unsafe": 0,
+     "msPerRun": 3.936077850000038
+    }
+   },
+   {
+    "id": "safeopt",
+    "name": "SafeOpt",
+    "family": "safe",
+    "params": {
+     "ell": 0.1,
+     "beta": 2,
+     "L": 5
+    },
+    "summary": {
+     "finalRegret": 70.5354334638898,
+     "finalSE": 2.282590180352214,
+     "finalMedian": 71.41757941525717,
+     "simpleRegret": 0.025855007734864377,
+     "simpleSE": 0.006868105117664231,
+     "unsafe": 0,
+     "msPerRun": 22.42761169999999
+    }
+   },
+   {
+    "id": "poo",
+    "name": "POO (with HOO)",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rhoMax": 0.9,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 87.96297560760158,
+     "finalSE": 0.7880746104626797,
+     "finalMedian": 88.3129285831807,
+     "simpleRegret": 0.021614181074221677,
+     "simpleSE": 0.005520359582364276,
+     "unsafe": 0,
+     "msPerRun": 0.9822104000005766
+    }
+   },
+   {
+    "id": "contextual-zooming",
+    "name": "Contextual Zooming",
+    "family": "discretization",
+    "params": {
+     "L": 3,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 89.05339729589568,
+     "finalSE": 4.614999982343411,
+     "finalMedian": 85.81921358767593,
+     "simpleRegret": 0.030066757983330278,
+     "simpleSE": 0.01022859869628762,
+     "unsafe": 0,
+     "msPerRun": 12.795967749999818
+    }
+   },
+   {
+    "id": "vhct",
+    "name": "VHCT",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1,
+     "delta": 0.05
+    },
+    "summary": {
+     "finalRegret": 91.5969293437737,
+     "finalSE": 0.7237748497669461,
+     "finalMedian": 90.75050366238548,
+     "simpleRegret": 0.020489333368278816,
+     "simpleSE": 0.0024279959431577672,
+     "unsafe": 0,
+     "msPerRun": 0.48639384999869434
+    }
+   },
+   {
+    "id": "bgd",
+    "name": "BGD (two-point)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "delta": 0.5
+    },
+    "summary": {
+     "finalRegret": 92.28867189131937,
+     "finalSE": 0.6554814967332229,
+     "finalMedian": 93.45910908692359,
+     "simpleRegret": 0.14015259091484716,
+     "simpleSE": 0.015257716529231864,
+     "unsafe": 0,
+     "msPerRun": 0.2851223499986645
+    }
+   },
+   {
+    "id": "igp-ucb",
+    "name": "IGP-UCB",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "B": 0.5,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 123.30534780180744,
+     "finalSE": 0.36337989697088013,
+     "finalMedian": 123.08290817883251,
+     "simpleRegret": 0.01591830864993619,
+     "simpleSE": 0.004939387090837728,
+     "unsafe": 0,
+     "msPerRun": 17.861992250001187
+    }
+   },
+   {
+    "id": "stosoo",
+    "name": "StoSOO",
+    "family": "tree-search",
+    "params": {
+     "k": 2,
+     "c": 1,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 125.8470903767334,
+     "finalSE": 7.869028531726329,
+     "finalMedian": 135.5911675528207,
+     "simpleRegret": 0.018036519812122738,
+     "simpleSE": 0.004953804768584338,
+     "unsafe": 0,
+     "msPerRun": 0.9021354000003612
+    }
+   },
+   {
+    "id": "scr",
+    "name": "SCRiBLe-style (log-barrier)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 0.5,
+     "lam": 5
+    },
+    "summary": {
+     "finalRegret": 146.31680389579677,
+     "finalSE": 2.514436645617896,
+     "finalMedian": 145.05924046060866,
+     "simpleRegret": 0.19758441061917256,
+     "simpleSE": 0.030960010612497143,
+     "unsafe": 0,
+     "msPerRun": 0.2983722499997839
+    }
+   },
+   {
+    "id": "kernel-bco",
+    "name": "Kernelized exp. weights (simplified)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "h": 0.05,
+     "gamma": 0.05
+    },
+    "summary": {
+     "finalRegret": 154.24141573722153,
+     "finalSE": 0.872548462706781,
+     "finalMedian": 153.3096727491294,
+     "simpleRegret": 0.05115497957679882,
+     "simpleSE": 0.0023318143112396345,
+     "unsafe": 0,
+     "msPerRun": 4.108477200000562
+    }
+   },
+   {
+    "id": "fkm",
+    "name": "FKM (one-point gradient)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "delta": 1
+    },
+    "summary": {
+     "finalRegret": 175.9637033901138,
+     "finalSE": 2.59980875249896,
+     "finalMedian": 177.67572735578983,
+     "simpleRegret": 0.2697020594814788,
+     "simpleSE": 0.026028168134903662,
+     "unsafe": 0,
+     "msPerRun": 0.27582225000251126
+    }
+   },
+   {
+    "id": "gp-ts",
+    "name": "GP-TS",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "B": 0.5,
+     "delta": 0.1,
+     "v": 1
+    },
+    "summary": {
+     "finalRegret": 181.8747110009615,
+     "finalSE": 0.40143272421620296,
+     "finalMedian": 182.0224942777585,
+     "simpleRegret": 0.017546474274364832,
+     "simpleSE": 0.005392028817017465,
+     "unsafe": 0,
+     "msPerRun": 44.7936578999987
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform random",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "finalRegret": 222.0029473586813,
+     "finalSE": 1.3771045495815455,
+     "finalMedian": 222.48090386484373,
+     "simpleRegret": 0.04241854726039744,
+     "simpleSE": 0.01098185790690557,
+     "unsafe": 0,
+     "msPerRun": 0.214838750000672
+    }
+   }
+  ],
+  "convex": [
+   {
+    "id": "uct",
+    "name": "UCT (dyadic tree)",
+    "family": "tree-search",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 5.04288365515439,
+     "finalSE": 0.3929973235511814,
+     "finalMedian": 4.603500620175661,
+     "simpleRegret": 0.0021819525075923,
+     "simpleSE": 0.0005048134595039472,
+     "unsafe": 0,
+     "msPerRun": 0.6489076999991994
+    }
+   },
+   {
+    "id": "stageopt",
+    "name": "StageOpt",
+    "family": "safe",
+    "params": {
+     "ell": 0.1,
+     "beta": 2,
+     "L": 5,
+     "stage": 0.3,
+     "betaF": 2
+    },
+    "summary": {
+     "finalRegret": 6.130514240201311,
+     "finalSE": 0.40629345767040387,
+     "finalMedian": 6.238171851200586,
+     "simpleRegret": 0.006738826202655718,
+     "simpleSE": 0.002182509334163058,
+     "unsafe": 0,
+     "msPerRun": 9.777701400001206
+    }
+   },
+   {
+    "id": "ucb-grid",
+    "name": "Discretized UCB (Kleinberg)",
+    "family": "discretization",
+    "params": {
+     "mult": 1,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 6.638278451323454,
+     "finalSE": 0.5598809091238922,
+     "finalMedian": 6.220935114709029,
+     "simpleRegret": 0.007751448048573234,
+     "simpleSE": 0.0013995704942945184,
+     "unsafe": 0,
+     "msPerRun": 0.1738308000014513
+    }
+   },
+   {
+    "id": "doo",
+    "name": "DOO",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.333
+    },
+    "summary": {
+     "finalRegret": 6.9161469030515805,
+     "finalSE": 0.8957403965265457,
+     "finalMedian": 6.904032206086409,
+     "simpleRegret": 0.005794919643334206,
+     "simpleSE": 0.0010982310120382646,
+     "unsafe": 0,
+     "msPerRun": 0.6833196499997939
+    }
+   },
+   {
+    "id": "gp-ucb",
+    "name": "GP-UCB",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "scale": 0.2,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 7.599844765498981,
+     "finalSE": 0.3329072806097872,
+     "finalMedian": 7.7522063382275235,
+     "simpleRegret": 0.003670450559957894,
+     "simpleSE": 0.0011371936799168545,
+     "unsafe": 0,
+     "msPerRun": 8.9226525999994
+    }
+   },
+   {
+    "id": "bkb",
+    "name": "BKB (Nyström GP-UCB)",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "scale": 0.2,
+     "qbar": 2,
+     "mmax": 128
+    },
+    "summary": {
+     "finalRegret": 7.862725127488625,
+     "finalSE": 0.4983582469333273,
+     "finalMedian": 7.467196494549797,
+     "simpleRegret": 0.0030263680620774224,
+     "simpleSE": 0.0008335610819077074,
+     "unsafe": 0,
+     "msPerRun": 4.7142622499971365
+    }
+   },
+   {
+    "id": "bgd",
+    "name": "BGD (two-point)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "delta": 0.5
+    },
+    "summary": {
+     "finalRegret": 9.897233119390503,
+     "finalSE": 0.18572813513883435,
+     "finalMedian": 9.704393015531913,
+     "simpleRegret": 0.005549715617507289,
+     "simpleSE": 0.0015409308017598758,
+     "unsafe": 0,
+     "msPerRun": 0.1519307999990815
+    }
+   },
+   {
+    "id": "safeopt",
+    "name": "SafeOpt",
+    "family": "safe",
+    "params": {
+     "ell": 0.1,
+     "beta": 2,
+     "L": 5
+    },
+    "summary": {
+     "finalRegret": 10.862720507711028,
+     "finalSE": 0.6921287433175674,
+     "finalMedian": 11.20759765345403,
+     "simpleRegret": 0.00291054870322191,
+     "simpleSE": 0.0006934318125791992,
+     "unsafe": 0,
+     "msPerRun": 9.716390649999994
+    }
+   },
+   {
+    "id": "hoo",
+    "name": "HOO",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 11.051599449003056,
+     "finalSE": 0.26677584426608575,
+     "finalMedian": 10.867076101693101,
+     "simpleRegret": 0.004020558573421451,
+     "simpleSE": 0.0009715727559587145,
+     "unsafe": 0,
+     "msPerRun": 1.913587899999584
+    }
+   },
+   {
+    "id": "hct",
+    "name": "HCT",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1,
+     "delta": 0.05
+    },
+    "summary": {
+     "finalRegret": 11.977821229873417,
+     "finalSE": 0.30228469561650584,
+     "finalMedian": 11.858314086957966,
+     "simpleRegret": 0.0037422743882844444,
+     "simpleSE": 0.0010468290793285322,
+     "unsafe": 0,
+     "msPerRun": 0.4127218499987976
+    }
+   },
+   {
+    "id": "zooming",
+    "name": "Zooming",
+    "family": "discretization",
+    "params": {
+     "L": 3,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 12.951980003673393,
+     "finalSE": 0.23889168761115626,
+     "finalMedian": 12.957698521267824,
+     "simpleRegret": 0.004054721610859874,
+     "simpleSE": 0.0009741557627082486,
+     "unsafe": 0,
+     "msPerRun": 2.849028049999015
+    }
+   },
+   {
+    "id": "igp-ucb",
+    "name": "IGP-UCB",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "B": 0.5,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 17.394091291268104,
+     "finalSE": 0.39267153235511815,
+     "finalMedian": 17.455287684116538,
+     "simpleRegret": 0.003450893979004771,
+     "simpleSE": 0.0010920344625792056,
+     "unsafe": 0,
+     "msPerRun": 8.655965300004027
+    }
+   },
+   {
+    "id": "poo",
+    "name": "POO (with HOO)",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rhoMax": 0.9,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 22.270397221626062,
+     "finalSE": 0.342000983059103,
+     "finalMedian": 22.02046501123664,
+     "simpleRegret": 0.006486842584678981,
+     "simpleSE": 0.001705279836993415,
+     "unsafe": 0,
+     "msPerRun": 0.850659450000785
+    }
+   },
+   {
+    "id": "contextual-zooming",
+    "name": "Contextual Zooming",
+    "family": "discretization",
+    "params": {
+     "L": 3,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 22.395377452883768,
+     "finalSE": 1.59661675966891,
+     "finalMedian": 21.733451184177444,
+     "simpleRegret": 0.011551953513566466,
+     "simpleSE": 0.003170009532646225,
+     "unsafe": 0,
+     "msPerRun": 4.543495749999783
+    }
+   },
+   {
+    "id": "soo",
+    "name": "SOO",
+    "family": "tree-search",
+    "params": {},
+    "summary": {
+     "finalRegret": 23.144704839578573,
+     "finalSE": 0.47965395712147907,
+     "finalMedian": 22.902718546663284,
+     "simpleRegret": 0.007940574236484898,
+     "simpleSE": 0.0014601902962361434,
+     "unsafe": 0,
+     "msPerRun": 0.6000097499992989
+    }
+   },
+   {
+    "id": "vhct",
+    "name": "VHCT",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1,
+     "delta": 0.05
+    },
+    "summary": {
+     "finalRegret": 25.684766303466915,
+     "finalSE": 0.48497432770354765,
+     "finalMedian": 25.529059555193417,
+     "simpleRegret": 0.0033143072091543655,
+     "simpleSE": 0.0014070761351266889,
+     "unsafe": 0,
+     "msPerRun": 0.36206990000036965
+    }
+   },
+   {
+    "id": "scr",
+    "name": "SCRiBLe-style (log-barrier)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 0.5,
+     "lam": 5
+    },
+    "summary": {
+     "finalRegret": 32.332811408526005,
+     "finalSE": 1.7161332013594814,
+     "finalMedian": 31.55002589051198,
+     "simpleRegret": 0.019992410589998975,
+     "simpleSE": 0.00625485848947644,
+     "unsafe": 0,
+     "msPerRun": 0.17667025000064313
+    }
+   },
+   {
+    "id": "stosoo",
+    "name": "StoSOO",
+    "family": "tree-search",
+    "params": {
+     "k": 2,
+     "c": 1,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 39.04141221564741,
+     "finalSE": 3.6388589362849877,
+     "finalMedian": 35.97587618993736,
+     "simpleRegret": 0.011629884916484857,
+     "simpleSE": 0.0036147795373401084,
+     "unsafe": 0,
+     "msPerRun": 0.774767399999746
+    }
+   },
+   {
+    "id": "kernel-bco",
+    "name": "Kernelized exp. weights (simplified)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "h": 0.05,
+     "gamma": 0.05
+    },
+    "summary": {
+     "finalRegret": 39.94530432755711,
+     "finalSE": 0.605975782811349,
+     "finalMedian": 39.76068345420106,
+     "simpleRegret": 0.006779781000140572,
+     "simpleSE": 0.0019144876762696428,
+     "unsafe": 0,
+     "msPerRun": 1.6388711000005969
+    }
+   },
+   {
+    "id": "gp-ts",
+    "name": "GP-TS",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "B": 0.5,
+     "delta": 0.1,
+     "v": 1
+    },
+    "summary": {
+     "finalRegret": 41.72024366162019,
+     "finalSE": 0.50122567990492,
+     "finalMedian": 42.26823135663154,
+     "simpleRegret": 0.003730273230219805,
+     "simpleSE": 0.001213779500721641,
+     "unsafe": 0,
+     "msPerRun": 24.46957215000257
+    }
+   },
+   {
+    "id": "fkm",
+    "name": "FKM (one-point gradient)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "delta": 1
+    },
+    "summary": {
+     "finalRegret": 44.87483556991704,
+     "finalSE": 1.5009724215332703,
+     "finalMedian": 44.96749823583666,
+     "simpleRegret": 0.029490849492451444,
+     "simpleSE": 0.008557840352295405,
+     "unsafe": 0,
+     "msPerRun": 0.15745780000070225
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform random",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "finalRegret": 99.38060634074009,
+     "finalSE": 2.94437612332322,
+     "finalMedian": 98.29987673244258,
+     "simpleRegret": 0.010979029760565178,
+     "simpleSE": 0.002660241443757462,
+     "unsafe": 0,
+     "msPerRun": 0.15853365000093617
+    }
+   }
+  ],
+  "safe": [
+   {
+    "id": "uct",
+    "name": "UCT (dyadic tree)",
+    "family": "tree-search",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 7.789860582261985,
+     "finalSE": 0.39460139406458444,
+     "finalMedian": 7.526289009746345,
+     "simpleRegret": 0.0037948453981886733,
+     "simpleSE": 0.0010944995946688344,
+     "unsafe": 2.25,
+     "msPerRun": 0.7311850000027335
+    }
+   },
+   {
+    "id": "bkb",
+    "name": "BKB (Nyström GP-UCB)",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "scale": 0.2,
+     "qbar": 2,
+     "mmax": 128
+    },
+    "summary": {
+     "finalRegret": 7.881979820452651,
+     "finalSE": 0.22136310030828502,
+     "finalMedian": 7.900362604114464,
+     "simpleRegret": 0.0016424303505178871,
+     "simpleSE": 0.00036092809032561287,
+     "unsafe": 4.8,
+     "msPerRun": 3.224845350002306
+    }
+   },
+   {
+    "id": "gp-ucb",
+    "name": "GP-UCB",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "scale": 0.2,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 7.93369059965828,
+     "finalSE": 0.3243873210917403,
+     "finalMedian": 7.584584032674118,
+     "simpleRegret": 0.0016563455163783269,
+     "simpleSE": 0.0005018914695185476,
+     "unsafe": 4.55,
+     "msPerRun": 8.550997750000443
+    }
+   },
+   {
+    "id": "hoo",
+    "name": "HOO",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 10.975086343875192,
+     "finalSE": 0.47254857201123435,
+     "finalMedian": 10.602398612497645,
+     "simpleRegret": 0.003164064699477204,
+     "simpleSE": 0.00107702174737842,
+     "unsafe": 4.1,
+     "msPerRun": 1.9372842000010677
+    }
+   },
+   {
+    "id": "hct",
+    "name": "HCT",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1,
+     "delta": 0.05
+    },
+    "summary": {
+     "finalRegret": 12.013935184335448,
+     "finalSE": 0.6344005321517192,
+     "finalMedian": 11.871952687671003,
+     "simpleRegret": 0.0029476372050860344,
+     "simpleSE": 0.0010649666321615298,
+     "unsafe": 3.75,
+     "msPerRun": 0.5395570499983477
+    }
+   },
+   {
+    "id": "ucb-grid",
+    "name": "Discretized UCB (Kleinberg)",
+    "family": "discretization",
+    "params": {
+     "mult": 1,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 13.22750296955699,
+     "finalSE": 2.206811965337335,
+     "finalMedian": 11.191364687791332,
+     "simpleRegret": 0.0213678001718019,
+     "simpleSE": 0.004439752960907329,
+     "unsafe": 3.15,
+     "msPerRun": 0.2818088000026364
+    }
+   },
+   {
+    "id": "zooming",
+    "name": "Zooming",
+    "family": "discretization",
+    "params": {
+     "L": 3,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 14.92341225509874,
+     "finalSE": 0.3597042415515937,
+     "finalMedian": 14.660472155811128,
+     "simpleRegret": 0.001047423854872076,
+     "simpleSE": 0.0003511666573716077,
+     "unsafe": 5.95,
+     "msPerRun": 2.802530800002478
+    }
+   },
+   {
+    "id": "igp-ucb",
+    "name": "IGP-UCB",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "B": 0.5,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 16.101621091712396,
+     "finalSE": 0.29611611224483353,
+     "finalMedian": 15.87571547568675,
+     "simpleRegret": 0.0003975523561098093,
+     "simpleSE": 0.00011360680186357148,
+     "unsafe": 6.75,
+     "msPerRun": 8.76514494999974
+    }
+   },
+   {
+    "id": "doo",
+    "name": "DOO",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.333
+    },
+    "summary": {
+     "finalRegret": 19.251819106024694,
+     "finalSE": 6.398347654860424,
+     "finalMedian": 8.450177189569498,
+     "simpleRegret": 0.03197515008783098,
+     "simpleSE": 0.01290622495492527,
+     "unsafe": 2.85,
+     "msPerRun": 0.5765303500002119
+    }
+   },
+   {
+    "id": "contextual-zooming",
+    "name": "Contextual Zooming",
+    "family": "discretization",
+    "params": {
+     "L": 3,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 38.12897081673716,
+     "finalSE": 6.920744206247676,
+     "finalMedian": 29.031111814990485,
+     "simpleRegret": 0.022405201963755207,
+     "simpleSE": 0.01330181753051013,
+     "unsafe": 14.8,
+     "msPerRun": 3.4286268500001826
+    }
+   },
+   {
+    "id": "vhct",
+    "name": "VHCT",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1,
+     "delta": 0.05
+    },
+    "summary": {
+     "finalRegret": 42.86907242964093,
+     "finalSE": 1.188793082191177,
+     "finalMedian": 41.57764391815639,
+     "simpleRegret": 0.003977910305979482,
+     "simpleSE": 0.0012311753856111335,
+     "unsafe": 24.1,
+     "msPerRun": 0.4060127000006105
+    }
+   },
+   {
+    "id": "poo",
+    "name": "POO (with HOO)",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rhoMax": 0.9,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 44.41355284381105,
+     "finalSE": 0.6802447542885577,
+     "finalMedian": 44.86700128470378,
+     "simpleRegret": 0.006590779751361009,
+     "simpleSE": 0.0019140074643226965,
+     "unsafe": 27.55,
+     "msPerRun": 0.8221208999996634
+    }
+   },
+   {
+    "id": "stageopt",
+    "name": "StageOpt",
+    "family": "safe",
+    "params": {
+     "ell": 0.1,
+     "beta": 2,
+     "L": 5,
+     "stage": 0.3,
+     "betaF": 2
+    },
+    "summary": {
+     "finalRegret": 54.38277038585902,
+     "finalSE": 1.452192761863821,
+     "finalMedian": 53.45270177713629,
+     "simpleRegret": 0.0022608853260436047,
+     "simpleSE": 0.0010894637707106437,
+     "unsafe": 1.3,
+     "msPerRun": 19.30181395000209
+    }
+   },
+   {
+    "id": "soo",
+    "name": "SOO",
+    "family": "tree-search",
+    "params": {},
+    "summary": {
+     "finalRegret": 58.91903344564029,
+     "finalSE": 0.32625679829765764,
+     "finalMedian": 58.86248844409856,
+     "simpleRegret": 0.008901165697256496,
+     "simpleSE": 0.0026856491110526775,
+     "unsafe": 41.7,
+     "msPerRun": 0.5975416999981462
+    }
+   },
+   {
+    "id": "gp-ts",
+    "name": "GP-TS",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "B": 0.5,
+     "delta": 0.1,
+     "v": 1
+    },
+    "summary": {
+     "finalRegret": 84.90426851988715,
+     "finalSE": 0.838660757135498,
+     "finalMedian": 85.55763401921502,
+     "simpleRegret": 0.0001873607389971721,
+     "simpleSE": 0.00008512849700094385,
+     "unsafe": 56.8,
+     "msPerRun": 23.825341449999723
+    }
+   },
+   {
+    "id": "kernel-bco",
+    "name": "Kernelized exp. weights (simplified)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "h": 0.05,
+     "gamma": 0.05
+    },
+    "summary": {
+     "finalRegret": 106.71941975981744,
+     "finalSE": 0.886165926171375,
+     "finalMedian": 106.53996416703293,
+     "simpleRegret": 0.0022114560103402513,
+     "simpleSE": 0.0005658117815376257,
+     "unsafe": 74.55,
+     "msPerRun": 1.495528750001722
+    }
+   },
+   {
+    "id": "safeopt",
+    "name": "SafeOpt",
+    "family": "safe",
+    "params": {
+     "ell": 0.1,
+     "beta": 2,
+     "L": 5
+    },
+    "summary": {
+     "finalRegret": 133.6302422498556,
+     "finalSE": 8.452451201458546,
+     "finalMedian": 143.02549805321013,
+     "simpleRegret": 0.002961329003366492,
+     "simpleSE": 0.0007107499295496306,
+     "unsafe": 5.2,
+     "msPerRun": 20.953613199999108
+    }
+   },
+   {
+    "id": "bgd",
+    "name": "BGD (two-point)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "delta": 0.5
+    },
+    "summary": {
+     "finalRegret": 140.82205066439246,
+     "finalSE": 0.10459057965310857,
+     "finalMedian": 140.7747809072274,
+     "simpleRegret": 0.03264943803582243,
+     "simpleSE": 0.009604325943203191,
+     "unsafe": 21.25,
+     "msPerRun": 0.1931131500014999
+    }
+   },
+   {
+    "id": "stosoo",
+    "name": "StoSOO",
+    "family": "tree-search",
+    "params": {
+     "k": 2,
+     "c": 1,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 160.3277158377667,
+     "finalSE": 8.044032201112076,
+     "finalMedian": 172.41832664181766,
+     "simpleRegret": 0.014652273948240818,
+     "simpleSE": 0.004736543942029084,
+     "unsafe": 147.1,
+     "msPerRun": 1.0184091499989336
+    }
+   },
+   {
+    "id": "scr",
+    "name": "SCRiBLe-style (log-barrier)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 0.5,
+     "lam": 5
+    },
+    "summary": {
+     "finalRegret": 227.70909024536655,
+     "finalSE": 3.4554128334824505,
+     "finalMedian": 226.97213127223637,
+     "simpleRegret": 0.009392005421154198,
+     "simpleSE": 0.0022978404612576985,
+     "unsafe": 106.05,
+     "msPerRun": 0.1856119499979286
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform random",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "finalRegret": 251.98546197117372,
+     "finalSE": 1.5416749246818737,
+     "finalMedian": 251.26259832843368,
+     "simpleRegret": 0.026718215408554895,
+     "simpleSE": 0.007346354524315657,
+     "unsafe": 253.9,
+     "msPerRun": 0.17981650000019728
+    }
+   },
+   {
+    "id": "fkm",
+    "name": "FKM (one-point gradient)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "delta": 1
+    },
+    "summary": {
+     "finalRegret": 328.54582928750733,
+     "finalSE": 1.0232363579104102,
+     "finalMedian": 329.7003093186812,
+     "simpleRegret": 0.011738254028508987,
+     "simpleSE": 0.003545446369954748,
+     "unsafe": 461.55,
+     "msPerRun": 0.20733010000221838
+    }
+   }
+  ],
+  "contextual": [
+   {
+    "id": "contextual-zooming",
+    "name": "Contextual Zooming",
+    "family": "discretization",
+    "params": {
+     "L": 3,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 176.41274765617695,
+     "finalSE": 1.9400236888003601,
+     "finalMedian": 173.78956172630777,
+     "simpleRegret": 0.06949590221072406,
+     "simpleSE": 0.009225820336920184,
+     "unsafe": 0,
+     "msPerRun": 5.486062900000343
+    }
+   },
+   {
+    "id": "uct",
+    "name": "UCT (dyadic tree)",
+    "family": "tree-search",
+    "params": {
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 293.9835371856441,
+     "finalSE": 2.9815717366589354,
+     "finalMedian": 293.6340765693152,
+     "simpleRegret": 0.5923862134670999,
+     "simpleSE": 0.00747711907160609,
+     "unsafe": 0,
+     "msPerRun": 0.9592794500003947
+    }
+   },
+   {
+    "id": "ucb-grid",
+    "name": "Discretized UCB (Kleinberg)",
+    "family": "discretization",
+    "params": {
+     "mult": 1,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 297.76654954138183,
+     "finalSE": 3.5703378972510023,
+     "finalMedian": 297.8509532246831,
+     "simpleRegret": 0.5834734755847725,
+     "simpleSE": 0.00489830802463939,
+     "unsafe": 0,
+     "msPerRun": 0.23744384999799878
+    }
+   },
+   {
+    "id": "stageopt",
+    "name": "StageOpt",
+    "family": "safe",
+    "params": {
+     "ell": 0.1,
+     "beta": 2,
+     "L": 5,
+     "stage": 0.3,
+     "betaF": 2
+    },
+    "summary": {
+     "finalRegret": 300.2201257015774,
+     "finalSE": 3.7112594305079285,
+     "finalMedian": 300.6238824512923,
+     "simpleRegret": 0.6273116579629472,
+     "simpleSE": 0.011764894775974135,
+     "unsafe": 0,
+     "msPerRun": 11.820776899998872
+    }
+   },
+   {
+    "id": "bkb",
+    "name": "BKB (Nyström GP-UCB)",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "scale": 0.2,
+     "qbar": 2,
+     "mmax": 128
+    },
+    "summary": {
+     "finalRegret": 301.1910693122894,
+     "finalSE": 2.1515954375862743,
+     "finalMedian": 304.5909441486276,
+     "simpleRegret": 0.5756013266844894,
+     "simpleSE": 0.006962686057620442,
+     "unsafe": 0,
+     "msPerRun": 5.474080449998655
+    }
+   },
+   {
+    "id": "zooming",
+    "name": "Zooming",
+    "family": "discretization",
+    "params": {
+     "L": 3,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 302.17179959172915,
+     "finalSE": 1.8702710924835049,
+     "finalMedian": 303.56680996554996,
+     "simpleRegret": 0.5937422188155905,
+     "simpleSE": 0.0073919692753563835,
+     "unsafe": 0,
+     "msPerRun": 3.318623300001127
+    }
+   },
+   {
+    "id": "hoo",
+    "name": "HOO",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 302.5465774795056,
+     "finalSE": 2.3278148120620394,
+     "finalMedian": 300.3208036230019,
+     "simpleRegret": 0.5858383319031426,
+     "simpleSE": 0.007347198870937705,
+     "unsafe": 0,
+     "msPerRun": 2.132190149998223
+    }
+   },
+   {
+    "id": "gp-ucb",
+    "name": "GP-UCB",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "scale": 0.2,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 304.73455866343477,
+     "finalSE": 3.1147356880253274,
+     "finalMedian": 303.07223198616276,
+     "simpleRegret": 0.6127186837700291,
+     "simpleSE": 0.013115346110279005,
+     "unsafe": 0,
+     "msPerRun": 10.510165700000107
+    }
+   },
+   {
+    "id": "hct",
+    "name": "HCT",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1,
+     "delta": 0.05
+    },
+    "summary": {
+     "finalRegret": 305.20648896743296,
+     "finalSE": 2.0014526335075296,
+     "finalMedian": 305.8455382485993,
+     "simpleRegret": 0.6003365488924652,
+     "simpleSE": 0.008106012505994142,
+     "unsafe": 0,
+     "msPerRun": 0.5076656500015815
+    }
+   },
+   {
+    "id": "scr",
+    "name": "SCRiBLe-style (log-barrier)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 0.5,
+     "lam": 5
+    },
+    "summary": {
+     "finalRegret": 307.0701569433251,
+     "finalSE": 2.0314769564914594,
+     "finalMedian": 309.5615060680024,
+     "simpleRegret": 0.6021024205911107,
+     "simpleSE": 0.01304558123884071,
+     "unsafe": 0,
+     "msPerRun": 0.22922284999913245
+    }
+   },
+   {
+    "id": "igp-ucb",
+    "name": "IGP-UCB",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "B": 0.5,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 309.83427661332394,
+     "finalSE": 1.8031005507049018,
+     "finalMedian": 310.3809341111446,
+     "simpleRegret": 0.5810023740866664,
+     "simpleSE": 0.007528431394698218,
+     "unsafe": 0,
+     "msPerRun": 10.568428750000475
+    }
+   },
+   {
+    "id": "soo",
+    "name": "SOO",
+    "family": "tree-search",
+    "params": {},
+    "summary": {
+     "finalRegret": 311.6835909807612,
+     "finalSE": 1.7785968619586572,
+     "finalMedian": 310.5009209318115,
+     "simpleRegret": 0.6018755942286053,
+     "simpleSE": 0.012886210974501275,
+     "unsafe": 0,
+     "msPerRun": 0.7280606500006798
+    }
+   },
+   {
+    "id": "doo",
+    "name": "DOO",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.333
+    },
+    "summary": {
+     "finalRegret": 312.0192399906429,
+     "finalSE": 4.542058558483218,
+     "finalMedian": 309.5835645945915,
+     "simpleRegret": 0.6250877996372408,
+     "simpleSE": 0.010222127934026094,
+     "unsafe": 0,
+     "msPerRun": 0.7655163500009621
+    }
+   },
+   {
+    "id": "vhct",
+    "name": "VHCT",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rho": 0.5,
+     "c": 1,
+     "delta": 0.05
+    },
+    "summary": {
+     "finalRegret": 315.764611074989,
+     "finalSE": 1.9598233675517334,
+     "finalMedian": 316.44971190809474,
+     "simpleRegret": 0.5922661743565117,
+     "simpleSE": 0.00788610506825162,
+     "unsafe": 0,
+     "msPerRun": 0.45105460000077074
+    }
+   },
+   {
+    "id": "poo",
+    "name": "POO (with HOO)",
+    "family": "tree-search",
+    "params": {
+     "nu": 1,
+     "rhoMax": 0.9,
+     "c": 1
+    },
+    "summary": {
+     "finalRegret": 316.9423444733437,
+     "finalSE": 2.097184302385021,
+     "finalMedian": 315.3320553789481,
+     "simpleRegret": 0.6267081758422386,
+     "simpleSE": 0.012506392925464443,
+     "unsafe": 0,
+     "msPerRun": 0.9170379499985757
+    }
+   },
+   {
+    "id": "safeopt",
+    "name": "SafeOpt",
+    "family": "safe",
+    "params": {
+     "ell": 0.1,
+     "beta": 2,
+     "L": 5
+    },
+    "summary": {
+     "finalRegret": 318.8098952563097,
+     "finalSE": 6.54386323192034,
+     "finalMedian": 312.88252757807254,
+     "simpleRegret": 0.6381390085696357,
+     "simpleSE": 0.015714827160408975,
+     "unsafe": 0,
+     "msPerRun": 12.15920124999866
+    }
+   },
+   {
+    "id": "stosoo",
+    "name": "StoSOO",
+    "family": "tree-search",
+    "params": {
+     "k": 2,
+     "c": 1,
+     "delta": 0.1
+    },
+    "summary": {
+     "finalRegret": 319.9560793635872,
+     "finalSE": 2.6959893766061303,
+     "finalMedian": 321.36405783914347,
+     "simpleRegret": 0.6105847275712717,
+     "simpleSE": 0.010217533592978958,
+     "unsafe": 0,
+     "msPerRun": 1.0058142000012595
+    }
+   },
+   {
+    "id": "fkm",
+    "name": "FKM (one-point gradient)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "delta": 1
+    },
+    "summary": {
+     "finalRegret": 320.77296980473653,
+     "finalSE": 1.7677329994406796,
+     "finalMedian": 322.8319822205741,
+     "simpleRegret": 0.6159032248112855,
+     "simpleSE": 0.013811306999561826,
+     "unsafe": 0,
+     "msPerRun": 0.2255782000000181
+    }
+   },
+   {
+    "id": "bgd",
+    "name": "BGD (two-point)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "delta": 0.5
+    },
+    "summary": {
+     "finalRegret": 321.2893232064315,
+     "finalSE": 1.9681206395707602,
+     "finalMedian": 322.1214340095467,
+     "simpleRegret": 0.6152788420369545,
+     "simpleSE": 0.01364776275357592,
+     "unsafe": 0,
+     "msPerRun": 0.2017610000003515
+    }
+   },
+   {
+    "id": "kernel-bco",
+    "name": "Kernelized exp. weights (simplified)",
+    "family": "zeroth-order",
+    "params": {
+     "eta": 1,
+     "h": 0.05,
+     "gamma": 0.05
+    },
+    "summary": {
+     "finalRegret": 322.34152168212944,
+     "finalSE": 1.7767428715093012,
+     "finalMedian": 322.49749158025725,
+     "simpleRegret": 0.5944341115177315,
+     "simpleSE": 0.011625324948138959,
+     "unsafe": 0,
+     "msPerRun": 1.7262167499964562
+    }
+   },
+   {
+    "id": "gp-ts",
+    "name": "GP-TS",
+    "family": "gp",
+    "params": {
+     "ell": 0.1,
+     "B": 0.5,
+     "delta": 0.1,
+     "v": 1
+    },
+    "summary": {
+     "finalRegret": 328.717439646275,
+     "finalSE": 1.5975005929876116,
+     "finalMedian": 326.86218671719973,
+     "simpleRegret": 0.5827206514619432,
+     "simpleSE": 0.005983348442107187,
+     "unsafe": 0,
+     "msPerRun": 29.186528199997973
+    }
+   },
+   {
+    "id": "uniform",
+    "name": "Uniform random",
+    "family": "baseline",
+    "params": {},
+    "summary": {
+     "finalRegret": 339.17242557449225,
+     "finalSE": 1.612281343943521,
+     "finalMedian": 339.58159006826435,
+     "simpleRegret": 0.6057566024428729,
+     "simpleSE": 0.01269107616786822,
+     "unsafe": 0,
+     "msPerRun": 0.22778880000232676
+    }
+   }
+  ]
+ }
+}

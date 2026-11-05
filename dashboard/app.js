@@ -476,13 +476,15 @@
       if (v - e < lo) lo = v - e;
     }
     if (!Number.isFinite(lo)) { lo = 0; hi = 1; }
-    if (mdef.zeroToOne) { lo = Math.min(0, lo); hi = Math.max(1, hi); }
+    if (mdef.zeroToOne) { lo = 0; hi = 1; }
     else if (lo >= 0 && mdef.better === 'lower') lo = 0;
     if (hi - lo < 1e-12) hi = lo + 1;
     const yt = ticks(lo, hi, Math.max(3, Math.round(ph / 60)));
     const step = yt.length > 1 ? yt[1] - yt[0] : 1;
-    if (yt[yt.length - 1] < hi - 1e-12) yt.push(+(yt[yt.length - 1] + step).toFixed(10));
-    if (yt[0] > lo + 1e-12) yt.unshift(+(yt[0] - step).toFixed(10));
+    if (!mdef.zeroToOne) {
+      if (yt[yt.length - 1] < hi - 1e-12) yt.push(+(yt[yt.length - 1] + step).toFixed(10));
+      if (yt[0] > lo + 1e-12) yt.unshift(+(yt[0] - step).toFixed(10));
+    }
     const y0 = yt[0], y1 = yt[yt.length - 1];
     const Y = (v) => m.t + ph - ((Math.min(y1, Math.max(y0, v)) - y0) / (y1 - y0)) * ph;
     const xa = xs[0], xb = xs[L - 1];

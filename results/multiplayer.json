@@ -1,0 +1,706 @@
+{
+ "setting": "multiplayer",
+ "config": {
+  "K": 8,
+  "T": 2000,
+  "runs": 50,
+  "seed": 7,
+  "extra": {
+   "M": 3
+  }
+ },
+ "environments": {
+  "bernoulli": [
+   {
+    "id": "dpe",
+    "name": "DPE (simplified)",
+    "family": "communication",
+    "params": {},
+    "summary": {
+     "regret": 188.64368829714775,
+     "regretSE": 8.557670364800057,
+     "regretMedian": 183.44754176903197,
+     "collisions": 84.16,
+     "collRate": 0.04208,
+     "accidental": 0.48,
+     "signalling": 83.68,
+     "meanReward": 1.999353245713621,
+     "msPerRun": 3.751500939999982
+    }
+   },
+   {
+    "id": "mctopm",
+    "name": "MCTopM",
+    "family": "orthogonal",
+    "params": {},
+    "summary": {
+     "regret": 262.1116586248085,
+     "regretSE": 12.040224591925917,
+     "regretMedian": 258.2100140260487,
+     "collisions": 221.3,
+     "collRate": 0.11065000000000001,
+     "accidental": 221.3,
+     "signalling": 0,
+     "meanReward": 1.9626192605497905,
+     "msPerRun": 13.49331924
+    }
+   },
+   {
+    "id": "randtopm",
+    "name": "RandTopM",
+    "family": "orthogonal",
+    "params": {},
+    "summary": {
+     "regret": 264.72576029551675,
+     "regretSE": 11.598346458969493,
+     "regretMedian": 242.02230529747996,
+     "collisions": 213.88,
+     "collRate": 0.10694,
+     "accidental": 213.88,
+     "signalling": 0,
+     "meanReward": 1.9613122097144389,
+     "msPerRun": 13.78270311999999
+    }
+   },
+   {
+    "id": "musical-chairs",
+    "name": "Musical Chairs",
+    "family": "orthogonal",
+    "params": {
+     "T0": 300
+    },
+    "summary": {
+     "regret": 485.92694246856365,
+     "regretSE": 42.003503367277695,
+     "regretMedian": 396.45229775533073,
+     "collisions": 217.3,
+     "collRate": 0.10865000000000001,
+     "accidental": 217.3,
+     "signalling": 0,
+     "meanReward": 1.8507116186279078,
+     "msPerRun": 0.7993897400000045
+    }
+   },
+   {
+    "id": "got",
+    "name": "Game of Thrones (simplified)",
+    "family": "matching",
+    "params": {
+     "eps": 0.05,
+     "kappa": 3,
+     "c1": 100,
+     "c2": 500,
+     "c3": 200
+    },
+    "summary": {
+     "regret": 616.9746589699421,
+     "regretSE": 25.455149786928022,
+     "regretMedian": 597.2642003709675,
+     "collisions": 343,
+     "collRate": 0.1715,
+     "accidental": 343,
+     "signalling": 0,
+     "meanReward": 1.7851877603772248,
+     "msPerRun": 1.2537119799999903
+    }
+   },
+   {
+    "id": "selfish-ucb",
+    "name": "Selfish UCB1",
+    "family": "baseline",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "regret": 794.1011908172072,
+     "regretSE": 13.458415835953842,
+     "regretMedian": 812.3087124535789,
+     "collisions": 747.34,
+     "collRate": 0.37367,
+     "accidental": 747.34,
+     "signalling": 0,
+     "meanReward": 1.6966244944535938,
+     "msPerRun": 1.5248160800000108
+    }
+   },
+   {
+    "id": "sic-mmab",
+    "name": "SIC-MMAB (simplified)",
+    "family": "communication",
+    "params": {
+     "T0c": 1
+    },
+    "summary": {
+     "regret": 1674.0899601918065,
+     "regretSE": 44.91161688438605,
+     "regretMedian": 1688.9531468033479,
+     "collisions": 925.82,
+     "collRate": 0.46291000000000004,
+     "accidental": 0.82,
+     "signalling": 925,
+     "meanReward": 1.2566301097662933,
+     "msPerRun": 1.2531051800000024
+    }
+   },
+   {
+    "id": "fed-ucb",
+    "name": "FedUCB (periodic sync)",
+    "family": "federated",
+    "params": {
+     "tau": 10,
+     "c": 1.414
+    },
+    "summary": {
+     "regret": 4143.634235203709,
+     "regretSE": 81.0358972260965,
+     "regretMedian": 4307.225692665576,
+     "collisions": 5909.26,
+     "collRate": 2.9546300000000003,
+     "accidental": 5909.26,
+     "signalling": 0,
+     "meanReward": 0.021857972260339177,
+     "msPerRun": 2.039395659999988
+    }
+   },
+   {
+    "id": "fed-linucb",
+    "name": "FedLinUCB (periodic sync)",
+    "family": "federated",
+    "params": {
+     "tau": 10,
+     "alpha": 0.5
+    },
+    "summary": {
+     "regret": 4149.162650943412,
+     "regretSE": 80.89269632167967,
+     "regretMedian": 4295.8140272011005,
+     "collisions": 5920.62,
+     "collRate": 2.9603099999999998,
+     "accidental": 5920.62,
+     "signalling": 0,
+     "meanReward": 0.01909376439048722,
+     "msPerRun": 1.8877663600000034
+    }
+   }
+  ],
+  "hetero": [
+   {
+    "id": "mctopm",
+    "name": "MCTopM",
+    "family": "orthogonal",
+    "params": {},
+    "summary": {
+     "regret": 303.1836296033246,
+     "regretSE": 13.828660565120307,
+     "regretMedian": 281.46970436449976,
+     "collisions": 156.24,
+     "collRate": 0.07812000000000001,
+     "accidental": 156.24,
+     "signalling": 0,
+     "meanReward": 2.3749952484116785,
+     "msPerRun": 16.812145800000007
+    }
+   },
+   {
+    "id": "randtopm",
+    "name": "RandTopM",
+    "family": "orthogonal",
+    "params": {},
+    "summary": {
+     "regret": 408.5819157580101,
+     "regretSE": 21.74578727846951,
+     "regretMedian": 376.18316360739834,
+     "collisions": 151.4,
+     "collRate": 0.0757,
+     "accidental": 151.4,
+     "signalling": 0,
+     "meanReward": 2.3222961053343476,
+     "msPerRun": 16.043483199999965
+    }
+   },
+   {
+    "id": "selfish-ucb",
+    "name": "Selfish UCB1",
+    "family": "baseline",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "regret": 593.7193216045926,
+     "regretSE": 8.959490164335467,
+     "regretMedian": 592.3371932516583,
+     "collisions": 348.5,
+     "collRate": 0.17425,
+     "accidental": 348.5,
+     "signalling": 0,
+     "meanReward": 2.229727402411047,
+     "msPerRun": 2.353850859999966
+    }
+   },
+   {
+    "id": "got",
+    "name": "Game of Thrones (simplified)",
+    "family": "matching",
+    "params": {
+     "eps": 0.05,
+     "kappa": 3,
+     "c1": 100,
+     "c2": 500,
+     "c3": 200
+    },
+    "summary": {
+     "regret": 815.5060398471236,
+     "regretSE": 25.857312651909886,
+     "regretMedian": 822.3726991955343,
+     "collisions": 265.66,
+     "collRate": 0.13283,
+     "accidental": 265.66,
+     "signalling": 0,
+     "meanReward": 2.1188340432897883,
+     "msPerRun": 1.8738924999999653
+    }
+   },
+   {
+    "id": "musical-chairs",
+    "name": "Musical Chairs",
+    "family": "orthogonal",
+    "params": {
+     "T0": 300
+    },
+    "summary": {
+     "regret": 920.0524488787897,
+     "regretSE": 53.61404627587648,
+     "regretMedian": 875.9490009155936,
+     "collisions": 215.92,
+     "collRate": 0.10796,
+     "accidental": 215.92,
+     "signalling": 0,
+     "meanReward": 2.0665608387739494,
+     "msPerRun": 1.6417114600000149
+    }
+   },
+   {
+    "id": "dpe",
+    "name": "DPE (simplified)",
+    "family": "communication",
+    "params": {},
+    "summary": {
+     "regret": 1744.354819278771,
+     "regretSE": 64.91208427447354,
+     "regretMedian": 1698.1027349020908,
+     "collisions": 68.96,
+     "collRate": 0.03448,
+     "accidental": 0.48,
+     "signalling": 68.48,
+     "meanReward": 1.654409653573961,
+     "msPerRun": 4.31808501999998
+    }
+   },
+   {
+    "id": "sic-mmab",
+    "name": "SIC-MMAB (simplified)",
+    "family": "communication",
+    "params": {
+     "T0c": 1
+    },
+    "summary": {
+     "regret": 2543.6245799431113,
+     "regretSE": 68.62360323069286,
+     "regretMedian": 2540.087135418926,
+     "collisions": 938.58,
+     "collRate": 0.46929000000000004,
+     "accidental": 0.82,
+     "signalling": 937.76,
+     "meanReward": 1.2547747732417884,
+     "msPerRun": 1.754360059999981
+    }
+   },
+   {
+    "id": "fed-ucb",
+    "name": "FedUCB (periodic sync)",
+    "family": "federated",
+    "params": {
+     "tau": 10,
+     "c": 1.414
+    },
+    "summary": {
+     "regret": 5007.403852471914,
+     "regretSE": 48.4254111804941,
+     "regretMedian": 5057.3845743972,
+     "collisions": 5914.14,
+     "collRate": 2.9570700000000003,
+     "accidental": 5914.14,
+     "signalling": 0,
+     "meanReward": 0.022885136977390395,
+     "msPerRun": 2.34022759999998
+    }
+   },
+   {
+    "id": "fed-linucb",
+    "name": "FedLinUCB (periodic sync)",
+    "family": "federated",
+    "params": {
+     "tau": 10,
+     "alpha": 0.5
+    },
+    "summary": {
+     "regret": 5012.820234895954,
+     "regretSE": 48.16521602922113,
+     "regretMedian": 5059.00497246933,
+     "collisions": 5929.24,
+     "collRate": 2.96462,
+     "accidental": 5929.24,
+     "signalling": 0,
+     "meanReward": 0.0201769457653705,
+     "msPerRun": 2.585160840000026
+    }
+   }
+  ],
+  "fed-bernoulli": [
+   {
+    "id": "fed-linucb",
+    "name": "FedLinUCB (periodic sync)",
+    "family": "federated",
+    "params": {
+     "tau": 10,
+     "alpha": 0.5
+    },
+    "summary": {
+     "regret": 59.17741515434202,
+     "regretSE": 11.816338931221303,
+     "regretMedian": 46.28034956827746,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 2.3292633808630487,
+     "msPerRun": 2.2486194599999543
+    }
+   },
+   {
+    "id": "mctopm",
+    "name": "MCTopM",
+    "family": "orthogonal",
+    "params": {},
+    "summary": {
+     "regret": 253.69569532843047,
+     "regretSE": 34.56361431914332,
+     "regretMedian": 130.1362168073642,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 2.2320042407760017,
+     "msPerRun": 11.807751699999917
+    }
+   },
+   {
+    "id": "fed-ucb",
+    "name": "FedUCB (periodic sync)",
+    "family": "federated",
+    "params": {
+     "tau": 10,
+     "c": 1.414
+    },
+    "summary": {
+     "regret": 271.74150482873586,
+     "regretSE": 6.440168618455909,
+     "regretMedian": 273.7503925668074,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 2.2229813360258497,
+     "msPerRun": 2.2370615200000246
+    }
+   },
+   {
+    "id": "randtopm",
+    "name": "RandTopM",
+    "family": "orthogonal",
+    "params": {},
+    "summary": {
+     "regret": 299.87234532287783,
+     "regretSE": 44.97204790829918,
+     "regretMedian": 154.30229678526544,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 2.208915915778762,
+     "msPerRun": 11.658621999999978
+    }
+   },
+   {
+    "id": "musical-chairs",
+    "name": "Musical Chairs",
+    "family": "orthogonal",
+    "params": {
+     "T0": 300
+    },
+    "summary": {
+     "regret": 369.9675700031371,
+     "regretSE": 16.157719595277616,
+     "regretMedian": 358.8923072300661,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 2.173868303438653,
+     "msPerRun": 1.4350999000000229
+    }
+   },
+   {
+    "id": "selfish-ucb",
+    "name": "Selfish UCB1",
+    "family": "baseline",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "regret": 485.8210413511386,
+     "regretSE": 9.990890171259382,
+     "regretMedian": 496.4183711210257,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 2.115941567764644,
+     "msPerRun": 2.008738059999887
+    }
+   },
+   {
+    "id": "got",
+    "name": "Game of Thrones (simplified)",
+    "family": "matching",
+    "params": {
+     "eps": 0.05,
+     "kappa": 3,
+     "c1": 100,
+     "c2": 500,
+     "c3": 200
+    },
+    "summary": {
+     "regret": 658.6102861831065,
+     "regretSE": 33.83621823741023,
+     "regretMedian": 642.2676392741312,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 2.0295469453486565,
+     "msPerRun": 1.5351052599999822
+    }
+   },
+   {
+    "id": "dpe",
+    "name": "DPE (simplified)",
+    "family": "communication",
+    "params": {},
+    "summary": {
+     "regret": 676.3086172969817,
+     "regretSE": 40.248059355821546,
+     "regretMedian": 626.9429702611693,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 2.0206977797917123,
+     "msPerRun": 4.315954919999913
+    }
+   },
+   {
+    "id": "sic-mmab",
+    "name": "SIC-MMAB (simplified)",
+    "family": "communication",
+    "params": {
+     "T0c": 1
+    },
+    "summary": {
+     "regret": 1741.9694623359928,
+     "regretSE": 63.68473525969617,
+     "regretMedian": 1739.7078426457663,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 1.4878673572722143,
+     "msPerRun": 1.6847943200000008
+    }
+   }
+  ],
+  "fed-linear": [
+   {
+    "id": "fed-linucb",
+    "name": "FedLinUCB (periodic sync)",
+    "family": "federated",
+    "params": {
+     "tau": 10,
+     "alpha": 0.5
+    },
+    "summary": {
+     "regret": 11.003426534370892,
+     "regretSE": 0.12551743706831722,
+     "regretMedian": 11.096160724974853,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 2.1192434343170077,
+     "msPerRun": 8.776983599999967
+    }
+   },
+   {
+    "id": "randtopm",
+    "name": "RandTopM",
+    "family": "orthogonal",
+    "params": {},
+    "summary": {
+     "regret": 1247.0464451104735,
+     "regretSE": 13.797966349038672,
+     "regretMedian": 1245.5624452320308,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 1.501221925028957,
+     "msPerRun": 8.948521439999986
+    }
+   },
+   {
+    "id": "got",
+    "name": "Game of Thrones (simplified)",
+    "family": "matching",
+    "params": {
+     "eps": 0.05,
+     "kappa": 3,
+     "c1": 100,
+     "c2": 500,
+     "c3": 200
+    },
+    "summary": {
+     "regret": 1247.4850592432624,
+     "regretSE": 13.484552666533983,
+     "regretMedian": 1244.1609650952357,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 1.5010026179625635,
+     "msPerRun": 1.402154199999968
+    }
+   },
+   {
+    "id": "dpe",
+    "name": "DPE (simplified)",
+    "family": "communication",
+    "params": {},
+    "summary": {
+     "regret": 1247.733991640631,
+     "regretSE": 13.784749102423726,
+     "regretMedian": 1251.217241586778,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 1.5008781517638787,
+     "msPerRun": 3.9674227399999835
+    }
+   },
+   {
+    "id": "sic-mmab",
+    "name": "SIC-MMAB (simplified)",
+    "family": "communication",
+    "params": {
+     "T0c": 1
+    },
+    "summary": {
+     "regret": 1248.9821912256439,
+     "regretSE": 13.823785549593444,
+     "regretMedian": 1242.5592821069708,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 1.5002540519713716,
+     "msPerRun": 1.5499446600000555
+    }
+   },
+   {
+    "id": "fed-ucb",
+    "name": "FedUCB (periodic sync)",
+    "family": "federated",
+    "params": {
+     "tau": 10,
+     "c": 1.414
+    },
+    "summary": {
+     "regret": 1249.385785506712,
+     "regretSE": 13.503741365970997,
+     "regretMedian": 1248.3763222387245,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 1.5000522548308377,
+     "msPerRun": 2.0798677199999656
+    }
+   },
+   {
+    "id": "musical-chairs",
+    "name": "Musical Chairs",
+    "family": "orthogonal",
+    "params": {
+     "T0": 300
+    },
+    "summary": {
+     "regret": 1250.6912509558274,
+     "regretSE": 13.563381435982944,
+     "regretMedian": 1238.0043784070901,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 1.4993995221062797,
+     "msPerRun": 1.5387370999999803
+    }
+   },
+   {
+    "id": "mctopm",
+    "name": "MCTopM",
+    "family": "orthogonal",
+    "params": {},
+    "summary": {
+     "regret": 1251.0688917198106,
+     "regretSE": 13.891550829934548,
+     "regretMedian": 1252.8697106362154,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 1.4992107017242893,
+     "msPerRun": 8.992189740000104
+    }
+   },
+   {
+    "id": "selfish-ucb",
+    "name": "Selfish UCB1",
+    "family": "baseline",
+    "params": {
+     "c": 1.414
+    },
+    "summary": {
+     "regret": 1251.2105430392473,
+     "regretSE": 13.635132684698313,
+     "regretMedian": 1253.9092176046527,
+     "collisions": 0,
+     "collRate": 0,
+     "accidental": 0,
+     "signalling": 0,
+     "meanReward": 1.4991398760645702,
+     "msPerRun": 2.305343840000005
+    }
+   }
+  ]
+ }
+}
