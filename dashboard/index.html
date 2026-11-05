@@ -174,7 +174,20 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
 .algo > label { display: grid; grid-template-columns: auto 14px 1fr; align-items: center; gap: 8px; padding: 5px 6px; cursor: pointer; color: var(--ink); font-size: var(--step--1); border-radius: 8px; }
 .algo > label:hover { background: var(--bg); }
 .algo input[type="checkbox"] { accent-color: var(--ink); margin: 0; }
-.algo .sw { width: 14px; height: 3px; border-radius: 2px; background: transparent; }
+.algo .sw { width: 14px; height: 6px; display: inline-flex; align-items: center; }
+.group-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 6px 0 2px; }
+.group-head .eyebrow { margin: 0; }
+.linkbtn { border: 0; background: none; padding: 0 2px; cursor: pointer; font-size: 0.75rem; color: var(--ink-2); text-decoration: underline; text-underline-offset: 2px; }
+.linkbtn:hover { color: var(--ink); }
+.keysvg { display: inline-block; vertical-align: middle; flex: none; overflow: visible; }
+.keywrap { display: inline-flex; align-items: center; }
+td .keysvg { margin-right: 8px; }
+.legend.many { max-height: 132px; overflow-y: auto; padding-right: 4px; gap: 2px 12px; }
+.legend.many button { font-size: 0.75rem; }
+.tooltip.many { max-width: 560px; columns: 2; column-gap: 16px; }
+.tooltip.many .t-head { column-span: all; }
+.tooltip.many .t-row { break-inside: avoid; }
+.tooltip .t-more { column-span: all; color: var(--muted); font-size: 0.75rem; margin-top: 4px; }
 .algo.disabled > label { color: var(--muted); cursor: not-allowed; }
 .params { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px 10px; padding: 2px 6px 8px 28px; }
 .params label { display: grid; gap: 2px; font-size: 0.75rem; color: var(--muted); }
@@ -229,6 +242,7 @@ svg.focusing .series:not(.on) { opacity: 0.15; }
 .tooltip .t-head { color: var(--muted); font-size: 0.75rem; margin-bottom: 4px; font-family: var(--font-data); }
 .tooltip .t-row { display: grid; grid-template-columns: 14px auto 1fr; gap: 8px; align-items: center; padding: 1px 0; }
 .tooltip .t-row .key { width: 14px; height: 2px; border-radius: 1px; }
+.tooltip .t-row .keywrap { width: 14px; }
 .tooltip .t-row b { font-family: var(--font-data); font-weight: 500; font-variant-numeric: tabular-nums; text-align: right; }
 .tooltip .t-row span { color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -356,13 +370,18 @@ footer { color: var(--muted); font-size: var(--step--1); padding-block: 0 40px; 
     <section>
       <div class="row">
         <div class="eyebrow">Algorithms</div>
-        <span class="cap-note num" id="algo-count">0 of 8</span>
+        <span class="cap-note num" id="algo-count">0 selected</span>
+      </div>
+      <div class="presets">
+        <button type="button" class="chip" id="select-all">Select all</button>
+        <button type="button" class="chip" id="select-none">Clear</button>
       </div>
       <div class="presets" id="presets"></div>
+      <p class="cap-note" id="params-note" hidden>Hyperparameter inputs are hidden while more than 12 algorithms are selected. Narrow the lineup to tune them.</p>
       <input type="search" id="algo-filter" placeholder="Filter algorithms" aria-label="Filter algorithms" autocomplete="off">
       <div id="algo-list"></div>
       <p class="cap-note" id="algo-empty" hidden>No algorithm matches that filter.</p>
-      <p class="cap-note">Up to eight at a time, one color each. A color stays with its algorithm until you remove it.</p>
+      <p class="cap-note">Select as many as you like. The first eight get one color each; after that, lines add a dash pattern and then a shade. Hover a legend entry to isolate its line. A look stays with its algorithm until you remove it. Large lineups take longer: each algorithm runs separately and the charts update as runs finish.</p>
     </section>
     <section>
       <button class="btn" id="run-btn" type="button">Run again</button>

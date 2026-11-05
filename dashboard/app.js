@@ -3,7 +3,9 @@
   'use strict';
   const M = window.MAB;
   const $ = (s, r = document) => r.querySelector(s);
-  const SLOTS = 8;
+  const HUES = 8;          // categorical hues; series beyond 8 add a dash pattern, then a shade
+  const DASHES = ['', '6 3', '2 3', '8 3 2 3'];
+  const MANY = 12;         // above this many series, charts switch to compact rows
 
   // Presets for the K-armed arena; other settings bring their own.
   const KAB_LINEUP = ['greedy', 'egreedy', 'ucb1', 'ucb-tuned', 'klucb', 'thompson', 'gradient', 'exp3'];
@@ -86,7 +88,7 @@
     const list = setting.id === 'kab' ? KAB_PRESETS : (setting.presets || []).concat(EXTRA_PRESETS[setting.id] || []);
     const ids = byId(setting);
     return list
-      .map((p) => ({ ...p, algos: p.algos.filter((id) => ids[id]).slice(0, SLOTS) }))
+      .map((p) => ({ ...p, algos: p.algos.filter((id) => ids[id]) }))
       .filter((p) => p.algos.length && (!p.env || setting.environments.some((e) => e.id === p.env)));
   }
   function viewFor(setting) {
@@ -116,11 +118,10 @@
   }
   function setLineup(v, ids) {
     v.selected = []; v.slot = {};
-    ids.slice(0, SLOTS).forEach((id, i) => { v.selected.push(id); v.slot[id] = i; });
+    ids.forEach((id, i) => { v.selected.push(id); v.slot[id] = i; });
   }
   function toggleAlgo(id, on) {
     if (on && !V.selected.includes(id)) {
-      if (V.selected.length >= SLOTS) return false;
       const used = new Set(Object.values(V.slot));
       let s = 0; while (used.has(s)) s++;
       V.slot[id] = s;
@@ -131,7 +132,23 @@
     }
     return true;
   }
-  function color(id) { return `var(--s${(V.slot[id] ?? 0) + 1})`; }
+  // A series' look: hue cycles every 8 slots, dash pattern every 8 after that, then a shade.
+  function look(id) {
+    const s = V.slot[id] ?? 0, hue = s % HUES, dash = DASHES[Math.floor(s / HUES) % DASHES.length];
+    const tier = Math.floor(s / (HUES * DASHES.length));
+    const base = `var(--s${hue + 1})`;
+    const shade = tier === 0 ? base : tier % 2 ? `color-mix(in oklab, ${base} ${100 - 30 * Math.ceil(tier / 2)}%, var(--ink))` : `color-mix(in oklab, ${base} ${100 - 30 * (tier / 2)}%, var(--surface))`;
+    return { color: shade, dash };
+  }
+  function color(id) { return look(id).color; }
+  function dashAttr(id) { const d = look(id).dash; return d ? `;stroke-dasharray:${d}` : ''; }
+  function keySvg(id, w = 16) {
+    const l = look(id);
+    return `<svg class="keysvg" width="${w}" height="6" viewBox="0 0 ${w} 6" aria-hidden="true"><line x1="0" y1="3" x2="${w}" y2="3" style="stroke:${l.color};stroke-width:2.5${l.dash ? ';stroke-dasharray:' + l.dash : ''}"/></svg>`;
+  }
+  function selectAll(ids) {
+    for (const id of ids) toggleAlgo(id, true);
+  }
   function sorter(better) { return better === 'higher' ? (a, b) => b - a : (a, b) => a - b; }
   function sumVal(r, key) { return r.summary ? r.summary[key] : r[key]; }
   function finalOf(r) { return sumVal(r, S.final.key); }
@@ -246,17 +263,17 @@
 
   function buildAlgoList() {
     const active = document.activeElement && document.activeElement.id;
-    const full = V.selected.length >= SLOTS;
     $('#algo-filter').value = V.filter;
     const q = V.filter.trim().toLowerCase();
     const match = (a) => !q || a.name.toLowerCase().includes(q) || a.id.includes(q) || V.selected.includes(a.id);
     const html = S.families.map((f) => {
       const algos = S.algorithms.filter((a) => a.family === f.id && (match(a) || f.name.toLowerCase().includes(q)));
       if (!algos.length) return '';
-      return `<div class="algo-group"><div class="eyebrow">${esc(f.name)}</div>${algos.map((a) => {
+      const allOn = algos.every((a) => V.selected.includes(a.id));
+      return `<div class="algo-group"><div class="group-head"><span class="eyebrow">${esc(f.name)}</span><button type="button" class="linkbtn" data-family="${esc(f.id)}" data-on="${allOn ? 1 : 0}">${allOn ? 'none' : 'all'}</button></div>${algos.map((a) => {
         const on = V.selected.includes(a.id);
-        const dis = !on && full;
-        const params = on && (a.params || []).length ? `<div class="params">${a.params.map((p) => `
+        const dis = false;
+        const params = on && V.selected.length <= MANY && (a.params || []).length ? `<div class="params">${a.params.map((p) => `
             <label for="p-${esc(a.id)}-${esc(p.key)}">${esc(p.label)}
               <input type="number" id="p-${esc(a.id)}-${esc(p.key)}" data-algo="${esc(a.id)}" data-key="${esc(p.key)}"
                 value="${V.params[a.id][p.key]}" min="${p.min}" max="${p.max}" step="${p.step || 'any'}">
@@ -264,14 +281,15 @@
         return `<div class="algo${dis ? ' disabled' : ''}">
           <label for="a-${esc(a.id)}">
             <input type="checkbox" id="a-${esc(a.id)}" data-algo="${esc(a.id)}" ${on ? 'checked' : ''} ${dis ? 'disabled' : ''}>
-            <span class="sw" style="background:${on ? color(a.id) : 'transparent'}"></span>
+            <span class="sw">${on ? keySvg(a.id, 14) : ''}</span>
             <span>${esc(a.name)}</span>
           </label>${params}</div>`;
       }).join('')}</div>`;
     }).join('');
     $('#algo-list').innerHTML = html;
     $('#algo-empty').hidden = html.trim() !== '';
-    $('#algo-count').textContent = `${V.selected.length} of ${SLOTS}`;
+    $('#algo-count').textContent = `${V.selected.length} of ${S.algorithms.length} selected`;
+    $('#params-note').hidden = V.selected.length <= MANY;
     if (active) { const el = document.getElementById(active); if (el) el.focus(); }
   }
 
@@ -293,6 +311,15 @@
       }
     });
     $('#algo-filter').addEventListener('input', (e) => { V.filter = e.target.value; buildAlgoList(); });
+    $('#algo-list').addEventListener('click', (ev) => {
+      const b = ev.target.closest('button[data-family]'); if (!b) return;
+      const ids = S.algorithms.filter((a) => a.family === b.dataset.family).map((a) => a.id);
+      if (b.dataset.on === '1') { for (const id of ids) if (V.selected.length > 1) toggleAlgo(id, false); }
+      else selectAll(ids);
+      buildAlgoList(); buildCatalog(); scheduleRun();
+    });
+    $('#select-all').addEventListener('click', () => { selectAll(S.algorithms.map((a) => a.id)); buildAlgoList(); buildCatalog(); scheduleRun(0); });
+    $('#select-none').addEventListener('click', () => { setLineup(V, V.selected.slice(0, 1)); buildAlgoList(); buildCatalog(); scheduleRun(0); });
     $('#env-select').addEventListener('change', (e) => { V.env = e.target.value; describeEnv(); scheduleRun(); });
     const k = $('#k-range');
     k.addEventListener('input', () => { V.K = +k.value; $('#k-out').textContent = k.value; scheduleRun(); });
@@ -337,8 +364,15 @@
       extra: Object.assign({}, view.extra),
       algorithms: view.selected.map((id) => ({ id, params: Object.assign({}, view.params[id]) })),
     };
-    let runner;
-    try { runner = setting.createRunner(cfg); } catch (err) { setStatus('error', `Could not start: ${err.message}`, 0); return; }
+    // One runner per algorithm. Results never depend on the lineup (seeds are per algorithm and the
+    // environment is re-drawn identically), so this matches a joint run while keeping each step short.
+    let runners;
+    try {
+      runners = cfg.algorithms.map((a) => setting.createRunner({ ...cfg, algorithms: [a] }));
+    } catch (err) { setStatus('error', `Could not start: ${err.message}`, 0); return; }
+    const total = runners.length * cfg.runs;
+    const doneAll = () => runners.reduce((n, r) => n + r.done, 0);
+    const minDone = () => runners.reduce((m, r) => Math.min(m, r.done), Infinity);
     const t0 = performance.now();
     let lastDraw = 0, firstDraw = true;
     document.querySelectorAll('.chart').forEach((el) => el.classList.add('stale'));
@@ -347,26 +381,32 @@
       if (my !== job) return;
       const start = performance.now();
       try {
-        do { runner.step(1); } while (!runner.finished && performance.now() - start < 30);
+        do {
+          let r = null;
+          for (const x of runners) if (!x.finished && (!r || x.done < r.done)) r = x;
+          if (!r) break;
+          r.step(1);
+        } while (performance.now() - start < 30);
       } catch (err) {
-        setStatus('error', `Stopped: ${err.message}`, runner.done / cfg.runs);
+        setStatus('error', `Stopped: ${err.message}`, doneAll() / total);
         console.error(err);
         return;
       }
+      const finished = runners.every((r) => r.finished);
       const now = performance.now();
-      if (runner.finished || now - lastDraw > 300 || firstDraw) {
-        view.results = runner.results();
+      if (finished || (minDone() > 0 && (now - lastDraw > (runners.length > MANY ? 900 : 300) || firstDraw))) {
+        view.results = runners.flatMap((r) => r.results());
         view.cfg = cfg;
         if (firstDraw) document.querySelectorAll('.chart').forEach((el) => el.classList.remove('stale'));
         firstDraw = false;
         renderAll();
         lastDraw = performance.now();
       }
-      if (runner.finished) {
+      if (finished) {
         const secs = ((performance.now() - t0) / 1000).toFixed(1);
-        setStatus('done', `${cfg.runs} runs · ${secs} s`, 1);
+        setStatus('done', `${cfg.runs} runs × ${runners.length} · ${secs} s`, 1);
       } else {
-        setStatus('running', `Running ${runner.done} / ${cfg.runs}`, runner.done / cfg.runs);
+        setStatus('running', `Running ${minDone()} / ${cfg.runs}${runners.length > 1 ? ` · ${runners.length} algorithms` : ''}`, doneAll() / total);
         setTimeout(tick, 0);
       }
     }
@@ -402,7 +442,7 @@
     $('#tiles').innerHTML = tiles.map((t) => `
       <div class="tile">
         <div class="label">${esc(t.label)}</div>
-        <div class="value"><span class="key" style="background:${color(t.id)}"></span><span class="txt">${esc(algo(t.id).name)}</span></div>
+        <div class="value">${keySvg(t.id, 14)}<span class="txt">${esc(algo(t.id).name)}</span></div>
         <div class="sub num">${esc(t.sub)}</div>
       </div>`).join('');
     const parts = [env ? env.name : cfg.env];
@@ -511,7 +551,7 @@
     svg += `<text x="${m.l + pw}" y="${H - 2}" text-anchor="end">${esc(S.xLabel || 'step')}${log ? ' (log scale)' : ''}</text></g>`;
 
     for (const s of series) {
-      if (!s.se) continue;
+      if (!s.se || series.length > HUES) continue;
       const up = idx.map((i) => `${X(xs[i]).toFixed(1)},${Y(s.v[i] + 1.96 * s.se[i]).toFixed(1)}`);
       const dn = idx.slice().reverse().map((i) => `${X(xs[i]).toFixed(1)},${Y(s.v[i] - 1.96 * s.se[i]).toFixed(1)}`);
       svg += `<polygon class="series" data-id="${esc(s.id)}" points="${up.join(' ')} ${dn.join(' ')}" style="fill:${color(s.id)};fill-opacity:0.10;stroke:none"/>`;
@@ -519,11 +559,11 @@
     const order = series.slice().sort((a, b) => (a.id === winner.id) - (b.id === winner.id));
     for (const s of order) {
       const pts = idx.filter((i) => Number.isFinite(s.v[i])).map((i) => `${X(xs[i]).toFixed(1)},${Y(s.v[i]).toFixed(1)}`).join(' ');
-      svg += `<polyline class="series" data-id="${esc(s.id)}" points="${pts}" style="fill:none;stroke:${color(s.id)};stroke-width:2;stroke-linejoin:round;stroke-linecap:round"/>`;
+      svg += `<polyline class="series" data-id="${esc(s.id)}" points="${pts}" style="fill:none;stroke:${color(s.id)};stroke-width:${series.length > MANY ? 1.5 : 2};stroke-linejoin:round;stroke-linecap:round${dashAttr(s.id)}"/>`;
     }
     for (const s of order) {
       if (!Number.isFinite(endVal(s))) continue;
-      svg += `<circle class="series" data-id="${esc(s.id)}" cx="${X(xb).toFixed(1)}" cy="${Y(endVal(s)).toFixed(1)}" r="4" style="fill:${color(s.id)};stroke:var(--surface);stroke-width:2"/>`;
+      svg += `<circle class="series" data-id="${esc(s.id)}" cx="${X(xb).toFixed(1)}" cy="${Y(endVal(s)).toFixed(1)}" r="${series.length > MANY ? 3 : 4}" style="fill:${color(s.id)};stroke:var(--surface);stroke-width:${series.length > MANY ? 1 : 2}"/>`;
     }
     if (showLabel && Number.isFinite(endVal(winner))) {
       svg += `<text class="lbl" x="${m.l + pw + 10}" y="${(Y(endVal(winner)) + 4).toFixed(1)}">${esc(winnerLabel)}</text>`;
@@ -536,10 +576,11 @@
 
     const leg = $('#legend');
     leg.innerHTML = '';
+    leg.classList.toggle('many', series.length > MANY);
     for (const s of series) {
       const b = document.createElement('button');
       b.type = 'button'; b.dataset.id = s.id;
-      const k = document.createElement('span'); k.className = 'key'; k.style.background = color(s.id);
+      const k = document.createElement('span'); k.className = 'keywrap'; k.innerHTML = keySvg(s.id);
       b.append(k, document.createTextNode(s.name));
       leg.appendChild(b);
     }
@@ -593,14 +634,21 @@
     const head = document.createElement('div'); head.className = 't-head';
     head.textContent = `${S.xLabel || 'x'} = ${fmtTick(xs[i])}`;
     tip.appendChild(head);
-    const rows = series.map((s) => ({ s, v: s.v[i] })).sort((a, b) => sorter(better)(a.v, b.v));
+    const all = series.map((s) => ({ s, v: s.v[i] })).sort((a, b) => sorter(better)(a.v, b.v));
+    const rows = all.length > 32 ? all.slice(0, 30) : all;
     for (const r of rows) {
       const row = document.createElement('div'); row.className = 't-row';
-      const kk = document.createElement('span'); kk.className = 'key'; kk.style.background = color(r.s.id);
+      const kk = document.createElement('span'); kk.className = 'keywrap'; kk.innerHTML = keySvg(r.s.id, 14);
       const v = document.createElement('b'); v.textContent = fmtM(r.v);
       const n = document.createElement('span'); n.textContent = r.s.name;
       row.append(kk, v, n); tip.appendChild(row);
     }
+    if (rows.length < all.length) {
+      const more = document.createElement('div'); more.className = 't-more';
+      more.textContent = `+ ${all.length - rows.length} more below these. Every value is in the results table.`;
+      tip.appendChild(more);
+    }
+    tip.classList.toggle('many', rows.length > 16);
     tip.hidden = false;
     const scale = el.querySelector('svg').getBoundingClientRect().width / W;
     const tw = tip.offsetWidth;
@@ -622,8 +670,10 @@
     const el = $('#board-chart'), F = S.final;
     const R = V.results.slice().sort((a, b) => sorter(F.better)(finalOf(a), finalOf(b)));
     const W = Math.max(260, el.clientWidth);
-    const rowH = 42, barH = 12, top = 4;
+    const compact = R.length > MANY;
+    const rowH = compact ? 20 : 42, barH = compact ? 10 : 12, top = 4;
     const H = top + R.length * rowH + 22;
+    const nameW = compact ? Math.min(W * 0.4, Math.max(...R.map((r) => textWidth(r.name, '11px "IBM Plex Sans", system-ui, sans-serif'))) + 10) : 0;
     const valW = Math.max(...R.map((r) => textWidth(fmtNum(finalOf(r)), '500 11px "IBM Plex Mono", monospace'))) + 10;
     let lo = 0, hi = 0;
     for (const r of R) {
@@ -634,16 +684,18 @@
     if (hi - lo < 1e-12) hi = lo + 1;
     const xt = ticks(lo, hi, Math.max(2, Math.round((W - valW) / 90)));
     const dlo = Math.min(lo, xt[0]), dhi = Math.max(hi, xt[xt.length - 1]);
-    const padL = lo < 0 ? valW : 2, x1 = W - valW - 4;
+    const padL = nameW + (lo < 0 ? valW : 2), x1 = W - valW - 4;
     const X = (v) => padL + ((v - dlo) / (dhi - dlo)) * (x1 - padL);
     let svg = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(F.label)} by algorithm">`;
     svg += '<g class="grid">' + xt.map((v) => `<line x1="${X(v).toFixed(1)}" x2="${X(v).toFixed(1)}" y1="${top}" y2="${H - 20}"/>`).join('') + '</g>';
     svg += '<g class="axis">' + xt.map((v, i) => `<text x="${X(v).toFixed(1)}" y="${H - 4}" text-anchor="${i === 0 ? 'start' : 'middle'}">${esc(fmtTick(v))}</text>`).join('') + '</g>';
     R.forEach((r, i) => {
-      const y = top + i * rowH, by = y + 20, v = finalOf(r), ci = 1.96 * finalSE(r);
+      const y = top + i * rowH, by = y + (compact ? 5 : 20), v = finalOf(r), ci = 1.96 * finalSE(r);
       svg += `<g class="bar-row" data-id="${esc(r.id)}" tabindex="0" role="img" aria-label="${esc(r.name)}: ${fmtNum(v)}">`;
       svg += `<rect x="0" y="${y}" width="${W}" height="${rowH}" fill="transparent"/>`;
-      svg += `<text class="lbl-2" x="${padL}" y="${y + 14}">${esc(r.name)}</text>`;
+      svg += compact
+        ? `<text class="lbl-2" x="0" y="${y + 14}" style="font-size:11px">${esc(r.name)}</text>`
+        : `<text class="lbl-2" x="${padL}" y="${y + 14}">${esc(r.name)}</text>`;
       if (Number.isFinite(v)) {
         svg += `<path d="${barPath(X(0), X(v), by, barH, 4)}" style="fill:${color(r.id)}"/>`;
         const a = X(v - ci), b = X(v + ci), cy = by + barH / 2;
@@ -699,7 +751,7 @@
     const gx = labW, gw = W - labW;
     const gap = gw / K > 10 ? 2 : 1;
     const cw = gw / K;
-    const rowH = 26, top = 22;
+    const rowH = R.length > MANY ? 16 : 26, top = 22;
     const H = top + R.length * rowH + 4;
     let svg = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Share of pulls per arm, arms ranked best to worst">`;
     const every = Math.ceil(28 / cw);
@@ -713,10 +765,10 @@
     }
     R.forEach((r, i) => {
       const y = top + i * rowH;
-      svg += `<text class="lbl-2" x="0" y="${y + rowH / 2 + 3}">${esc(r.name)}</text>`;
+      svg += `<text class="lbl-2" x="0" y="${y + rowH / 2 + 3}"${R.length > MANY ? ' style="font-size:11px"' : ''}>${esc(r.name)}</text>`;
       for (let k = 0; k < K; k++) {
         const v = r.pullShare[k] || 0;
-        svg += `<rect class="cell" data-i="${i}" data-k="${k}" x="${(gx + k * cw + gap / 2).toFixed(2)}" y="${y + 2}" width="${Math.max(1, cw - gap).toFixed(2)}" height="${rowH - 4}" rx="2" style="fill:var(--q${bin(v)})"/>`;
+        svg += `<rect class="cell" data-i="${i}" data-k="${k}" x="${(gx + k * cw + gap / 2).toFixed(2)}" y="${y + 1}" width="${Math.max(1, cw - gap).toFixed(2)}" height="${rowH - 2}" rx="2" style="fill:var(--q${bin(v)})"/>`;
       }
     });
     svg += '</svg>';
@@ -731,7 +783,7 @@
       const h = document.createElement('div'); h.className = 't-head';
       h.textContent = `Arm ranked ${k + 1} of ${K}`;
       const row = document.createElement('div'); row.className = 't-row';
-      const sp = document.createElement('span'); sp.className = 'key'; sp.style.background = color(r.id);
+      const sp = document.createElement('span'); sp.className = 'keywrap'; sp.innerHTML = keySvg(r.id, 14);
       const b = document.createElement('b'); b.textContent = fmtPct(r.pullShare[k]);
       const n = document.createElement('span'); n.textContent = r.name;
       row.append(sp, b, n); tip.append(h, row);
@@ -770,7 +822,7 @@
       return `<th class="${c.n ? 'n' : ''}" aria-sort="${aria}" scope="col">${c.sortable === false ? esc(c.label) : `<button type="button" data-key="${esc(c.key)}">${esc(c.label)}${arrow}</button>`}</th>`;
     }).join('')}</tr></thead><tbody>${rows.map((r) => `<tr class="${r.id === winner ? 'winner' : ''}">${COLS.map((c, i) => {
       const v = c.get(r);
-      if (i === 0) return `<td><span class="key" style="background:${color(r.id)}"></span>${esc(v)}</td>`;
+      if (i === 0) return `<td>${keySvg(r.id, 14)}${esc(v)}</td>`;
       if (c.key === '@params') return `<td class="params-cell">${esc(v)}</td>`;
       return `<td class="${c.n ? 'n' : ''}">${esc(c.n ? fmtBy(c.fmt, v) : v)}</td>`;
     }).join('')}</tr>`).join('')}</tbody>`;
@@ -785,7 +837,6 @@
 
   // ------------------------------------------------------------ catalog ----
   function buildCatalog() {
-    const full = V.selected.length >= SLOTS;
     $('#catalog').innerHTML = S.families.map((f) => {
       const list = S.algorithms.filter((a) => a.family === f.id);
       if (!list.length) return '';
@@ -796,11 +847,11 @@
           const on = V.selected.includes(a.id);
           const params = (a.params || []).map((p) => `${p.label.split(' ')[0]} = ${p.default}`).join(', ');
           return `<article class="acard">
-            <div class="top"><h3>${esc(a.name)}</h3>${on ? `<span class="key" style="display:inline-block;width:16px;height:3px;border-radius:2px;background:${color(a.id)}"></span>` : ''}</div>
+            <div class="top"><h3>${esc(a.name)}</h3>${on ? keySvg(a.id, 18) : ''}</div>
             <div class="formula">${esc(a.formula || '')}</div>
             <p class="idea">${esc(a.idea || '')}</p>
             <p class="bound">${a.regret ? `Guarantee: <b>${esc(a.regret)}</b>` : ''}${params ? `<br>Defaults: <b>${esc(params)}</b>` : ''}</p>
-            <div><button type="button" class="chip" data-algo="${esc(a.id)}" aria-pressed="${on}" ${!on && full ? 'disabled title="Remove an algorithm first: eight is the limit"' : ''}>${on ? 'In comparison' : 'Add to comparison'}</button></div>
+            <div><button type="button" class="chip" data-algo="${esc(a.id)}" aria-pressed="${on}">${on ? 'In comparison' : 'Add to comparison'}</button></div>
           </article>`;
         }).join('')}</div>
       </section>`;
