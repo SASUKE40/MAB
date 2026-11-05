@@ -9,7 +9,14 @@
     { label: 'Classic lineup', algos: DEFAULT_LINEUP },
     { label: 'Optimism vs Bayes', algos: ['ucb1', 'ucb-tuned', 'klucb', 'moss', 'bayes-ucb', 'thompson'] },
     { label: 'Undirected exploration', algos: ['greedy', 'egreedy', 'egreedy-decay', 'etc', 'softmax', 'optimistic', 'thompson'] },
-    { label: 'Tracking change', algos: ['egreedy', 'ucb1', 'klucb', 'thompson', 'sw-ucb', 'dts', 'exp3'], env: 'abrupt' },
+    { label: 'KL & divergence', algos: ['klucb', 'klucb-plus', 'klucb-pp', 'imed', 'bayes-ucb', 'thompson', 'ucb1'] },
+    { label: 'Bayesian decision', algos: ['thompson', 'bayes-ucb', 'gittins', 'kg', 'ids', 'phe', 'ucb1'] },
+    { label: 'UCB variants', algos: ['ucb1', 'ucb2', 'ucb-tuned', 'ucb-v', 'ucb-normal', 'moss', 'moss-anytime', 'klucb'] },
+    { label: 'Elimination', algos: ['successive-elim', 'improved-ucb', 'seq-halving', 'etc', 'ucb1', 'thompson'] },
+    { label: 'Learning automata', algos: ['pursuit', 'lri', 'reinforcement-comparison', 'gradient', 'softmax', 'softmax-decay', 'egreedy'] },
+    { label: 'Adversarial', algos: ['exp3', 'exp3-ix', 'exp3p', 'tsallis-inf', 'thompson', 'klucb'] },
+    { label: 'Contextual', algos: ['linucb', 'thompson', 'klucb', 'ucb1', 'egreedy', 'gittins'], env: 'contextual' },
+    { label: 'Tracking change', algos: ['egreedy-const', 'ucb1', 'thompson', 'sw-ucb', 'd-ucb', 'dts', 'm-ucb', 'exp3s'], env: 'abrupt' },
   ];
   const METRICS = {
     regret: { label: 'Cumulative regret', better: 'lower', fmt: fmtNum },
@@ -85,7 +92,7 @@
     box.innerHTML = M.ENVIRONMENTS.map((e) => `
       <label class="env-opt">
         <input type="radio" name="env" id="env-${e.id}" value="${e.id}" ${e.id === state.env ? 'checked' : ''}>
-        <b>${esc(e.name)}${e.stationary ? '' : '<span class="tag">changes</span>'}</b>
+        <b>${esc(e.name)}${e.stationary ? '' : '<span class="tag">changes</span>'}${e.contextual ? '<span class="tag">context</span>' : ''}</b>
         <span>${esc(e.description)}</span>
       </label>`).join('');
     box.addEventListener('change', (ev) => { state.env = ev.target.value; scheduleRun(); });
@@ -96,7 +103,7 @@
     PRESETS.forEach((p) => {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'chip'; b.textContent = p.label;
-      if (p.env) b.title = 'Also switches to the abrupt-change environment';
+      if (p.env) b.title = `Also switches to the ${M.ENV_BY_ID[p.env].name.toLowerCase()} environment`;
       b.addEventListener('click', () => {
         setLineup(p.algos);
         if (p.env) { state.env = p.env; const r = $(`#env-${p.env}`); if (r) r.checked = true; }
@@ -109,8 +116,11 @@
   function buildAlgoList() {
     const active = document.activeElement && document.activeElement.id;
     const full = state.selected.length >= SLOTS;
+    const q = ($('#algo-filter').value || '').trim().toLowerCase();
+    const match = (a) => !q || a.name.toLowerCase().includes(q) || a.id.includes(q) || state.selected.includes(a.id);
     const html = M.FAMILIES.map((f) => {
-      const algos = M.ALGORITHMS.filter((a) => a.family === f.id);
+      const algos = M.ALGORITHMS.filter((a) => a.family === f.id && (match(a) || f.name.toLowerCase().includes(q)));
+      if (!algos.length) return '';
       return `<div class="algo-group"><div class="eyebrow">${esc(f.name)}</div>${algos.map((a) => {
         const on = state.selected.includes(a.id);
         const dis = !on && full;
@@ -128,6 +138,7 @@
       }).join('')}</div>`;
     }).join('');
     $('#algo-list').innerHTML = html;
+    $('#algo-empty').hidden = html.trim() !== '';
     $('#algo-count').textContent = `${state.selected.length} of ${SLOTS}`;
     if (active) { const el = document.getElementById(active); if (el) el.focus(); }
   }
@@ -149,6 +160,7 @@
         scheduleRun();
       }
     });
+    $('#algo-filter').addEventListener('input', buildAlgoList);
     const k = $('#k-range');
     k.addEventListener('input', () => { state.K = +k.value; $('#k-out').textContent = k.value; scheduleRun(); });
     $('#t-select').addEventListener('change', (e) => { state.T = +e.target.value; scheduleRun(); });
@@ -749,6 +761,10 @@
   }
 
   // ------------------------------------------------------------- boot ----
+  const WORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+  const TENS = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty'];
+  const n = M.ALGORITHMS.length;
+  $('#algo-total').textContent = n >= 20 && n < 70 ? TENS[Math.floor(n / 10)] + (n % 10 ? '-' + WORDS[n % 10].toLowerCase() : '') : String(n);
   buildEnvs();
   buildPresets();
   buildAlgoList();

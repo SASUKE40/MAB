@@ -255,8 +255,31 @@
         }
       },
     },
+    {
+      id: 'contextual',
+      name: 'Linear contextual',
+      short: 'Contextual',
+      type: 'gaussian', stationary: true, contextual: true, d: 5,
+      description: 'Each round shows a context x = (1, z₁…z₄), z ~ N(0, 1). Arm a pays N(θₐ·x, 1) with a hidden θₐ ~ N(0, 0.5²I). Without the context, only the average arm can be learned.',
+      fill(K, T, rng, means, rewards, ctx) {
+        const d = 5, theta = new Float64Array(K * d);
+        for (let i = 0; i < K * d; i++) theta[i] = 0.5 * rng.normal();
+        for (let t = 0; t < T; t++) {
+          const x = t * d;
+          ctx[x] = 1;
+          for (let j = 1; j < d; j++) ctx[x + j] = rng.normal();
+          for (let a = 0; a < K; a++) {
+            let m = 0;
+            for (let j = 0; j < d; j++) m += theta[a * d + j] * ctx[x + j];
+            means[t * K + a] = m;
+            rewards[t * K + a] = m + rng.normal();
+          }
+        }
+      },
+    },
   ];
   for (const e of ENVIRONMENTS) {
+    if (!e.d) e.d = 1;
     if (e.type === 'bernoulli') {
       e.sigma = 0.5; e.scale = 1;
       e.normalize = (r) => r;
@@ -276,10 +299,14 @@
     { id: 'baseline', name: 'Baselines', blurb: 'Reference points: no learning, or learning with no exploration.' },
     { id: 'undirected', name: 'Undirected exploration', blurb: 'Explore by injecting randomness that ignores how uncertain each arm is.' },
     { id: 'optimism', name: 'Optimism in the face of uncertainty', blurb: 'Act greedily on an optimistic estimate: mean plus a bonus that shrinks with pulls.' },
-    { id: 'bayesian', name: 'Bayesian / posterior', blurb: 'Keep a posterior over each mean; sample from it or read off an upper quantile.' },
-    { id: 'gradient', name: 'Policy gradient', blurb: 'Learn action preferences directly by stochastic gradient ascent on expected reward.' },
+    { id: 'elimination', name: 'Elimination', blurb: 'Sample the surviving arms evenly and discard any arm that is confidently worse than the leader.' },
+    { id: 'divergence', name: 'Minimum empirical divergence', blurb: 'Pick the arm that is cheapest to believe could be best, measured by KL divergence.' },
+    { id: 'bayesian', name: 'Bayesian / posterior', blurb: 'Keep a posterior over each mean; sample from it, read off a quantile, or value the information a pull buys.' },
+    { id: 'perturbation', name: 'Randomized perturbation', blurb: 'Add calibrated random noise to the estimates, then act greedily. Thompson-like, with no posterior.' },
+    { id: 'gradient', name: 'Policy gradient & learning automata', blurb: 'Adjust a probability distribution over arms directly instead of estimating values.' },
     { id: 'adversarial', name: 'Adversarial', blurb: 'No stochastic assumptions; guarantees hold even if rewards are chosen by an opponent.' },
     { id: 'nonstationary', name: 'Non-stationary', blurb: 'Forget old evidence so the agent can track arms whose means move.' },
+    { id: 'contextual', name: 'Contextual', blurb: 'Read a context vector each round and learn how each arm\'s reward depends on it.' },
   ];
 
   function stats(K) {
@@ -623,6 +650,772 @@
       },
     },
   ];
+
+  // ------------------------------------------------- more algorithms ----
+  function normPdf(x) { return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI); }
+  /** Standard normal CDF via a Chebyshev fit to erfc (|err| < 1.2e-7). */
+  function normCdf(x) {
+    const z = Math.abs(x) / Math.SQRT2, t = 1 / (1 + 0.5 * z);
+    const r = t * Math.exp(-z * z - 1.26551223 + t * (1.00002368 + t * (0.37409196 + t * (0.09678418 + t * (-0.18628806 +
+      t * (0.27886807 + t * (-1.13520398 + t * (1.48851587 + t * (-0.82215223 + t * 0.17087277)))))))));
+    return x >= 0 ? 1 - r / 2 : r / 2;
+  }
+  function logPlus(x) { return x > 1 ? Math.log(x) : 0; }
+  /** KL upper confidence index for Bernoulli or unit-variance Gaussian arms. */
+  function klIndex(bern, mean, n, bound, s2) {
+    if (bound <= 0) return mean;
+    return bern ? klUcbBern(mean, n, bound) : mean + Math.sqrt((2 * s2 * bound) / n);
+  }
+  /** Posterior mean and variance: Beta(1,1) prior for Bernoulli, N(0,1) prior with known noise for Gaussian. */
+  function posterior(bern, s2, sum, n) {
+    if (bern) {
+      const al = 1 + sum, be = 1 + n - sum, ab = al + be;
+      return [al / ab, (al * be) / (ab * ab * (ab + 1))];
+    }
+    return [sum / (n + 1), s2 / (n + 1)];
+  }
+  function samplePosterior(rng, bern, s2, sum, n) {
+    return bern ? rng.beta(1 + sum, 1 + n - sum) : sum / (n + 1) + Math.sqrt(s2 / (n + 1)) * rng.normal();
+  }
+  /** Sum of m fair coin flips. */
+  function binomHalf(rng, m) {
+    if (m <= 40) { let s = 0; for (let i = 0; i < m; i++) if (rng.uniform() < 0.5) s++; return s; }
+    return Math.min(m, Math.max(0, Math.round(m / 2 + 0.5 * Math.sqrt(m) * rng.normal())));
+  }
+  /** Brezzi & Lai (2002) approximation to the Gittins boundary function. */
+  function gittinsPsi(s) {
+    if (s <= 0.2) return Math.sqrt(s / 2);
+    if (s <= 1) return 0.49 - 0.11 / Math.sqrt(s);
+    if (s <= 5) return 0.63 - 0.26 / Math.sqrt(s);
+    if (s <= 15) return 0.77 - 0.58 / Math.sqrt(s);
+    return Math.sqrt(Math.max(0, 2 * Math.log(s) - Math.log(Math.log(s)) - Math.log(16 * Math.PI)));
+  }
+  function exp3Gamma(K, T) { return Math.min(1, Math.sqrt((K * Math.log(K)) / ((Math.E - 1) * T))); }
+
+  ALGORITHMS.push(
+    // ---- undirected
+    {
+      id: 'softmax-decay', name: 'Annealed softmax', family: 'undirected',
+      params: [{ key: 'tau0', label: 'τ₀', default: 1, min: 0.01, max: 20, step: 0.01 }],
+      formula: 'P(a) ∝ exp(Q̂ₐ / τₜ),   τₜ = τ₀ / ln(t + 1)',
+      regret: 'Depends on the schedule; no general log T bound',
+      idea: 'Starts close to uniform and cools toward greedy as evidence accumulates.',
+      create(K, { rng, params, env }) {
+        const s = stats(K), p = new Float64Array(K), c = 1 / (params.tau0 * env.scale);
+        return {
+          select: (t) => sampleIndex(softmaxInto(p, s.mean, c * Math.log(t + 1)), rng),
+          update: (a, r) => record(s, a, r),
+        };
+      },
+    },
+    // ---- optimism
+    {
+      id: 'ucb2', name: 'UCB2', family: 'optimism',
+      params: [{ key: 'alpha', label: 'α', default: 0.1, min: 0.001, max: 1, step: 0.001 }],
+      formula: 'argmaxₐ Q̂ₐ + √((1+α) ln(e·t / τ(rₐ)) / 2τ(rₐ)),  played for an epoch,  τ(r) = ⌈(1+α)^r⌉',
+      regret: 'O(Σ log T / Δₐ), leading constant near optimal for small α',
+      idea: 'Commits to the chosen arm for geometrically growing epochs, so it rarely switches arms.',
+      create(K, { rng, params, env }) {
+        const s = stats(K), r = new Int32Array(K), idx = new Float64Array(K), al = params.alpha, sc = env.scale;
+        const tau = (x) => Math.ceil(Math.pow(1 + al, x));
+        let cur = -1, left = 0;
+        return {
+          select(t) {
+            const u = untried(s.n); if (u >= 0) return u;
+            if (left > 0) { left--; return cur; }
+            for (let a = 0; a < K; a++) {
+              const ta = tau(r[a]);
+              idx[a] = s.mean[a] + sc * Math.sqrt(((1 + al) * Math.max(0, Math.log((Math.E * t) / ta))) / (2 * ta));
+            }
+            cur = argmax(idx, rng);
+            left = Math.max(1, tau(r[cur] + 1) - tau(r[cur])) - 1;
+            r[cur]++;
+            return cur;
+          },
+          update: (a, x) => record(s, a, x),
+        };
+      },
+    },
+    {
+      id: 'ucb-v', name: 'UCB-V', family: 'optimism',
+      params: [],
+      formula: 'argmaxₐ Q̂ₐ + √(2 V̂ₐ ζ ln t / nₐ) + 3bζ ln t / nₐ,   ζ = 1.2',
+      regret: 'O(Σ (σₐ²/Δₐ + b) log T)',
+      idea: 'Uses an empirical Bernstein bound, so arms with low observed variance get small bonuses.',
+      create(K, { rng, env }) {
+        const s = stats(K), sq = new Float64Array(K), idx = new Float64Array(K), z = 1.2, b = env.scale;
+        return {
+          select(t) {
+            const u = untried(s.n); if (u >= 0) return u;
+            const lt = Math.log(t);
+            for (let a = 0; a < K; a++) {
+              const n = s.n[a], m = s.mean[a], v = Math.max(0, sq[a] / n - m * m);
+              idx[a] = m + Math.sqrt((2 * v * z * lt) / n) + (3 * b * z * lt) / n;
+            }
+            return argmax(idx, rng);
+          },
+          update(a, r) { record(s, a, r); sq[a] += r * r; },
+        };
+      },
+    },
+    {
+      id: 'ucb-normal', name: 'UCB1-Normal', family: 'optimism',
+      params: [],
+      formula: 'play any arm with nₐ < ⌈8 ln t⌉;  else argmaxₐ Q̂ₐ + √(16 σ̂ₐ² ln(t−1) / nₐ)',
+      regret: 'O(Σ σ² log T / Δₐ) for Gaussian rewards',
+      idea: 'Auer et al.\'s variant for Gaussian rewards with unknown variance. Its forced sampling is expensive at short horizons.',
+      create(K, { rng }) {
+        const s = stats(K), sq = new Float64Array(K), idx = new Float64Array(K);
+        return {
+          select(t) {
+            const need = Math.max(2, Math.ceil(8 * Math.log(t)));
+            for (let a = 0; a < K; a++) if (s.n[a] < need) return a;
+            const lt = Math.log(Math.max(2, t - 1));
+            for (let a = 0; a < K; a++) {
+              const n = s.n[a], m = s.mean[a], v = Math.max(0, (sq[a] - n * m * m) / (n - 1));
+              idx[a] = m + Math.sqrt((16 * v * lt) / n);
+            }
+            return argmax(idx, rng);
+          },
+          update(a, r) { record(s, a, r); sq[a] += r * r; },
+        };
+      },
+    },
+    {
+      id: 'improved-ucb', name: 'Improved UCB', family: 'elimination',
+      params: [],
+      formula: 'phase m: Δ̃ = 2⁻ᵐ; sample survivors to ⌈2 ln(TΔ̃²)/Δ̃²⌉; drop arms whose UCB < best LCB',
+      regret: 'O(Σ log(TΔₐ²) / Δₐ); needs T',
+      idea: 'Auer & Ortner\'s phased elimination: halve the gap it can resolve each phase and discard arms that are clearly worse.',
+      create(K, { rng, T, env }) {
+        const s = stats(K), active = new Uint8Array(K).fill(1), sc = env.scale;
+        let D = 1, nActive = K, done = false, rr = 0, target = 0, choice = -1;
+        const setTarget = () => { target = Math.ceil((2 * Math.log(Math.max(Math.E, T * D * D))) / (D * D)); };
+        setTarget();
+        function select() {
+          while (!done) {
+            for (let i = 0; i < K; i++) {
+              const a = (rr + i) % K;
+              if (active[a] && s.n[a] < target) { rr = (a + 1) % K; return a; }
+            }
+            const w = sc * Math.sqrt(Math.log(Math.max(Math.E, T * D * D)) / (2 * target));
+            let best = -Infinity;
+            for (let a = 0; a < K; a++) if (active[a] && s.mean[a] - w > best) best = s.mean[a] - w;
+            for (let a = 0; a < K; a++) if (active[a] && nActive > 1 && s.mean[a] + w < best) { active[a] = 0; nActive--; }
+            D /= 2;
+            if (nActive === 1 || D < Math.sqrt(Math.E / T)) done = true; else setTarget();
+          }
+          if (choice < 0) {
+            let bv = -Infinity;
+            for (let a = 0; a < K; a++) if (active[a] && s.mean[a] > bv) { bv = s.mean[a]; choice = a; }
+          }
+          return choice;
+        }
+        return { select, update: (a, r) => record(s, a, r) };
+      },
+    },
+    {
+      id: 'klucb-plus', name: 'KL-UCB+', family: 'optimism',
+      params: [],
+      formula: 'max { q : nₐ·kl(Q̂ₐ, q) ≤ ln(t / nₐ) }',
+      regret: 'Asymptotically optimal; usually below KL-UCB in practice',
+      idea: 'Dividing t by the arm\'s own count shrinks the exploration rate for arms that are already well sampled.',
+      create(K, { rng, env }) {
+        const s = stats(K), idx = new Float64Array(K), bern = env.type === 'bernoulli', s2 = env.sigma * env.sigma;
+        return {
+          select(t) {
+            const u = untried(s.n); if (u >= 0) return u;
+            for (let a = 0; a < K; a++) idx[a] = klIndex(bern, s.mean[a], s.n[a], logPlus(t / s.n[a]), s2);
+            return argmax(idx, rng);
+          },
+          update: (a, r) => record(s, a, r),
+        };
+      },
+    },
+    {
+      id: 'klucb-pp', name: 'KL-UCB++', family: 'optimism',
+      params: [],
+      formula: 'max { q : nₐ·kl(Q̂ₐ, q) ≤ ln₊( T/(K nₐ) · (ln₊²(T/(K nₐ)) + 1) ) }',
+      regret: 'Asymptotically optimal and minimax optimal; needs T',
+      idea: 'Ménard & Garivier\'s fusion of KL-UCB with the MOSS exploration function: best of both regimes.',
+      create(K, { rng, env, T }) {
+        const s = stats(K), idx = new Float64Array(K), bern = env.type === 'bernoulli', s2 = env.sigma * env.sigma;
+        return {
+          select() {
+            const u = untried(s.n); if (u >= 0) return u;
+            for (let a = 0; a < K; a++) {
+              const x = T / (K * s.n[a]), l = logPlus(x);
+              idx[a] = klIndex(bern, s.mean[a], s.n[a], logPlus(x * (l * l + 1)), s2);
+            }
+            return argmax(idx, rng);
+          },
+          update: (a, r) => record(s, a, r),
+        };
+      },
+    },
+    {
+      id: 'moss-anytime', name: 'MOSS-anytime', family: 'optimism',
+      params: [{ key: 'alpha', label: 'α', default: 1.35, min: 0, max: 5, step: 0.05 }],
+      formula: 'argmaxₐ Q̂ₐ + s·√( (1+α)/2 · ln₊(t / (K nₐ)) / nₐ )',
+      regret: 'O(√(KT)) without knowing T',
+      idea: 'Degenne & Perchet\'s version of MOSS that replaces the horizon with the current step.',
+      create(K, { rng, params, env }) {
+        const s = stats(K), idx = new Float64Array(K), c = (1 + params.alpha) / 2, sc = env.scale;
+        return {
+          select(t) {
+            const u = untried(s.n); if (u >= 0) return u;
+            for (let a = 0; a < K; a++) idx[a] = s.mean[a] + sc * Math.sqrt((c * logPlus(t / (K * s.n[a]))) / s.n[a]);
+            return argmax(idx, rng);
+          },
+          update: (a, r) => record(s, a, r),
+        };
+      },
+    },
+    // ---- elimination
+    {
+      id: 'successive-elim', name: 'Successive elimination', family: 'elimination',
+      params: [],
+      formula: 'round-robin over survivors;  drop a if Q̂ₐ + w < max Q̂ − w,   w = s·√(2 ln T / r)',
+      regret: 'O(Σ log T / Δₐ);  O(√(KT log T)) worst case',
+      idea: 'Even-Dar et al.\'s action elimination: never pulls an arm again once it is confidently worse. Its confidence widths are conservative, so it needs long horizons.',
+      create(K, { T, env }) {
+        const s = stats(K), active = new Uint8Array(K).fill(1), sc = env.scale, LT = Math.log(T);
+        let nActive = K, rr = 0;
+        return {
+          select() {
+            let minN = Infinity, maxN = -1;
+            for (let a = 0; a < K; a++) if (active[a]) { minN = Math.min(minN, s.n[a]); maxN = Math.max(maxN, s.n[a]); }
+            if (minN === maxN && minN > 0 && nActive > 1) {
+              const w = sc * Math.sqrt((2 * LT) / minN);
+              let best = -Infinity;
+              for (let a = 0; a < K; a++) if (active[a] && s.mean[a] > best) best = s.mean[a];
+              for (let a = 0; a < K; a++) if (active[a] && nActive > 1 && s.mean[a] + w < best - w) { active[a] = 0; nActive--; }
+              minN = Infinity;
+              for (let a = 0; a < K; a++) if (active[a]) minN = Math.min(minN, s.n[a]);
+            }
+            for (let i = 0; i < K; i++) {
+              const a = (rr + i) % K;
+              if (active[a] && s.n[a] === minN) { rr = (a + 1) % K; return a; }
+            }
+            return rr;
+          },
+          update: (a, r) => record(s, a, r),
+        };
+      },
+    },
+    {
+      id: 'seq-halving', name: 'Sequential halving + commit', family: 'elimination',
+      params: [{ key: 'budget', label: 'budget (share of T)', default: 0.2, min: 0.01, max: 1, step: 0.01 }],
+      formula: '⌈log₂K⌉ rounds, each splits the budget evenly over survivors and keeps the top half; then commit',
+      regret: 'A best-arm identification method: cost ≈ budget, then a commit that may be wrong',
+      idea: 'Karnin et al.\'s fixed-budget identification, used here as an explore-then-commit strategy.',
+      create(K, { rng, T, params }) {
+        const R = Math.max(1, Math.ceil(Math.log2(K))), B = Math.max(K, Math.floor(params.budget * T));
+        const rsum = new Float64Array(K), rn = new Float64Array(K);
+        let alive = Array.from({ length: K }, (_, i) => i), queue = [], qi = 0, committed = -1;
+        const plan = () => {
+          const per = Math.max(1, Math.floor(B / (alive.length * R)));
+          queue = []; qi = 0; rsum.fill(0); rn.fill(0);
+          for (let j = 0; j < per; j++) for (const a of alive) queue.push(a);
+        };
+        plan();
+        return {
+          select() {
+            if (committed >= 0) return committed;
+            if (qi >= queue.length) {
+              const key = alive.map((a) => [a, rsum[a] / rn[a] + 1e-9 * rng.uniform()]).sort((x, y) => y[1] - x[1]);
+              alive = key.slice(0, Math.ceil(alive.length / 2)).map((x) => x[0]);
+              if (alive.length === 1) return (committed = alive[0]);
+              plan();
+            }
+            return queue[qi++];
+          },
+          update(a, r) { rsum[a] += r; rn[a] += 1; },
+        };
+      },
+    },
+    // ---- minimum empirical divergence
+    {
+      id: 'imed', name: 'IMED', family: 'divergence',
+      params: [],
+      formula: 'argminₐ  nₐ·KL(Q̂ₐ, max Q̂) + ln nₐ',
+      regret: 'Asymptotically optimal (Honda & Takemura)',
+      idea: 'Deterministic like UCB but with no confidence level to tune: it balances how unlikely an arm is to be best against how rarely it has been tried.',
+      create(K, { rng, env }) {
+        const s = stats(K), idx = new Float64Array(K), bern = env.type === 'bernoulli', s2 = env.sigma * env.sigma;
+        return {
+          select() {
+            const u = untried(s.n); if (u >= 0) return u;
+            let best = -Infinity;
+            for (let a = 0; a < K; a++) if (s.mean[a] > best) best = s.mean[a];
+            for (let a = 0; a < K; a++) {
+              const d = bern ? klBern(s.mean[a], best) : ((best - s.mean[a]) ** 2) / (2 * s2);
+              idx[a] = -(s.n[a] * d + Math.log(s.n[a]));
+            }
+            return argmax(idx, rng);
+          },
+          update: (a, r) => record(s, a, r),
+        };
+      },
+    },
+    // ---- bayesian
+    {
+      id: 'gittins', name: 'Gittins index (approx.)', family: 'bayesian',
+      params: [{ key: 'gamma', label: 'γ (0 = 1 − 1/T)', default: 0, min: 0, max: 0.99999, step: 0.0001 }],
+      formula: 'argmaxₐ  μₐ + σₐ·ψ(σₐ² / (σ² ln(1/γ)))   (Brezzi–Lai approximation)',
+      regret: 'Exact index is Bayes-optimal for discounted reward; no frequentist bound',
+      idea: 'The Gittins index solves the discounted Bayesian bandit exactly. This uses Brezzi & Lai\'s closed-form approximation.',
+      create(K, { rng, params, env, T }) {
+        const s = stats(K), idx = new Float64Array(K), bern = env.type === 'bernoulli', s2 = env.sigma * env.sigma;
+        const g = params.gamma > 0 ? params.gamma : 1 - 1 / T, c = -Math.log(g);
+        return {
+          select() {
+            for (let a = 0; a < K; a++) {
+              const [m, v] = posterior(bern, s2, s.sum[a], s.n[a]);
+              const noise = bern ? Math.max(0.01, m * (1 - m)) : s2;
+              idx[a] = m + Math.sqrt(v) * gittinsPsi(v / (noise * c));
+            }
+            return argmax(idx, rng);
+          },
+          update: (a, r) => record(s, a, r),
+        };
+      },
+    },
+    {
+      id: 'kg', name: 'Knowledge gradient', family: 'bayesian',
+      params: [],
+      formula: 'argmaxₐ  μₐ + (T − t)·σ̃ₐ f(−|μₐ − maxᵦ≠ₐ μᵦ| / σ̃ₐ),   f(z) = zΦ(z) + φ(z)',
+      regret: 'No regret bound; a one-step lookahead policy',
+      idea: 'Ryzhov, Powell & Frazier\'s online KG: pay for a pull with its immediate reward plus the value of what it teaches, times the steps left.',
+      create(K, { rng, env, T }) {
+        const s = stats(K), idx = new Float64Array(K), mu = new Float64Array(K), va = new Float64Array(K);
+        const bern = env.type === 'bernoulli', s2 = env.sigma * env.sigma;
+        return {
+          select(t) {
+            let b1 = -Infinity, b2 = -Infinity, i1 = -1;
+            for (let a = 0; a < K; a++) {
+              const [m, v] = posterior(bern, s2, s.sum[a], s.n[a]);
+              mu[a] = m; va[a] = v;
+              if (m > b1) { b2 = b1; b1 = m; i1 = a; } else if (m > b2) b2 = m;
+            }
+            for (let a = 0; a < K; a++) {
+              const noise = bern ? Math.max(0.01, mu[a] * (1 - mu[a])) : s2;
+              const vNext = 1 / (1 / va[a] + 1 / noise);
+              const st = Math.sqrt(Math.max(1e-18, va[a] - vNext));
+              const other = a === i1 ? b2 : b1;
+              const z = -Math.abs(mu[a] - other) / st;
+              idx[a] = mu[a] + (T - t) * st * (z * normCdf(z) + normPdf(z));
+            }
+            return argmax(idx, rng);
+          },
+          update: (a, r) => record(s, a, r),
+        };
+      },
+    },
+    {
+      id: 'ids', name: 'Information-directed sampling', family: 'bayesian',
+      params: [{ key: 'M', label: 'posterior samples', default: 50, min: 10, max: 1000, step: 10 }],
+      formula: 'π = argmin over distributions of  (E_π Δ)² / E_π g,   Δ = regret, g = information gain about a*',
+      regret: 'Bayesian regret O(√(KT log K))',
+      idea: 'Russo & Van Roy: choose the action mix with the best ratio of squared regret to information. Estimated from posterior samples, so it is the slowest algorithm here.',
+      create(K, { rng, env, params }) {
+        const s = stats(K), bern = env.type === 'bernoulli', s2 = env.sigma * env.sigma, M = Math.max(10, Math.round(params.M));
+        const th = new Float64Array(K), cnt = new Float64Array(K), cond = new Float64Array(K * K);
+        const mu = new Float64Array(K), D = new Float64Array(K), G = new Float64Array(K);
+        return {
+          select() {
+            cnt.fill(0); cond.fill(0); mu.fill(0);
+            let rho = 0;
+            for (let m = 0; m < M; m++) {
+              let best = 0, bv = -Infinity;
+              for (let a = 0; a < K; a++) {
+                const x = samplePosterior(rng, bern, s2, s.sum[a], s.n[a]);
+                th[a] = x; mu[a] += x;
+                if (x > bv) { bv = x; best = a; }
+              }
+              cnt[best]++; rho += bv;
+              const row = best * K;
+              for (let a = 0; a < K; a++) cond[row + a] += th[a];
+            }
+            rho /= M;
+            for (let a = 0; a < K; a++) mu[a] /= M;
+            for (let a = 0; a < K; a++) {
+              D[a] = Math.max(0, rho - mu[a]);
+              let g = 0;
+              for (let b = 0; b < K; b++) {
+                if (!cnt[b]) continue;
+                const d = cond[b * K + a] / cnt[b] - mu[a];
+                g += (cnt[b] / M) * d * d;
+              }
+              G[a] = g;
+            }
+            const ratio = (d, g) => (d <= 1e-12 ? 0 : g <= 1e-15 ? Infinity : (d * d) / g);
+            let i = 0, bestR = Infinity;
+            for (let a = 0; a < K; a++) { const r = ratio(D[a], G[a]); if (r < bestR) { bestR = r; i = a; } }
+            let j = i, q = 1;
+            for (let b = 0; b < K; b++) {
+              if (b === i) continue;
+              for (let k = 1; k < 20; k++) {
+                const w = k / 20, r = ratio(w * D[i] + (1 - w) * D[b], w * G[i] + (1 - w) * G[b]);
+                if (r < bestR) { bestR = r; j = b; q = w; }
+              }
+            }
+            return rng.uniform() < q ? i : j;
+          },
+          update: (a, r) => record(s, a, r),
+        };
+      },
+    },
+    // ---- randomized perturbation
+    {
+      id: 'phe', name: 'Perturbed-history exploration', family: 'perturbation',
+      params: [{ key: 'a', label: 'a (pseudo-reward ratio)', default: 1.1, min: 0.1, max: 10, step: 0.1 }],
+      formula: 'argmaxₐ (Σ rewards + Σ ⌈a·nₐ⌉ pseudo-rewards) / (nₐ + ⌈a·nₐ⌉)',
+      regret: 'O(Σ log T / Δₐ) for Bernoulli rewards with a > 1',
+      idea: 'Kveton et al.: mix in fresh coin-flip pseudo-rewards every round. The noise does the exploring and no posterior is needed.',
+      create(K, { rng, params, env }) {
+        const s = stats(K), idx = new Float64Array(K), bern = env.type === 'bernoulli', sig = env.sigma;
+        return {
+          select() {
+            const u = untried(s.n); if (u >= 0) return u;
+            for (let a = 0; a < K; a++) {
+              const n = s.n[a], m = Math.ceil(params.a * n);
+              const pseudo = bern ? binomHalf(rng, m) : Math.sqrt(m) * sig * rng.normal();
+              idx[a] = (s.sum[a] + pseudo) / (n + m);
+            }
+            return argmax(idx, rng);
+          },
+          update: (a, r) => record(s, a, r),
+        };
+      },
+    },
+    {
+      id: 'bge', name: 'Boltzmann–Gumbel', family: 'perturbation',
+      params: [{ key: 'C', label: 'C', default: 0.2, min: 0.01, max: 10, step: 0.01 }],
+      formula: 'argmaxₐ  Q̂ₐ + C·s·Zₐ / √nₐ,   Zₐ ~ Gumbel(0, 1)',
+      regret: 'O(Σ log² T / Δₐ)',
+      idea: 'Cesa-Bianchi et al.\'s fix for softmax: each arm gets its own temperature, shrinking with its pull count.',
+      create(K, { rng, params, env }) {
+        const s = stats(K), idx = new Float64Array(K), c = params.C * env.scale;
+        return {
+          select() {
+            const u = untried(s.n); if (u >= 0) return u;
+            for (let a = 0; a < K; a++) {
+              const z = -Math.log(-Math.log(rng.uniform() || 1e-300) || 1e-300);
+              idx[a] = s.mean[a] + (c * z) / Math.sqrt(s.n[a]);
+            }
+            return argmax(idx, rng);
+          },
+          update: (a, r) => record(s, a, r),
+        };
+      },
+    },
+    // ---- learning automata
+    {
+      id: 'pursuit', name: 'Pursuit', family: 'gradient',
+      params: [{ key: 'beta', label: 'β (pursuit rate)', default: 0.01, min: 0.0005, max: 0.5, step: 0.0005 }],
+      formula: 'π ← π + β(e_greedy − π);   sample aₜ ~ π',
+      regret: 'ε-optimal for small β; no log T bound',
+      idea: 'A learning automaton that moves its action probabilities a little toward the current greedy arm each step.',
+      create(K, { rng, params }) {
+        const s = stats(K), p = new Float64Array(K).fill(1 / K), b = params.beta;
+        return {
+          select: () => sampleIndex(p, rng),
+          update(a, r) {
+            record(s, a, r);
+            const g = argmax(s.mean, rng);
+            for (let i = 0; i < K; i++) p[i] += b * ((i === g ? 1 : 0) - p[i]);
+          },
+        };
+      },
+    },
+    {
+      id: 'lri', name: 'Linear reward-inaction', family: 'gradient',
+      params: [{ key: 'lambda', label: 'λ (learning rate)', default: 0.01, min: 0.0005, max: 0.5, step: 0.0005 }],
+      formula: 'on reward r̃ ∈ [0, 1]:  π ← π + λ r̃ (e_aₜ − π);   no change on failure',
+      regret: 'ε-optimal for small λ; can lock onto a wrong arm',
+      idea: 'The classic L_R-I automaton from learning-automata theory: reinforce what paid, ignore what did not.',
+      create(K, { rng, params, env }) {
+        const p = new Float64Array(K).fill(1 / K), lam = params.lambda;
+        return {
+          select: () => sampleIndex(p, rng),
+          update(a, r) {
+            const x = lam * env.normalize(r);
+            for (let i = 0; i < K; i++) p[i] += x * ((i === a ? 1 : 0) - p[i]);
+          },
+        };
+      },
+    },
+    {
+      id: 'reinforcement-comparison', name: 'Reinforcement comparison', family: 'gradient',
+      params: [
+        { key: 'beta', label: 'β (preference step)', default: 0.1, min: 0.005, max: 2, step: 0.005 },
+        { key: 'alpha', label: 'α (reference step)', default: 0.1, min: 0.005, max: 1, step: 0.005 },
+      ],
+      formula: 'h_aₜ ← h_aₜ + β(r − r̄),   r̄ ← r̄ + α(r − r̄),   π = softmax(h)',
+      regret: 'No regret bound',
+      idea: 'Sutton & Barto\'s precursor to the gradient bandit: compare each reward with a running reference level.',
+      create(K, { rng, params }) {
+        const h = new Float64Array(K), p = new Float64Array(K);
+        let ref = 0;
+        return {
+          select: () => sampleIndex(softmaxInto(p, h, 1), rng),
+          update(a, r) { h[a] += params.beta * (r - ref); ref += params.alpha * (r - ref); },
+        };
+      },
+    },
+    // ---- adversarial
+    {
+      id: 'exp3-ix', name: 'EXP3-IX', family: 'adversarial',
+      params: [],
+      formula: 'π ∝ exp(−η L̂),   L̂ₐ += ℓ / (πₐ + γ),   η = √(2 ln K / KT),  γ = η/2',
+      regret: 'O(√(KT log K)) with high probability',
+      idea: 'Neu\'s implicit exploration: a small bias in the loss estimate replaces forced uniform exploration and tames the variance.',
+      create(K, { rng, env, T }) {
+        const lw = new Float64Array(K), p = new Float64Array(K);
+        const eta = Math.sqrt((2 * Math.log(K)) / (K * T)), gamma = eta / 2;
+        return {
+          select: () => sampleIndex(softmaxInto(p, lw, 1), rng),
+          update(a, r) { lw[a] -= (eta * (1 - env.normalize(r))) / (p[a] + gamma); },
+        };
+      },
+    },
+    {
+      id: 'exp3p', name: 'EXP3.P', family: 'adversarial',
+      params: [],
+      formula: 'wᵢ ← wᵢ·exp(γ/3K · (x̂ᵢ + α / (πᵢ√(KT)))),   π = (1−γ)w/Σw + γ/K',
+      regret: 'O(√(KT log(K/δ))) with probability 1 − δ',
+      idea: 'Auer et al. add an optimistic bonus to every arm\'s weight, turning EXP3\'s expected bound into a high-probability one.',
+      create(K, { rng, env, T }) {
+        const lw = new Float64Array(K), p = new Float64Array(K);
+        const gamma = Math.min(0.6, 2 * Math.sqrt((0.6 * K * Math.log(K)) / T));
+        const alpha = 2 * Math.sqrt(Math.log((K * T) / 0.1));
+        const bonus = alpha / Math.sqrt(K * T);
+        return {
+          select() {
+            softmaxInto(p, lw, 1);
+            for (let a = 0; a < K; a++) p[a] = (1 - gamma) * p[a] + gamma / K;
+            return sampleIndex(p, rng);
+          },
+          update(a, r) {
+            const x = env.normalize(r);
+            for (let i = 0; i < K; i++) lw[i] += (gamma / (3 * K)) * ((i === a ? x / p[i] : 0) + bonus / p[i]);
+          },
+        };
+      },
+    },
+    {
+      id: 'tsallis-inf', name: 'Tsallis-INF', family: 'adversarial',
+      params: [],
+      formula: 'πₐ = 4 / (ηₜ(L̂ₐ − x))²,  x normalizes π,  ηₜ = 2/√t',
+      regret: 'Best of both worlds: O(√(KT)) adversarial, O(Σ log T / Δₐ) stochastic',
+      idea: 'Zimmert & Seldin\'s FTRL with the ½-Tsallis entropy. One algorithm, optimal against both stochastic and adversarial rewards.',
+      create(K, { rng, env }) {
+        const L = new Float64Array(K), p = new Float64Array(K);
+        return {
+          select(t) {
+            const eta = 2 / Math.sqrt(t);
+            let minL = Infinity;
+            for (let a = 0; a < K; a++) if (L[a] < minL) minL = L[a];
+            let x = minL - 2 / eta;
+            for (let it = 0; it < 50; it++) {
+              let S = 0, S15 = 0;
+              for (let a = 0; a < K; a++) { const w = 4 / ((eta * (L[a] - x)) ** 2); S += w; S15 += w ** 1.5; }
+              if (Math.abs(S - 1) < 1e-12) break;
+              x -= (S - 1) / (eta * S15);
+            }
+            let S = 0;
+            for (let a = 0; a < K; a++) { p[a] = 4 / ((eta * (L[a] - x)) ** 2); S += p[a]; }
+            for (let a = 0; a < K; a++) p[a] /= S;
+            return sampleIndex(p, rng);
+          },
+          update(a, r) { L[a] += (1 - env.normalize(r)) / p[a]; },
+        };
+      },
+    },
+    // ---- non-stationary
+    {
+      id: 'egreedy-const', name: 'ε-greedy, constant step', family: 'nonstationary',
+      params: [
+        { key: 'epsilon', label: 'ε', default: 0.1, min: 0, max: 1, step: 0.01 },
+        { key: 'alpha', label: 'α (step size)', default: 0.1, min: 0.01, max: 1, step: 0.01 },
+      ],
+      formula: 'Q̂ₐ ← Q̂ₐ + α(r − Q̂ₐ);  random arm w.p. ε, else argmax Q̂',
+      regret: 'Θ(T); tracks drift',
+      idea: 'Sutton & Barto\'s recipe for non-stationary problems: a constant step size weights recent rewards exponentially more.',
+      create(K, { rng, params }) {
+        const q = new Float64Array(K), eps = params.epsilon, al = params.alpha;
+        return {
+          select: () => (rng.uniform() < eps ? rng.int(K) : argmax(q, rng)),
+          update(a, r) { q[a] += al * (r - q[a]); },
+        };
+      },
+    },
+    {
+      id: 'd-ucb', name: 'Discounted UCB', family: 'nonstationary',
+      params: [
+        { key: 'gamma', label: 'γ (discount)', default: 0.99, min: 0.5, max: 1, step: 0.001 },
+        { key: 'c', label: 'c', default: 1, min: 0, max: 5, step: 0.01 },
+      ],
+      formula: 'argmaxₐ  X̄ₐ(γ) + c·s·√(ln nₜ(γ) / Nₐ(γ)),  all statistics discounted by γ',
+      regret: 'Õ(√(ΓT)) with Γ change points',
+      idea: 'Garivier & Moulines: UCB on exponentially discounted counts and sums, so old evidence fades.',
+      create(K, { rng, params, env }) {
+        const n = new Float64Array(K), sum = new Float64Array(K), pulls = new Float64Array(K), idx = new Float64Array(K);
+        const g = params.gamma, c = params.c * env.scale;
+        return {
+          select() {
+            const u = untried(pulls); if (u >= 0) return u;
+            let nt = 0;
+            for (let a = 0; a < K; a++) nt += n[a];
+            const l = Math.log(Math.max(1, nt));
+            for (let a = 0; a < K; a++) idx[a] = sum[a] / n[a] + c * Math.sqrt(l / n[a]);
+            return argmax(idx, rng);
+          },
+          update(a, r) {
+            for (let i = 0; i < K; i++) { n[i] *= g; sum[i] *= g; }
+            n[a] += 1; sum[a] += r; pulls[a] += 1;
+          },
+        };
+      },
+    },
+    {
+      id: 'm-ucb', name: 'Monitored UCB', family: 'nonstationary',
+      params: [
+        { key: 'w', label: 'w (detection window)', default: 100, min: 10, max: 2000, step: 10 },
+        { key: 'gamma', label: 'γ (forced exploration)', default: 0.05, min: 0, max: 0.5, step: 0.01 },
+      ],
+      formula: 'UCB1 since the last reset;  reset all arms when |Σ second half − Σ first half| of an arm\'s last w rewards > b',
+      regret: 'O(√(ΓKT log T)) with Γ change points',
+      idea: 'Cao et al.: pair UCB with a change detector and a trickle of forced exploration; restart from scratch when an arm shifts.',
+      create(K, { rng, params, env, T }) {
+        const W = Math.max(2, 2 * Math.round(params.w / 2)), half = W / 2;
+        const b = Math.sqrt((W / 2) * Math.log(2 * K * T * T)) * (env.type === 'bernoulli' ? 1 : 2 * env.sigma);
+        const period = params.gamma > 0 ? Math.max(K, Math.floor(K / params.gamma)) : 0;
+        const buf = new Float64Array(K * W), cnt = new Int32Array(K), head = new Int32Array(K);
+        const idx = new Float64Array(K), c = Math.SQRT2 * env.scale;
+        let s = stats(K), tau = 0;
+        return {
+          select(t) {
+            if (period) { const ph = (t - tau - 1) % period; if (ph < K) return ph; }
+            const u = untried(s.n); if (u >= 0) return u;
+            const lt = Math.log(Math.max(2, t - tau));
+            for (let a = 0; a < K; a++) idx[a] = s.mean[a] + c * Math.sqrt(lt / s.n[a]);
+            return argmax(idx, rng);
+          },
+          update(a, r, t) {
+            record(s, a, r);
+            const base = a * W;
+            buf[base + head[a]] = r; head[a] = (head[a] + 1) % W;
+            if (cnt[a] < W) cnt[a]++;
+            if (cnt[a] === W) {
+              let s1 = 0, s2 = 0;
+              for (let i = 0; i < W; i++) {
+                const v = buf[base + ((head[a] + i) % W)];
+                if (i < half) s1 += v; else s2 += v;
+              }
+              if (Math.abs(s2 - s1) > b) { s = stats(K); cnt.fill(0); head.fill(0); tau = t; }
+            }
+          },
+        };
+      },
+    },
+    {
+      id: 'exp3s', name: 'EXP3.S', family: 'nonstationary',
+      params: [],
+      formula: 'wᵢ ← wᵢ·exp(γ x̂ᵢ / K) + (eα/K)·Σⱼ wⱼ,   α = 1/T',
+      regret: 'O(√(S K T log(KT))) against the best sequence with S switches',
+      idea: 'Auer et al.\'s fixed-share EXP3: every arm keeps a floor of weight, so it can win again after a switch.',
+      create(K, { rng, env, T }) {
+        const w = new Float64Array(K).fill(1 / K), p = new Float64Array(K);
+        const alpha = 1 / T, gamma = Math.min(1, Math.sqrt((K * Math.log(K * T)) / T));
+        return {
+          select() {
+            let W = 0;
+            for (let a = 0; a < K; a++) W += w[a];
+            for (let a = 0; a < K; a++) p[a] = ((1 - gamma) * w[a]) / W + gamma / K;
+            return sampleIndex(p, rng);
+          },
+          update(a, r) {
+            let W = 0;
+            for (let i = 0; i < K; i++) W += w[i];
+            const share = (Math.E * alpha * W) / K;
+            w[a] *= Math.exp((gamma * env.normalize(r)) / p[a] / K);
+            let S = 0;
+            for (let i = 0; i < K; i++) { w[i] += share; S += w[i]; }
+            for (let i = 0; i < K; i++) w[i] /= S;
+          },
+        };
+      },
+    },
+    {
+      id: 'rexp3', name: 'Rexp3', family: 'nonstationary',
+      params: [{ key: 'batch', label: 'restart every (steps)', default: 250, min: 10, max: 10000, step: 10 }],
+      formula: 'run EXP3 (γ tuned to the batch) and restart it every Δ steps',
+      regret: 'O((K log K)^⅓ V^⅓ T^⅔) with variation budget V',
+      idea: 'Besbes, Gur & Zeevi: periodic restarts are enough to bound regret when the total drift is bounded.',
+      create(K, { rng, params, env }) {
+        const Bn = Math.max(1, Math.round(params.batch)), lw = new Float64Array(K), p = new Float64Array(K);
+        const gamma = exp3Gamma(K, Bn);
+        return {
+          select(t) {
+            if ((t - 1) % Bn === 0) lw.fill(0);
+            softmaxInto(p, lw, 1);
+            for (let a = 0; a < K; a++) p[a] = (1 - gamma) * p[a] + gamma / K;
+            return sampleIndex(p, rng);
+          },
+          update(a, r) { lw[a] += (gamma * env.normalize(r)) / (K * p[a]); },
+        };
+      },
+    },
+  );
+
+  ALGORITHMS.push({
+    id: 'linucb', name: 'LinUCB', family: 'contextual',
+    params: [{ key: 'alpha', label: 'α (exploration)', default: 1, min: 0, max: 5, step: 0.05 }],
+    formula: 'argmaxₐ  θ̂ₐ·xₜ + α√(xₜᵀ Aₐ⁻¹ xₜ),   Aₐ = I + Σ x xᵀ,  θ̂ₐ = Aₐ⁻¹ Σ r x',
+    regret: 'Õ(d√(KT)) for linear rewards',
+    idea: 'Li et al.\'s disjoint LinUCB: one ridge regression per arm on the context, plus an optimistic bonus from the regression\'s uncertainty. With no context it reduces to a ridge-regression UCB.',
+    create(K, { rng, params, d = 1 }) {
+      const Ainv = new Float64Array(K * d * d), bv = new Float64Array(K * d), idx = new Float64Array(K);
+      const Ax = new Float64Array(d), fallback = new Float64Array(d); fallback[0] = 1;
+      for (let a = 0; a < K; a++) for (let i = 0; i < d; i++) Ainv[a * d * d + i * d + i] = 1;
+      let last = fallback;
+      return {
+        select(t, x) {
+          x = x && x.length === d ? x : fallback;
+          last = x;
+          for (let a = 0; a < K; a++) {
+            const o = a * d * d;
+            let mean = 0, q = 0;
+            for (let i = 0; i < d; i++) {
+              let th = 0, ax = 0;
+              for (let j = 0; j < d; j++) { th += Ainv[o + i * d + j] * bv[a * d + j]; ax += Ainv[o + i * d + j] * x[j]; }
+              mean += th * x[i]; q += x[i] * ax;
+            }
+            idx[a] = mean + params.alpha * Math.sqrt(Math.max(0, q));
+          }
+          return argmax(idx, rng);
+        },
+        update(a, r) {
+          const x = last, o = a * d * d;
+          // Sherman–Morrison: A⁻¹ ← A⁻¹ − (A⁻¹x)(A⁻¹x)ᵀ / (1 + xᵀA⁻¹x)
+          let den = 1;
+          for (let i = 0; i < d; i++) {
+            let v = 0;
+            for (let j = 0; j < d; j++) v += Ainv[o + i * d + j] * x[j];
+            Ax[i] = v; den += x[i] * v;
+          }
+          for (let i = 0; i < d; i++) for (let j = 0; j < d; j++) Ainv[o + i * d + j] -= (Ax[i] * Ax[j]) / den;
+          for (let i = 0; i < d; i++) bv[a * d + i] += r * x[i];
+        },
+      };
+    },
+  });
+
+  // Keep each family's members together, in family order, for listings.
+  const famOrder = (id) => FAMILIES.findIndex((f) => f.id === id);
+  ALGORITHMS.sort((a, b) => famOrder(a.family) - famOrder(b.family));
   const ALGO_BY_ID = Object.fromEntries(ALGORITHMS.map((a) => [a.id, a]));
 
   function defaultParams(algoId) {
@@ -643,6 +1436,7 @@
     const K = config.K | 0, T = config.T | 0, runs = config.runs | 0, seed = config.seed >>> 0;
     if (K < 2) throw new Error('K must be at least 2');
     const means = new Float64Array(T * K), rewards = new Float64Array(T * K);
+    const D = env.d, contexts = new Float64Array(T * D).fill(1), xv = new Float64Array(D);
     const best = new Float64Array(T), avgMean = new Float64Array(K), rank = new Int32Array(K);
 
     const slots = config.algorithms.map((spec) => {
@@ -660,7 +1454,8 @@
 
     function runOne(run) {
       const envRng = Rng(hash32(seed, run, 'env'));
-      env.fill(K, T, envRng, means, rewards);
+      if (D > 1) contexts.fill(0); else contexts.fill(1);
+      env.fill(K, T, envRng, means, rewards, contexts);
       avgMean.fill(0);
       for (let t = 0; t < T; t++) {
         let b = -Infinity;
@@ -677,12 +1472,13 @@
 
       for (const slot of slots) {
         const rng = Rng(hash32(seed, run, slot.def.id));
-        const agent = slot.def.create(K, { T, env, params: slot.params, rng });
+        const agent = slot.def.create(K, { T, env, params: slot.params, rng, d: D });
         const t0 = now();
         let cum = 0;
         const { regSum, regSq, optSum, rewSum, pullsByRank } = slot;
         for (let t = 0; t < T; t++) {
-          const a = agent.select(t + 1);
+          for (let j = 0; j < D; j++) xv[j] = contexts[t * D + j];
+          const a = agent.select(t + 1, xv);
           const r = rewards[t * K + a];
           agent.update(a, r, t + 1);
           const m = means[t * K + a];
@@ -753,7 +1549,7 @@
   }
 
   return {
-    Rng, hash32, normInv, klBern, klUcbBern, argmax,
+    Rng, hash32, normInv, normCdf, klBern, klUcbBern, argmax, gittinsPsi,
     ENVIRONMENTS, ENV_BY_ID, FAMILIES, ALGORITHMS, ALGO_BY_ID,
     defaultParams, createRunner, simulate,
   };

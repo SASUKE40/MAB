@@ -122,7 +122,7 @@ button, input, select { font: inherit; color: inherit; }
 .rail .row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; }
 .rail label { font-size: var(--step--1); color: var(--ink-2); }
 .field { display: grid; gap: 6px; }
-select, input[type="number"] {
+select, input[type="number"], input[type="search"] {
   width: 100%; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg);
 }
 input[type="range"] { width: 100%; accent-color: var(--ink); }
@@ -282,7 +282,7 @@ footer { color: var(--muted); font-size: var(--step--1); padding-block: 0 40px; 
     <div>
       <div class="eyebrow">Multi-armed bandits · reinforcement learning</div>
       <h1>Bandit Algorithm Arena</h1>
-      <p class="lede">Seventeen bandit algorithms, simulated in your browser. Every algorithm in a run plays the same bandit and sees the same reward stream, so differences come from the strategy, not the luck of the draw.</p>
+      <p class="lede"><span id="algo-total">Forty-four</span> bandit algorithms, simulated in your browser. Every algorithm in a run plays the same bandit and sees the same reward stream, so differences come from the strategy, not the luck of the draw.</p>
     </div>
     <div class="status" aria-live="polite">
       <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
@@ -332,7 +332,9 @@ footer { color: var(--muted); font-size: var(--step--1); padding-block: 0 40px; 
         <span class="cap-note num" id="algo-count">0 of 8</span>
       </div>
       <div class="presets" id="presets"></div>
+      <input type="search" id="algo-filter" placeholder="Filter algorithms" aria-label="Filter algorithms" autocomplete="off">
       <div id="algo-list"></div>
+      <p class="cap-note" id="algo-empty" hidden>No algorithm matches that filter.</p>
       <p class="cap-note">Up to eight at a time, one color each. A color stays with its algorithm until you remove it.</p>
     </section>
     <section>
