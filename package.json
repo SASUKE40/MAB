@@ -1,14 +1,17 @@
 {
   "name": "mab-arena",
   "version": "1.0.0",
-  "description": "Multi-armed bandit algorithms compared: simulation core, CLI benchmark and an interactive web dashboard.",
-  "main": "src/mab.js",
+  "description": "Multi-armed bandit algorithms compared across problem settings: simulation core, CLI benchmark and an interactive web dashboard.",
+  "main": "src/index.js",
   "license": "MIT",
   "scripts": {
-    "test": "node --test test/*.test.js",
+    "test": "MAB_STRICT=1 node --test test/*.test.js",
+    "build": "node scripts/build-dashboard.js",
     "bench": "node scripts/benchmark.js",
     "bench:readme": "node scripts/benchmark.js --md results/benchmark.md --json results/benchmark.json",
     "serve": "python3 -m http.server 8000"
   },
-  "engines": { "node": ">=18" }
+  "engines": {
+    "node": ">=18"
+  }
 }

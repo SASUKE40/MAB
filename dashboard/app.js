@@ -1,12 +1,14 @@
-/* Bandit Algorithm Arena — dashboard UI. Depends on window.MAB (src/mab.js). */
+/* Bandit Algorithm Arena — dashboard UI. Depends on window.MAB (src/mab.js plus add-ons). */
 (function () {
   'use strict';
   const M = window.MAB;
   const $ = (s, r = document) => r.querySelector(s);
   const SLOTS = 8;
-  const DEFAULT_LINEUP = ['greedy', 'egreedy', 'ucb1', 'ucb-tuned', 'klucb', 'thompson', 'gradient', 'exp3'];
-  const PRESETS = [
-    { label: 'Classic lineup', algos: DEFAULT_LINEUP },
+
+  // Presets for the K-armed arena; other settings bring their own.
+  const KAB_LINEUP = ['greedy', 'egreedy', 'ucb1', 'ucb-tuned', 'klucb', 'thompson', 'gradient', 'exp3'];
+  const KAB_PRESETS = [
+    { label: 'Classic lineup', algos: KAB_LINEUP },
     { label: 'Optimism vs Bayes', algos: ['ucb1', 'ucb-tuned', 'klucb', 'moss', 'bayes-ucb', 'thompson'] },
     { label: 'Undirected exploration', algos: ['greedy', 'egreedy', 'egreedy-decay', 'etc', 'softmax', 'optimistic', 'thompson'] },
     { label: 'KL & divergence', algos: ['klucb', 'klucb-plus', 'klucb-pp', 'imed', 'bayes-ucb', 'thompson', 'ucb1'] },
@@ -18,39 +20,36 @@
     { label: 'Contextual', algos: ['linucb', 'thompson', 'klucb', 'ucb1', 'egreedy', 'gittins'], env: 'contextual' },
     { label: 'Tracking change', algos: ['egreedy-const', 'ucb1', 'thompson', 'sw-ucb', 'd-ucb', 'dts', 'm-ucb', 'exp3s'], env: 'abrupt' },
   ];
-  const METRICS = {
-    regret: { label: 'Cumulative regret', better: 'lower', fmt: fmtNum },
-    optimal: { label: 'Best-arm rate', better: 'higher', fmt: fmtPct },
-    reward: { label: 'Reward per step', better: 'higher', fmt: (v) => v.toFixed(3) },
-  };
-
-  const state = {
-    env: 'bernoulli', K: 10, T: 1000, runs: 200, seed: 7,
-    selected: [], slot: {}, params: {},
-    metric: 'regret', logx: false, focus: null,
-    sortKey: 'finalRegret', sortDir: 1,
-    results: null, cfg: null, runner: null,
-  };
-  for (const a of M.ALGORITHMS) state.params[a.id] = M.defaultParams(a.id);
-  setLineup(DEFAULT_LINEUP);
+  const EXTRA_PRESETS = window.MAB_PRESETS || {};
 
   // ------------------------------------------------------------ utils ----
   function esc(s) {
     return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
   function fmtNum(v) {
+    if (!Number.isFinite(v)) return '—';
     const a = Math.abs(v);
     if (a >= 100) return Math.round(v).toLocaleString('en-US');
     if (a >= 10) return v.toFixed(1);
-    return v.toFixed(2);
+    if (a >= 0.01 || v === 0) return v.toFixed(2);
+    return v.toPrecision(2);
   }
-  function fmtPct(v) { return (v * 100).toFixed(v < 0.1 ? 1 : 0) + '%'; }
+  function fmtPct(v) { return Number.isFinite(v) ? (v * 100).toFixed(Math.abs(v) < 0.1 ? 1 : 0) + '%' : '—'; }
+  function fmtBy(kind, v) {
+    if (v == null || !Number.isFinite(v)) return '—';
+    switch (kind) {
+      case 'pct': return fmtPct(v);
+      case 'int': return Math.round(v).toLocaleString('en-US');
+      case 'fixed2': return v.toFixed(2);
+      case 'fixed3': return v.toFixed(3);
+      case 'ci': return '± ' + fmtNum(1.96 * v);
+      default: return fmtNum(v);
+    }
+  }
   function fmtTick(v) {
     if (Math.abs(v) >= 1000) return Math.round(v).toLocaleString('en-US');
     return +v.toFixed(6) + '';
   }
-  function color(id) { return `var(--s${state.slot[id] + 1})`; }
-  function algoName(id) { return M.ALGO_BY_ID[id].name; }
   function niceStep(range, count) {
     const raw = range / Math.max(1, count);
     const p = Math.pow(10, Math.floor(Math.log10(raw)));
@@ -66,72 +65,205 @@
   const measureCtx = document.createElement('canvas').getContext('2d');
   function textWidth(s, font) { measureCtx.font = font; return measureCtx.measureText(s).width; }
   const LABEL_FONT = '12px "IBM Plex Sans", system-ui, sans-serif';
+  const NUM_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
 
-  function setLineup(ids) {
-    state.selected = [];
-    state.slot = {};
-    ids.slice(0, SLOTS).forEach((id, i) => { state.selected.push(id); state.slot[id] = i; });
+  // ------------------------------------------------------------ state ----
+  const SETTINGS = M.SETTINGS;
+  const views = {};          // per-setting UI state, kept when switching
+  let S = null, V = null;    // current setting and its view state
+
+  function byId(setting) {
+    if (!setting._byId) {
+      setting._byId = {};
+      for (const a of setting.algorithms) setting._byId[a.id] = a;
+    }
+    return setting._byId;
+  }
+  function algo(id) { return byId(S)[id]; }
+  function envOf(id) { return S.environments.find((e) => e.id === id); }
+  function defaults(a) { const o = {}; for (const p of a.params || []) o[p.key] = p.default; return o; }
+  function presetsOf(setting) {
+    const list = setting.id === 'kab' ? KAB_PRESETS : (setting.presets || []).concat(EXTRA_PRESETS[setting.id] || []);
+    const ids = byId(setting);
+    return list
+      .map((p) => ({ ...p, algos: p.algos.filter((id) => ids[id]).slice(0, SLOTS) }))
+      .filter((p) => p.algos.length && (!p.env || setting.environments.some((e) => e.id === p.env)));
+  }
+  function viewFor(setting) {
+    if (views[setting.id]) return views[setting.id];
+    const c = setting.controls || {};
+    const v = {
+      env: setting.defaultEnv && setting.environments.some((e) => e.id === setting.defaultEnv) ? setting.defaultEnv : setting.environments[0].id,
+      K: c.K ? c.K.default : 10,
+      T: c.T ? c.T.default : 1000,
+      runs: c.runs ? c.runs.default : 100,
+      seed: 7,
+      extra: {},
+      selected: [], slot: {}, params: {},
+      metric: setting.metrics[0].key, logx: false,
+      sortKey: setting.final.key, sortDir: setting.final.better === 'higher' ? -1 : 1,
+      filter: '',
+      results: null, cfg: null,
+    };
+    for (const x of c.extra || []) v.extra[x.key] = x.default;
+    for (const a of setting.algorithms) v.params[a.id] = defaults(a);
+    const ids = byId(setting);
+    let lineup = (setting.id === 'kab' ? KAB_LINEUP : setting.defaultLineup || []).filter((id) => ids[id]);
+    if (!lineup.length) lineup = setting.algorithms.slice(0, Math.min(6, setting.algorithms.length)).map((a) => a.id);
+    setLineup(v, lineup);
+    views[setting.id] = v;
+    return v;
+  }
+  function setLineup(v, ids) {
+    v.selected = []; v.slot = {};
+    ids.slice(0, SLOTS).forEach((id, i) => { v.selected.push(id); v.slot[id] = i; });
   }
   function toggleAlgo(id, on) {
-    if (on && !state.selected.includes(id)) {
-      if (state.selected.length >= SLOTS) return false;
-      const used = new Set(Object.values(state.slot));
+    if (on && !V.selected.includes(id)) {
+      if (V.selected.length >= SLOTS) return false;
+      const used = new Set(Object.values(V.slot));
       let s = 0; while (used.has(s)) s++;
-      state.slot[id] = s;
-      state.selected.push(id);
+      V.slot[id] = s;
+      V.selected.push(id);
     } else if (!on) {
-      state.selected = state.selected.filter((x) => x !== id);
-      delete state.slot[id];
+      V.selected = V.selected.filter((x) => x !== id);
+      delete V.slot[id];
     }
     return true;
   }
+  function color(id) { return `var(--s${(V.slot[id] ?? 0) + 1})`; }
+  function sorter(better) { return better === 'higher' ? (a, b) => b - a : (a, b) => a - b; }
+  function sumVal(r, key) { return r.summary ? r.summary[key] : r[key]; }
+  function finalOf(r) { return sumVal(r, S.final.key); }
+  function finalSE(r) { return S.final.se ? sumVal(r, S.final.se) || 0 : 0; }
+  function envTags(e) {
+    const t = (e.tags || []).slice();
+    if (!e.tags) {
+      if (e.stationary === false) t.push('changes');
+      if (e.contextual) t.push('context');
+      if (e.rested) t.push('rested');
+    }
+    return t;
+  }
 
   // ---------------------------------------------------------- controls ----
+  function buildSettingsNav() {
+    const nav = $('#settings-nav');
+    nav.innerHTML = '';
+    for (const s of SETTINGS) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('role', 'tab'); b.dataset.setting = s.id;
+      const name = document.createElement('span'); name.textContent = s.short || s.name;
+      const count = document.createElement('span'); count.className = 'count'; count.textContent = s.algorithms.length;
+      b.append(name, count);
+      b.title = s.blurb || s.name;
+      b.addEventListener('click', () => switchSetting(s.id, true));
+      nav.appendChild(b);
+    }
+  }
+
+  function switchSetting(id, pushHash) {
+    const next = SETTINGS.find((s) => s.id === id) || SETTINGS[0];
+    if (S && S.id === next.id && V) return;
+    if (S) job++; // cancel any run of the previous setting
+    S = next; V = viewFor(S);
+    if (pushHash) { try { history.replaceState(null, '', '#' + S.id); } catch (e) { location.hash = S.id; } }
+    for (const b of $('#settings-nav').children) b.setAttribute('aria-selected', String(b.dataset.setting === S.id));
+    $('#setting-blurb').textContent = S.blurb || '';
+    $('#catalog-title').textContent = `Every algorithm in ${S.name}`;
+    buildControls(); buildEnvs(); buildPresets(); buildMetricTabs(); buildAlgoList(); buildCatalog();
+    $('#heat-card').hidden = !S.heatmap;
+    $('#split').classList.toggle('single', !S.heatmap);
+    $('#board-title').textContent = S.final.label;
+    $('#board-sub').textContent = `${S.final.better === 'higher' ? 'Higher' : 'Lower'} is better.${S.final.se ? ' Whiskers show a 95% confidence interval of the mean.' : ''}`;
+    if (V.results) renderAll();
+    else { $('#tiles').innerHTML = ''; ['#curve-chart', '#board-chart', '#heat-chart'].forEach((q) => { $(q).innerHTML = ''; }); $('#legend').innerHTML = ''; $('#results-table').innerHTML = ''; }
+    scheduleRun(0);
+  }
+
+  function buildControls() {
+    const c = S.controls || {};
+    const kField = $('#k-field');
+    kField.hidden = !c.K;
+    if (c.K) {
+      const k = $('#k-range');
+      $('#k-label').textContent = c.K.label || 'Arms (K)';
+      k.min = c.K.min; k.max = c.K.max; k.step = c.K.step || 1; k.value = V.K;
+      $('#k-out').textContent = V.K;
+    }
+    const tField = $('#t-field');
+    tField.hidden = !c.T;
+    if (c.T) {
+      $('#t-label').textContent = c.T.label || 'Horizon (T steps)';
+      $('#t-select').innerHTML = c.T.options.map((o) => `<option value="${o}" ${o === V.T ? 'selected' : ''}>${o.toLocaleString('en-US')}</option>`).join('');
+    }
+    const runsOpts = (c.runs && c.runs.options) || [20, 50, 100, 200];
+    $('#runs-label').textContent = (c.runs && c.runs.label) || 'Runs averaged';
+    $('#runs-select').innerHTML = runsOpts.map((o) => `<option value="${o}" ${o === V.runs ? 'selected' : ''}>${o.toLocaleString('en-US')}</option>`).join('');
+    $('#seed-input').value = V.seed;
+    const ex = c.extra || [];
+    $('#extra-controls').innerHTML = ex.map((x) => `
+      <div class="field">
+        <label for="x-${esc(x.key)}">${esc(x.label)}</label>
+        <input type="number" id="x-${esc(x.key)}" data-key="${esc(x.key)}" value="${V.extra[x.key]}" min="${x.min}" max="${x.max}" step="${x.step || 'any'}">
+      </div>`).join('');
+    $('#extra-controls').hidden = !ex.length;
+  }
+
   function buildEnvs() {
-    const box = $('#envs');
-    box.innerHTML = M.ENVIRONMENTS.map((e) => `
-      <label class="env-opt">
-        <input type="radio" name="env" id="env-${e.id}" value="${e.id}" ${e.id === state.env ? 'checked' : ''}>
-        <b>${esc(e.name)}${e.stationary ? '' : '<span class="tag">changes</span>'}${e.contextual ? '<span class="tag">context</span>' : ''}</b>
-        <span>${esc(e.description)}</span>
-      </label>`).join('');
-    box.addEventListener('change', (ev) => { state.env = ev.target.value; scheduleRun(); });
+    const sel = $('#env-select');
+    sel.innerHTML = S.environments.map((e) => `<option value="${esc(e.id)}" ${e.id === V.env ? 'selected' : ''}>${esc(e.name)}</option>`).join('');
+    describeEnv();
+  }
+  function describeEnv() {
+    const e = envOf(V.env);
+    $('#env-desc').textContent = e ? e.description || '' : '';
+    $('#env-tags').innerHTML = e ? envTags(e).map((t) => `<span class="tag">${esc(t)}</span>`).join('') : '';
   }
 
   function buildPresets() {
     const box = $('#presets');
-    PRESETS.forEach((p) => {
+    box.innerHTML = '';
+    for (const p of presetsOf(S)) {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'chip'; b.textContent = p.label;
-      if (p.env) b.title = `Also switches to the ${M.ENV_BY_ID[p.env].name.toLowerCase()} environment`;
+      if (p.env) b.title = `Also switches to the ${envOf(p.env).name.toLowerCase()} environment`;
       b.addEventListener('click', () => {
-        setLineup(p.algos);
-        if (p.env) { state.env = p.env; const r = $(`#env-${p.env}`); if (r) r.checked = true; }
+        setLineup(V, p.algos);
+        if (p.env) { V.env = p.env; $('#env-select').value = p.env; describeEnv(); }
         buildAlgoList(); buildCatalog(); scheduleRun(0);
       });
       box.appendChild(b);
-    });
+    }
+    box.hidden = !box.children.length;
+  }
+
+  function buildMetricTabs() {
+    if (!S.metrics.some((m) => m.key === V.metric)) V.metric = S.metrics[0].key;
+    $('#metric-tabs').innerHTML = S.metrics.map((m) => `<button role="tab" type="button" data-metric="${esc(m.key)}" aria-selected="${m.key === V.metric}">${esc(m.label)}</button>`).join('');
+    $('#logx').checked = V.logx;
   }
 
   function buildAlgoList() {
     const active = document.activeElement && document.activeElement.id;
-    const full = state.selected.length >= SLOTS;
-    const q = ($('#algo-filter').value || '').trim().toLowerCase();
-    const match = (a) => !q || a.name.toLowerCase().includes(q) || a.id.includes(q) || state.selected.includes(a.id);
-    const html = M.FAMILIES.map((f) => {
-      const algos = M.ALGORITHMS.filter((a) => a.family === f.id && (match(a) || f.name.toLowerCase().includes(q)));
+    const full = V.selected.length >= SLOTS;
+    $('#algo-filter').value = V.filter;
+    const q = V.filter.trim().toLowerCase();
+    const match = (a) => !q || a.name.toLowerCase().includes(q) || a.id.includes(q) || V.selected.includes(a.id);
+    const html = S.families.map((f) => {
+      const algos = S.algorithms.filter((a) => a.family === f.id && (match(a) || f.name.toLowerCase().includes(q)));
       if (!algos.length) return '';
       return `<div class="algo-group"><div class="eyebrow">${esc(f.name)}</div>${algos.map((a) => {
-        const on = state.selected.includes(a.id);
+        const on = V.selected.includes(a.id);
         const dis = !on && full;
-        const params = on && a.params.length ? `<div class="params">${a.params.map((p) => `
-            <label for="p-${a.id}-${p.key}">${esc(p.label)}
-              <input type="number" id="p-${a.id}-${p.key}" data-algo="${a.id}" data-key="${p.key}"
-                value="${state.params[a.id][p.key]}" min="${p.min}" max="${p.max}" step="${p.step}">
+        const params = on && (a.params || []).length ? `<div class="params">${a.params.map((p) => `
+            <label for="p-${esc(a.id)}-${esc(p.key)}">${esc(p.label)}
+              <input type="number" id="p-${esc(a.id)}-${esc(p.key)}" data-algo="${esc(a.id)}" data-key="${esc(p.key)}"
+                value="${V.params[a.id][p.key]}" min="${p.min}" max="${p.max}" step="${p.step || 'any'}">
             </label>`).join('')}</div>` : '';
         return `<div class="algo${dis ? ' disabled' : ''}">
-          <label for="a-${a.id}">
-            <input type="checkbox" id="a-${a.id}" data-algo="${a.id}" ${on ? 'checked' : ''} ${dis ? 'disabled' : ''}>
+          <label for="a-${esc(a.id)}">
+            <input type="checkbox" id="a-${esc(a.id)}" data-algo="${esc(a.id)}" ${on ? 'checked' : ''} ${dis ? 'disabled' : ''}>
             <span class="sw" style="background:${on ? color(a.id) : 'transparent'}"></span>
             <span>${esc(a.name)}</span>
           </label>${params}</div>`;
@@ -139,7 +271,7 @@
     }).join('');
     $('#algo-list').innerHTML = html;
     $('#algo-empty').hidden = html.trim() !== '';
-    $('#algo-count').textContent = `${state.selected.length} of ${SLOTS}`;
+    $('#algo-count').textContent = `${V.selected.length} of ${SLOTS}`;
     if (active) { const el = document.getElementById(active); if (el) el.focus(); }
   }
 
@@ -147,35 +279,48 @@
     $('#algo-list').addEventListener('change', (ev) => {
       const t = ev.target;
       if (t.type === 'checkbox') {
-        if (!t.checked && state.selected.length <= 1) { t.checked = true; return; }
+        if (!t.checked && V.selected.length <= 1) { t.checked = true; return; }
         toggleAlgo(t.dataset.algo, t.checked);
         buildAlgoList(); buildCatalog(); scheduleRun();
       } else if (t.type === 'number') {
-        const p = M.ALGO_BY_ID[t.dataset.algo].params.find((x) => x.key === t.dataset.key);
+        const p = algo(t.dataset.algo).params.find((x) => x.key === t.dataset.key);
         let v = parseFloat(t.value);
         if (!Number.isFinite(v)) v = p.default;
         v = Math.min(p.max, Math.max(p.min, v));
         t.value = v;
-        state.params[t.dataset.algo][t.dataset.key] = v;
+        V.params[t.dataset.algo][t.dataset.key] = v;
         scheduleRun();
       }
     });
-    $('#algo-filter').addEventListener('input', buildAlgoList);
+    $('#algo-filter').addEventListener('input', (e) => { V.filter = e.target.value; buildAlgoList(); });
+    $('#env-select').addEventListener('change', (e) => { V.env = e.target.value; describeEnv(); scheduleRun(); });
     const k = $('#k-range');
-    k.addEventListener('input', () => { state.K = +k.value; $('#k-out').textContent = k.value; scheduleRun(); });
-    $('#t-select').addEventListener('change', (e) => { state.T = +e.target.value; scheduleRun(); });
-    $('#runs-select').addEventListener('change', (e) => { state.runs = +e.target.value; scheduleRun(); });
+    k.addEventListener('input', () => { V.K = +k.value; $('#k-out').textContent = k.value; scheduleRun(); });
+    $('#t-select').addEventListener('change', (e) => { V.T = +e.target.value; scheduleRun(); });
+    $('#runs-select').addEventListener('change', (e) => { V.runs = +e.target.value; scheduleRun(); });
+    $('#extra-controls').addEventListener('change', (e) => {
+      const t = e.target; if (!t.dataset.key) return;
+      const x = (S.controls.extra || []).find((y) => y.key === t.dataset.key);
+      let v = parseFloat(t.value);
+      if (!Number.isFinite(v)) v = x.default;
+      v = Math.min(x.max, Math.max(x.min, v));
+      t.value = v; V.extra[x.key] = v; scheduleRun();
+    });
     const seed = $('#seed-input');
-    seed.addEventListener('change', () => { state.seed = Math.max(0, parseInt(seed.value, 10) || 0); seed.value = state.seed; scheduleRun(); });
-    $('#seed-roll').addEventListener('click', () => { state.seed = Math.floor(Math.random() * 100000); seed.value = state.seed; scheduleRun(0); });
+    seed.addEventListener('change', () => { V.seed = Math.max(0, parseInt(seed.value, 10) || 0); seed.value = V.seed; scheduleRun(); });
+    $('#seed-roll').addEventListener('click', () => { V.seed = Math.floor(Math.random() * 100000); seed.value = V.seed; scheduleRun(0); });
     $('#run-btn').addEventListener('click', () => scheduleRun(0));
     $('#metric-tabs').addEventListener('click', (ev) => {
       const b = ev.target.closest('button[data-metric]'); if (!b) return;
-      state.metric = b.dataset.metric;
+      V.metric = b.dataset.metric;
       for (const x of $('#metric-tabs').children) x.setAttribute('aria-selected', String(x === b));
       renderCurves();
     });
-    $('#logx').addEventListener('change', (e) => { state.logx = e.target.checked; renderCurves(); });
+    $('#logx').addEventListener('change', (e) => { V.logx = e.target.checked; renderCurves(); });
+    window.addEventListener('hashchange', () => {
+      const id = location.hash.replace('#', '');
+      if (SETTINGS.some((s) => s.id === id)) switchSetting(id, false);
+    });
   }
 
   // ------------------------------------------------------------ runner ----
@@ -185,25 +330,34 @@
     runTimer = setTimeout(startRun, delay);
   }
   function startRun() {
-    const my = ++job;
+    const my = ++job, setting = S, view = V;
+    const c = setting.controls || {};
     const cfg = {
-      env: state.env, K: state.K, T: state.T, runs: state.runs, seed: state.seed,
-      algorithms: state.selected.map((id) => ({ id, params: Object.assign({}, state.params[id]) })),
+      env: view.env, K: c.K ? view.K : undefined, T: c.T ? view.T : undefined, runs: view.runs, seed: view.seed,
+      extra: Object.assign({}, view.extra),
+      algorithms: view.selected.map((id) => ({ id, params: Object.assign({}, view.params[id]) })),
     };
-    const runner = M.createRunner(cfg);
+    let runner;
+    try { runner = setting.createRunner(cfg); } catch (err) { setStatus('error', `Could not start: ${err.message}`, 0); return; }
     const t0 = performance.now();
     let lastDraw = 0, firstDraw = true;
-    document.querySelectorAll('.chart').forEach((c) => c.classList.add('stale'));
+    document.querySelectorAll('.chart').forEach((el) => el.classList.add('stale'));
     setStatus('running', `Running 0 / ${cfg.runs}`, 0);
     function tick() {
       if (my !== job) return;
       const start = performance.now();
-      do { runner.step(1); } while (!runner.finished && performance.now() - start < 30);
+      try {
+        do { runner.step(1); } while (!runner.finished && performance.now() - start < 30);
+      } catch (err) {
+        setStatus('error', `Stopped: ${err.message}`, runner.done / cfg.runs);
+        console.error(err);
+        return;
+      }
       const now = performance.now();
       if (runner.finished || now - lastDraw > 300 || firstDraw) {
-        state.results = runner.results();
-        state.cfg = cfg; state.runner = runner;
-        if (firstDraw) document.querySelectorAll('.chart').forEach((c) => c.classList.remove('stale'));
+        view.results = runner.results();
+        view.cfg = cfg;
+        if (firstDraw) document.querySelectorAll('.chart').forEach((el) => el.classList.remove('stale'));
         firstDraw = false;
         renderAll();
         lastDraw = performance.now();
@@ -226,33 +380,39 @@
 
   // ------------------------------------------------------------ render ----
   function renderAll() {
-    renderTiles(); renderCurves(); renderBoard(); renderHeat(); renderTable();
+    if (!V.results || !V.results.length) return;
+    renderTiles(); renderCurves(); renderBoard(); if (S.heatmap) renderHeat(); renderTable();
   }
 
   function renderTiles() {
-    const R = state.results, cfg = state.cfg, env = M.ENV_BY_ID[cfg.env];
-    const byReg = R.slice().sort((a, b) => a.finalRegret - b.finalRegret);
-    const best = byReg[0], worst = byReg[byReg.length - 1];
-    const bestOpt = R.slice().sort((a, b) => b.optimalTail - a.optimalTail)[0];
-    const cheap = R.slice().sort((a, b) => a.msPerRun - b.msPerRun)[0];
-    const runs = R[0].runs;
-    const ratio = best.finalRegret > 0 ? worst.finalRegret / best.finalRegret : 0;
-    const tiles = [
-      { label: 'Lowest regret', id: best.id, sub: `${fmtNum(best.finalRegret)} ± ${fmtNum(1.96 * best.finalSE)} after ${cfg.T.toLocaleString('en-US')} steps` },
-      { label: 'Picks the best arm most', id: bestOpt.id, sub: `${fmtPct(bestOpt.optimalTail)} of the last 10% of steps` },
-      { label: 'Highest regret', id: worst.id, sub: `${fmtNum(worst.finalRegret)}${R.length > 1 && ratio ? `, ${ratio.toFixed(1)}× the leader` : ''}` },
-      { label: 'Cheapest to run', id: cheap.id, sub: `${cheap.msPerRun.toFixed(2)} ms per ${cfg.T.toLocaleString('en-US')}-step run` },
-    ];
+    const R = V.results, cfg = V.cfg, env = envOf(cfg.env), F = S.final;
+    const ord = R.slice().sort((a, b) => sorter(F.better)(finalOf(a), finalOf(b)));
+    const best = ord[0], worst = ord[ord.length - 1];
+    const cheap = R.slice().sort((a, b) => (sumVal(a, 'msPerRun') || 0) - (sumVal(b, 'msPerRun') || 0))[0];
+    const tiles = [{ label: F.better === 'higher' ? `Highest ${F.label.toLowerCase()}` : `Lowest ${F.label.toLowerCase()}`, id: best.id, sub: `${fmtNum(finalOf(best))}${F.se ? ' ± ' + fmtNum(1.96 * finalSE(best)) : ''}` }];
+    for (const t of (S.tiles || []).slice(0, 1)) {
+      const top = R.slice().sort((a, b) => sorter(t.better)(sumVal(a, t.key), sumVal(b, t.key)))[0];
+      tiles.push({ label: t.label, id: top.id, sub: `${fmtBy(t.fmt, sumVal(top, t.key))} ${t.sub || ''}`.trim() });
+    }
+    if (R.length > 1) {
+      const a = finalOf(best), b = finalOf(worst), ratio = a > 0 && b > 0 ? (F.better === 'higher' ? a / b : b / a) : 0;
+      tiles.push({ label: F.better === 'higher' ? `Lowest ${F.label.toLowerCase()}` : `Highest ${F.label.toLowerCase()}`, id: worst.id, sub: `${fmtNum(b)}${ratio > 1 ? `, ${ratio.toFixed(1)}× the leader` : ''}` });
+    }
+    tiles.push({ label: 'Cheapest to run', id: cheap.id, sub: `${(sumVal(cheap, 'msPerRun') || 0).toFixed(2)} ms per run` });
     $('#tiles').innerHTML = tiles.map((t) => `
       <div class="tile">
         <div class="label">${esc(t.label)}</div>
-        <div class="value"><span class="key" style="background:${color(t.id)}"></span><span class="txt">${esc(algoName(t.id))}</span></div>
+        <div class="value"><span class="key" style="background:${color(t.id)}"></span><span class="txt">${esc(algo(t.id).name)}</span></div>
         <div class="sub num">${esc(t.sub)}</div>
       </div>`).join('');
-    $('#curve-sub').textContent = `${env.name} · K = ${cfg.K} · ${runs} of ${cfg.runs} runs averaged · seed ${cfg.seed}`;
+    const parts = [env ? env.name : cfg.env];
+    if (cfg.K != null) parts.push(`${(S.controls.K && S.controls.K.label) ? S.controls.K.label.replace(/\s*\(.*\)/, '') : 'K'} = ${cfg.K}`);
+    for (const x of S.controls.extra || []) parts.push(`${x.label.replace(/\s*\(.*\)/, '')} = ${cfg.extra[x.key]}`);
+    parts.push(`${R[0].runs} of ${cfg.runs} runs`, `seed ${cfg.seed}`);
+    $('#curve-sub').textContent = parts.join(' · ');
   }
 
-  // ---- learning curves ----
+  // ---- curves ----
   function smooth(arr, w) {
     if (w <= 1) return arr;
     const n = arr.length, pre = new Float64Array(n + 1), out = new Float64Array(n);
@@ -264,102 +424,114 @@
     }
     return out;
   }
-  function sampleSteps(T, n, log) {
+  function sampleIdx(xs, n, log) {
+    const L = xs.length;
+    if (L <= n) return Array.from({ length: L }, (_, i) => i);
     const out = [];
     if (!log) {
-      const step = Math.max(1, T / n);
-      for (let x = 1; x < T; x += step) out.push(Math.round(x));
+      for (let i = 0; i < n; i++) out.push(Math.round((i * (L - 1)) / (n - 1)));
     } else {
-      const l = Math.log(T);
-      for (let i = 0; i < n; i++) out.push(Math.round(Math.exp((l * i) / (n - 1))));
+      const a = Math.log(xs[0]), b = Math.log(xs[L - 1]);
+      let j = 0;
+      for (let i = 0; i < n; i++) {
+        const target = Math.exp(a + ((b - a) * i) / (n - 1));
+        while (j < L - 1 && xs[j] < target) j++;
+        out.push(j);
+      }
     }
-    out.push(T);
-    return [...new Set(out)].filter((t) => t >= 1 && t <= T);
+    return [...new Set(out)];
   }
 
   let curveGeo = null;
   function renderCurves() {
     const el = $('#curve-chart');
-    if (!state.results) return;
-    const R = state.results, T = state.cfg.T, metric = state.metric, log = state.logx;
+    if (!V.results) return;
+    const R = V.results, mdef = S.metrics.find((m) => m.key === V.metric) || S.metrics[0];
+    const L = R[0].curves[mdef.key] ? R[0].curves[mdef.key].length : 0;
+    if (!L) { el.innerHTML = ''; return; }
+    const xs = R[0].x ? Array.from(R[0].x) : Array.from({ length: L }, (_, i) => i + 1);
+    const log = V.logx && xs[0] > 0;
     const W = Math.max(280, el.clientWidth);
     const H = Math.round(Math.min(440, Math.max(260, W * 0.46)));
-    const winner = metric === 'regret'
-      ? R.slice().sort((a, b) => a.finalRegret - b.finalRegret)[0]
-      : R.slice().sort((a, b) => (metric === 'optimal' ? b.optimalTail - a.optimalTail : b.meanReward - a.meanReward))[0];
-    const smoothW = metric === 'regret' ? 1 : Math.max(1, Math.round(T / 100));
+    const smoothW = mdef.smooth ? Math.max(1, Math.round(L / 100)) : 1;
     const series = R.map((r) => ({
       id: r.id, name: r.name,
-      v: metric === 'regret' ? r.regret : smooth(metric === 'optimal' ? r.optimal : r.reward, smoothW),
-      se: metric === 'regret' ? r.regretSE : null,
+      v: smooth(r.curves[mdef.key], smoothW),
+      se: mdef.band && r.curvesSE ? r.curvesSE[mdef.key] : null,
     }));
-    const endVal = (s) => s.v[T - 1];
-    const winnerLabel = `${winner.name} ${METRICS[metric].fmt(endVal(series.find((s) => s.id === winner.id)))}`;
+    const fmtM = (v) => fmtBy(mdef.fmt, v);
+    const endVal = (s) => s.v[L - 1];
+    const winner = series.slice().sort((a, b) => sorter(mdef.better)(endVal(a), endVal(b)))[0];
+    const winnerLabel = `${winner.name} ${fmtM(endVal(winner))}`;
     const showLabel = W >= 560;
-    const m = { l: 52, r: showLabel ? Math.ceil(textWidth(winnerLabel, '600 ' + LABEL_FONT)) + 22 : 14, t: 10, b: 34 };
+    const m = { l: 56, r: showLabel ? Math.ceil(textWidth(winnerLabel, '600 ' + LABEL_FONT)) + 22 : 14, t: 10, b: 34 };
     const pw = W - m.l - m.r, ph = H - m.t - m.b;
-    const steps = sampleSteps(T, Math.min(T, Math.max(60, Math.round(pw / 2))), log);
+    const idx = sampleIdx(xs, Math.max(60, Math.round(pw / 2)), log);
 
-    // y domain
     let lo = Infinity, hi = -Infinity;
-    for (const s of series) for (const t of steps) {
-      const v = s.v[t - 1], e = s.se ? 1.96 * s.se[t - 1] : 0;
+    for (const s of series) for (const i of idx) {
+      const v = s.v[i], e = s.se ? 1.96 * s.se[i] : 0;
+      if (!Number.isFinite(v)) continue;
       if (v + e > hi) hi = v + e;
       if (v - e < lo) lo = v - e;
     }
-    if (metric === 'regret') lo = 0;
-    if (metric === 'optimal') { lo = 0; hi = 1; }
-    if (hi - lo < 1e-9) hi = lo + 1;
+    if (!Number.isFinite(lo)) { lo = 0; hi = 1; }
+    if (mdef.zeroToOne) { lo = Math.min(0, lo); hi = Math.max(1, hi); }
+    else if (lo >= 0 && mdef.better === 'lower') lo = 0;
+    if (hi - lo < 1e-12) hi = lo + 1;
     const yt = ticks(lo, hi, Math.max(3, Math.round(ph / 60)));
     const step = yt.length > 1 ? yt[1] - yt[0] : 1;
-    if (metric !== 'optimal') {
-      if (yt[yt.length - 1] < hi) yt.push(+(yt[yt.length - 1] + step).toFixed(10));
-      if (yt[0] > lo) yt.unshift(+(yt[0] - step).toFixed(10));
-    }
+    if (yt[yt.length - 1] < hi - 1e-12) yt.push(+(yt[yt.length - 1] + step).toFixed(10));
+    if (yt[0] > lo + 1e-12) yt.unshift(+(yt[0] - step).toFixed(10));
     const y0 = yt[0], y1 = yt[yt.length - 1];
-    const Y = (v) => m.t + ph - ((v - y0) / (y1 - y0)) * ph;
+    const Y = (v) => m.t + ph - ((Math.min(y1, Math.max(y0, v)) - y0) / (y1 - y0)) * ph;
+    const xa = xs[0], xb = xs[L - 1];
     const X = log
-      ? (t) => m.l + (Math.log(t) / Math.log(T)) * pw
-      : (t) => m.l + ((t - 1) / Math.max(1, T - 1)) * pw;
+      ? (x) => m.l + ((Math.log(x) - Math.log(xa)) / Math.max(1e-12, Math.log(xb) - Math.log(xa))) * pw
+      : (x) => m.l + ((x - xa) / Math.max(1e-12, xb - xa)) * pw;
     let xt;
-    if (log) { xt = []; for (let d = 1; d <= T; d *= 10) xt.push(d); if (xt[xt.length - 1] !== T && X(T) - X(xt[xt.length - 1]) > 40) xt.push(T); }
-    else { xt = ticks(0, T, Math.max(2, Math.round(pw / 110))).filter((t) => t >= 1 || t === 0).map((t) => Math.max(1, t)); }
-
-    let svg = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(METRICS[metric].label)} over time for ${R.length} algorithms">`;
-    svg += '<g class="grid">' + yt.map((v) => `<line x1="${m.l}" x2="${m.l + pw}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/>`).join('') + '</g>';
-    svg += `<line class="baseline" x1="${m.l}" x2="${m.l + pw}" y1="${m.t + ph}" y2="${m.t + ph}"/>`;
-    svg += '<g class="axis">' + yt.map((v) => `<text x="${m.l - 8}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end">${esc(metric === 'optimal' ? Math.round(v * 100) + '%' : fmtTick(v))}</text>`).join('');
-    svg += xt.map((t) => `<text x="${X(t).toFixed(1)}" y="${m.t + ph + 18}" text-anchor="middle">${esc(fmtTick(t))}</text>`).join('');
-    svg += `<text x="${m.l + pw}" y="${H - 2}" text-anchor="end">step t${log ? ' (log scale)' : ''}</text></g>`;
-
-    // bands then lines
-    if (metric === 'regret') {
-      for (const s of series) {
-        const up = steps.map((t) => `${X(t).toFixed(1)},${Y(s.v[t - 1] + 1.96 * s.se[t - 1]).toFixed(1)}`);
-        const dn = steps.slice().reverse().map((t) => `${X(t).toFixed(1)},${Y(Math.max(y0, s.v[t - 1] - 1.96 * s.se[t - 1])).toFixed(1)}`);
-        svg += `<polygon class="series" data-id="${s.id}" points="${up.join(' ')} ${dn.join(' ')}" style="fill:${color(s.id)};fill-opacity:0.10;stroke:none"/>`;
-      }
+    if (log) {
+      xt = [];
+      for (let d = Math.pow(10, Math.ceil(Math.log10(xa))); d <= xb; d *= 10) xt.push(d);
+      if (!xt.length || X(xb) - X(xt[xt.length - 1]) > 40) xt.push(xb);
+    } else {
+      xt = ticks(xa, xb, Math.max(2, Math.round(pw / 110))).filter((x) => x >= xa && x <= xb);
+      if (!xt.length) xt = [xa, xb];
     }
-    // draw winner last so it sits on top
+    const yLab = (v) => (mdef.fmt === 'pct' ? Math.round(v * 100) + '%' : fmtTick(v));
+
+    let svg = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(mdef.label)} for ${R.length} algorithms">`;
+    svg += '<g class="grid">' + yt.map((v) => `<line x1="${m.l}" x2="${m.l + pw}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/>`).join('') + '</g>';
+    const base = y0 <= 0 && y1 >= 0 ? Y(0) : m.t + ph;
+    svg += `<line class="baseline" x1="${m.l}" x2="${m.l + pw}" y1="${base.toFixed(1)}" y2="${base.toFixed(1)}"/>`;
+    svg += '<g class="axis">' + yt.map((v) => `<text x="${m.l - 8}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end">${esc(yLab(v))}</text>`).join('');
+    svg += xt.map((x) => `<text x="${X(x).toFixed(1)}" y="${m.t + ph + 18}" text-anchor="middle">${esc(fmtTick(x))}</text>`).join('');
+    svg += `<text x="${m.l + pw}" y="${H - 2}" text-anchor="end">${esc(S.xLabel || 'step')}${log ? ' (log scale)' : ''}</text></g>`;
+
+    for (const s of series) {
+      if (!s.se) continue;
+      const up = idx.map((i) => `${X(xs[i]).toFixed(1)},${Y(s.v[i] + 1.96 * s.se[i]).toFixed(1)}`);
+      const dn = idx.slice().reverse().map((i) => `${X(xs[i]).toFixed(1)},${Y(s.v[i] - 1.96 * s.se[i]).toFixed(1)}`);
+      svg += `<polygon class="series" data-id="${esc(s.id)}" points="${up.join(' ')} ${dn.join(' ')}" style="fill:${color(s.id)};fill-opacity:0.10;stroke:none"/>`;
+    }
     const order = series.slice().sort((a, b) => (a.id === winner.id) - (b.id === winner.id));
     for (const s of order) {
-      const pts = steps.map((t) => `${X(t).toFixed(1)},${Y(s.v[t - 1]).toFixed(1)}`).join(' ');
-      svg += `<polyline class="series" data-id="${s.id}" points="${pts}" style="fill:none;stroke:${color(s.id)};stroke-width:2;stroke-linejoin:round;stroke-linecap:round"/>`;
+      const pts = idx.filter((i) => Number.isFinite(s.v[i])).map((i) => `${X(xs[i]).toFixed(1)},${Y(s.v[i]).toFixed(1)}`).join(' ');
+      svg += `<polyline class="series" data-id="${esc(s.id)}" points="${pts}" style="fill:none;stroke:${color(s.id)};stroke-width:2;stroke-linejoin:round;stroke-linecap:round"/>`;
     }
     for (const s of order) {
-      svg += `<circle class="series" data-id="${s.id}" cx="${X(T).toFixed(1)}" cy="${Y(endVal(s)).toFixed(1)}" r="4" style="fill:${color(s.id)};stroke:var(--surface);stroke-width:2"/>`;
+      if (!Number.isFinite(endVal(s))) continue;
+      svg += `<circle class="series" data-id="${esc(s.id)}" cx="${X(xb).toFixed(1)}" cy="${Y(endVal(s)).toFixed(1)}" r="4" style="fill:${color(s.id)};stroke:var(--surface);stroke-width:2"/>`;
     }
-    if (showLabel) {
-      const wy = Y(endVal(series.find((s) => s.id === winner.id)));
-      svg += `<text class="lbl" x="${m.l + pw + 10}" y="${(wy + 4).toFixed(1)}">${esc(winnerLabel)}</text>`;
+    if (showLabel && Number.isFinite(endVal(winner))) {
+      svg += `<text class="lbl" x="${m.l + pw + 10}" y="${(Y(endVal(winner)) + 4).toFixed(1)}">${esc(winnerLabel)}</text>`;
     }
     svg += '<g id="curve-hover"></g>';
-    svg += `<rect id="curve-hit" x="${m.l}" y="${m.t}" width="${pw}" height="${ph}" fill="transparent" tabindex="0" aria-label="Chart readout. Use left and right arrow keys to move through time."/>`;
+    svg += `<rect id="curve-hit" x="${m.l}" y="${m.t}" width="${pw}" height="${ph}" fill="transparent" tabindex="0" aria-label="Chart readout. Use left and right arrow keys to move along the x-axis."/>`;
     svg += '</svg>';
     el.innerHTML = svg + '<div class="tooltip" hidden></div>';
-    curveGeo = { X, Y, steps, series, m, pw, ph, T, metric, log, W };
+    curveGeo = { X, Y, idx, xs, series, m, ph, W, fmtM, better: mdef.better };
 
-    // legend
     const leg = $('#legend');
     leg.innerHTML = '';
     for (const s of series) {
@@ -380,25 +552,20 @@
     leg.onfocusin = (e) => { const b = e.target.closest('button'); setFocus(b ? b.dataset.id : null); };
     leg.onfocusout = () => setFocus(null);
 
-    const notes = {
-      regret: 'Shaded bands: 95% confidence interval of the mean across runs. Logarithmic growth shows up as a straight line on the log time axis.',
-      optimal: `Share of runs that pulled the best arm at each step, smoothed over ${smoothW} steps.`,
-      reward: `Average reward received at each step, smoothed over ${smoothW} steps.`,
-    };
-    $('#curve-note').textContent = notes[metric];
+    let note = mdef.note || '';
+    if (smoothW > 1) note += `${note ? ', ' : ''}smoothed over ${smoothW} points.`;
+    else if (note && !/[.]$/.test(note)) note += '.';
+    $('#curve-note').textContent = note;
 
     const hit = el.querySelector('#curve-hit');
-    let cur = steps.length - 1;
-    const show = (i) => { cur = Math.max(0, Math.min(steps.length - 1, i)); drawHover(el, cur); };
+    let cur = idx.length - 1;
+    const show = (i) => { cur = Math.max(0, Math.min(idx.length - 1, i)); drawHover(el, cur); };
     hit.addEventListener('pointermove', (e) => {
       const rect = svgEl.getBoundingClientRect();
       const px = ((e.clientX - rect.left) / rect.width) * W;
-      let best = 0, bd = Infinity;
-      // binary search on x
-      let a = 0, b = steps.length - 1;
-      while (b - a > 1) { const mid = (a + b) >> 1; if (X(steps[mid]) < px) a = mid; else b = mid; }
-      for (const i of [a, b]) { const d = Math.abs(X(steps[i]) - px); if (d < bd) { bd = d; best = i; } }
-      show(best);
+      let a = 0, b = idx.length - 1;
+      while (b - a > 1) { const mid = (a + b) >> 1; if (X(xs[idx[mid]]) < px) a = mid; else b = mid; }
+      show(Math.abs(X(xs[idx[a]]) - px) <= Math.abs(X(xs[idx[b]]) - px) ? a : b);
     });
     hit.addEventListener('pointerleave', () => clearHover(el));
     hit.addEventListener('focus', () => show(cur));
@@ -413,24 +580,24 @@
     const g = el.querySelector('#curve-hover'); if (g) g.innerHTML = '';
     const tip = el.querySelector('.tooltip'); if (tip) tip.hidden = true;
   }
-  function drawHover(el, i) {
-    const { X, Y, steps, series, m, ph, metric, W } = curveGeo;
-    const t = steps[i], x = X(t);
+  function drawHover(el, k) {
+    const { X, Y, idx, xs, series, m, ph, W, fmtM, better } = curveGeo;
+    const i = idx[k], x = X(xs[i]);
     let g = `<line x1="${x}" x2="${x}" y1="${m.t}" y2="${m.t + ph}" style="stroke:var(--ink-2);stroke-width:1"/>`;
-    for (const s of series) g += `<circle cx="${x}" cy="${Y(s.v[t - 1])}" r="4" style="fill:${color(s.id)};stroke:var(--surface);stroke-width:2"/>`;
+    for (const s of series) if (Number.isFinite(s.v[i])) g += `<circle cx="${x}" cy="${Y(s.v[i])}" r="4" style="fill:${color(s.id)};stroke:var(--surface);stroke-width:2"/>`;
     el.querySelector('#curve-hover').innerHTML = g;
     const tip = el.querySelector('.tooltip');
     tip.innerHTML = '';
-    const head = document.createElement('div'); head.className = 't-head'; head.textContent = `t = ${t.toLocaleString('en-US')}`;
+    const head = document.createElement('div'); head.className = 't-head';
+    head.textContent = `${S.xLabel || 'x'} = ${fmtTick(xs[i])}`;
     tip.appendChild(head);
-    const dir = metric === 'regret' ? 1 : -1;
-    const rows = series.map((s) => ({ s, v: s.v[t - 1] })).sort((a, b) => dir * (a.v - b.v));
+    const rows = series.map((s) => ({ s, v: s.v[i] })).sort((a, b) => sorter(better)(a.v, b.v));
     for (const r of rows) {
       const row = document.createElement('div'); row.className = 't-row';
-      const k = document.createElement('span'); k.className = 'key'; k.style.background = color(r.s.id);
-      const v = document.createElement('b'); v.textContent = METRICS[metric].fmt(r.v);
+      const kk = document.createElement('span'); kk.className = 'key'; kk.style.background = color(r.s.id);
+      const v = document.createElement('b'); v.textContent = fmtM(r.v);
       const n = document.createElement('span'); n.textContent = r.s.name;
-      row.append(k, v, n); tip.appendChild(row);
+      row.append(kk, v, n); tip.appendChild(row);
     }
     tip.hidden = false;
     const scale = el.querySelector('svg').getBoundingClientRect().width / W;
@@ -442,37 +609,46 @@
   }
 
   // ---- leaderboard ----
-  function barPath(x0, x1, y, h, r) {
-    const w = x1 - x0;
-    if (w <= 0) return '';
+  function barPath(xBase, xEnd, y, h, r) {
+    const w = Math.abs(xEnd - xBase);
+    if (w < 0.5) return '';
     r = Math.min(r, w, h / 2);
-    return `M${x0},${y}H${x1 - r}Q${x1},${y} ${x1},${y + r}V${y + h - r}Q${x1},${y + h} ${x1 - r},${y + h}H${x0}Z`;
+    if (xEnd >= xBase) return `M${xBase},${y}H${xEnd - r}Q${xEnd},${y} ${xEnd},${y + r}V${y + h - r}Q${xEnd},${y + h} ${xEnd - r},${y + h}H${xBase}Z`;
+    return `M${xBase},${y}H${xEnd + r}Q${xEnd},${y} ${xEnd},${y + r}V${y + h - r}Q${xEnd},${y + h} ${xEnd + r},${y + h}H${xBase}Z`;
   }
   function renderBoard() {
-    const el = $('#board-chart');
-    const R = state.results.slice().sort((a, b) => a.finalRegret - b.finalRegret);
+    const el = $('#board-chart'), F = S.final;
+    const R = V.results.slice().sort((a, b) => sorter(F.better)(finalOf(a), finalOf(b)));
     const W = Math.max(260, el.clientWidth);
     const rowH = 42, barH = 12, top = 4;
     const H = top + R.length * rowH + 22;
-    const valW = Math.max(...R.map((r) => textWidth(fmtNum(r.finalRegret), '500 11px "IBM Plex Mono", monospace'))) + 10;
-    const x0 = 2, x1 = W - valW - 4;
-    const max = Math.max(...R.map((r) => r.finalRegret + 1.96 * r.finalSE), 1e-9);
-    const xt = ticks(0, max, Math.max(2, Math.round((x1 - x0) / 90)));
-    const xmax = Math.max(xt[xt.length - 1], max);
-    const X = (v) => x0 + (Math.max(0, v) / xmax) * (x1 - x0);
-    let svg = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Final cumulative regret by algorithm, lowest first">`;
+    const valW = Math.max(...R.map((r) => textWidth(fmtNum(finalOf(r)), '500 11px "IBM Plex Mono", monospace'))) + 10;
+    let lo = 0, hi = 0;
+    for (const r of R) {
+      const v = finalOf(r), ci = 1.96 * finalSE(r);
+      if (!Number.isFinite(v)) continue;
+      hi = Math.max(hi, v + ci); lo = Math.min(lo, v - ci);
+    }
+    if (hi - lo < 1e-12) hi = lo + 1;
+    const xt = ticks(lo, hi, Math.max(2, Math.round((W - valW) / 90)));
+    const dlo = Math.min(lo, xt[0]), dhi = Math.max(hi, xt[xt.length - 1]);
+    const padL = lo < 0 ? valW : 2, x1 = W - valW - 4;
+    const X = (v) => padL + ((v - dlo) / (dhi - dlo)) * (x1 - padL);
+    let svg = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(F.label)} by algorithm">`;
     svg += '<g class="grid">' + xt.map((v) => `<line x1="${X(v).toFixed(1)}" x2="${X(v).toFixed(1)}" y1="${top}" y2="${H - 20}"/>`).join('') + '</g>';
     svg += '<g class="axis">' + xt.map((v, i) => `<text x="${X(v).toFixed(1)}" y="${H - 4}" text-anchor="${i === 0 ? 'start' : 'middle'}">${esc(fmtTick(v))}</text>`).join('') + '</g>';
     R.forEach((r, i) => {
-      const y = top + i * rowH, by = y + 20;
-      const ci = 1.96 * r.finalSE;
-      svg += `<g class="bar-row" data-id="${r.id}" tabindex="0" role="img" aria-label="${esc(r.name)}: ${fmtNum(r.finalRegret)} plus or minus ${fmtNum(ci)}">`;
+      const y = top + i * rowH, by = y + 20, v = finalOf(r), ci = 1.96 * finalSE(r);
+      svg += `<g class="bar-row" data-id="${esc(r.id)}" tabindex="0" role="img" aria-label="${esc(r.name)}: ${fmtNum(v)}">`;
       svg += `<rect x="0" y="${y}" width="${W}" height="${rowH}" fill="transparent"/>`;
-      svg += `<text class="lbl-2" x="${x0}" y="${y + 14}">${esc(r.name)}</text>`;
-      svg += `<path d="${barPath(X(0), X(r.finalRegret), by, barH, 4)}" style="fill:${color(r.id)}"/>`;
-      const lo = X(r.finalRegret - ci), hi = X(r.finalRegret + ci), cy = by + barH / 2;
-      if (hi - lo > 2) svg += `<path d="M${lo},${cy}H${hi}M${lo},${cy - 4}V${cy + 4}M${hi},${cy - 4}V${cy + 4}" style="stroke:var(--ink-2);stroke-width:1.25;fill:none"/>`;
-      svg += `<text x="${Math.max(hi, X(r.finalRegret)) + 6}" y="${cy + 4}" style="fill:var(--ink);font-weight:500">${esc(fmtNum(r.finalRegret))}</text>`;
+      svg += `<text class="lbl-2" x="${padL}" y="${y + 14}">${esc(r.name)}</text>`;
+      if (Number.isFinite(v)) {
+        svg += `<path d="${barPath(X(0), X(v), by, barH, 4)}" style="fill:${color(r.id)}"/>`;
+        const a = X(v - ci), b = X(v + ci), cy = by + barH / 2;
+        if (b - a > 2) svg += `<path d="M${a},${cy}H${b}M${a},${cy - 4}V${cy + 4}M${b},${cy - 4}V${cy + 4}" style="stroke:var(--ink-2);stroke-width:1.25;fill:none"/>`;
+        const tx = v >= 0 ? Math.max(b, X(v)) + 6 : Math.min(a, X(v)) - 6;
+        svg += `<text x="${tx}" y="${cy + 4}" text-anchor="${v >= 0 ? 'start' : 'end'}" style="fill:var(--ink);font-weight:500">${esc(fmtNum(v))}</text>`;
+      }
       svg += '</g>';
     });
     svg += `<line class="baseline" x1="${X(0)}" x2="${X(0)}" y1="${top}" y2="${H - 20}"/>`;
@@ -480,14 +656,14 @@
     el.innerHTML = svg + '<div class="tooltip" hidden></div>';
     const tip = el.querySelector('.tooltip');
     const showTip = (g) => {
-      const r = state.results.find((x) => x.id === g.dataset.id);
+      const r = V.results.find((x) => x.id === g.dataset.id);
       tip.innerHTML = '';
       const h = document.createElement('div'); h.className = 't-head'; h.textContent = r.name;
       tip.appendChild(h);
-      const rows = [
-        ['Mean regret', fmtNum(r.finalRegret)], ['95% CI', '± ' + fmtNum(1.96 * r.finalSE)],
-        ['Median', fmtNum(r.finalMedian)], ['Best run', fmtNum(r.finals[0])], ['Worst run', fmtNum(r.finals[r.finals.length - 1])],
-      ];
+      const rows = [[F.label, fmtNum(finalOf(r))]];
+      if (F.se) rows.push(['95% CI', '± ' + fmtNum(1.96 * finalSE(r))]);
+      if (F.median) rows.push(['Median', fmtNum(sumVal(r, F.median))]);
+      if (r.finals && r.finals.length) rows.push(['Best run', fmtNum(r.finals[0])], ['Worst run', fmtNum(r.finals[r.finals.length - 1])]);
       for (const [k, v] of rows) {
         const row = document.createElement('div'); row.className = 't-row';
         const sp = document.createElement('span'); sp.className = 'key';
@@ -513,8 +689,9 @@
   function bin(v) { let i = 0; while (i < BINS.length && v >= BINS[i]) i++; return i; }
   function renderHeat() {
     const el = $('#heat-chart');
-    const R = state.results.slice().sort((a, b) => a.finalRegret - b.finalRegret);
-    const K = state.cfg.K;
+    const R = V.results.slice().filter((r) => r.pullShare).sort((a, b) => sorter(S.final.better)(finalOf(a), finalOf(b)));
+    if (!R.length) { el.innerHTML = ''; return; }
+    const K = R[0].pullShare.length;
     const W = Math.max(260, el.clientWidth);
     const labW = Math.min(W * 0.42, Math.max(...R.map((r) => textWidth(r.name, LABEL_FONT))) + 12);
     const gx = labW, gw = W - labW;
@@ -569,72 +746,72 @@
   }
 
   // ---- table ----
-  const COLS = [
-    { key: 'name', label: 'Algorithm', get: (r) => r.name },
-    { key: 'family', label: 'Family', get: (r) => M.FAMILIES.find((f) => f.id === r.family).name },
-    { key: 'params', label: 'Settings', get: (r) => Object.entries(r.params).map(([k, v]) => `${k}=${v}`).join(' ') || '—', sortable: false },
-    { key: 'finalRegret', label: 'Regret', n: true, get: (r) => r.finalRegret, fmt: fmtNum },
-    { key: 'finalSE', label: '95% CI', n: true, get: (r) => 1.96 * r.finalSE, fmt: (v) => '± ' + fmtNum(v) },
-    { key: 'finalMedian', label: 'Median', n: true, get: (r) => r.finalMedian, fmt: fmtNum },
-    { key: 'optimalTail', label: 'Best arm, last 10%', n: true, get: (r) => r.optimalTail, fmt: fmtPct },
-    { key: 'best', label: 'Pulls on best arm', n: true, get: (r) => r.pullShare[0], fmt: fmtPct },
-    { key: 'meanReward', label: 'Mean reward', n: true, get: (r) => r.meanReward, fmt: (v) => v.toFixed(3) },
-    { key: 'msPerRun', label: 'ms / run', n: true, get: (r) => r.msPerRun, fmt: (v) => v.toFixed(2) },
-  ];
+  function tableCols() {
+    return [
+      { key: '@name', label: 'Algorithm', get: (r) => r.name },
+      { key: '@family', label: 'Family', get: (r) => (S.families.find((f) => f.id === r.family) || { name: r.family }).name },
+      { key: '@params', label: 'Settings', get: (r) => Object.entries(r.params || {}).map(([k, v]) => `${k}=${v}`).join(' ') || '—', sortable: false },
+    ].concat(S.columns.map((c) => ({ key: c.key, label: c.label, n: true, fmt: c.fmt, better: c.better, get: (r) => sumVal(r, c.key) })));
+  }
   function renderTable() {
-    const tbl = $('#results-table');
-    const col = COLS.find((c) => c.key === state.sortKey) || COLS[3];
-    const rows = state.results.slice().sort((a, b) => {
+    const tbl = $('#results-table'), COLS = tableCols();
+    const col = COLS.find((c) => c.key === V.sortKey) || COLS[3] || COLS[0];
+    const rows = V.results.slice().sort((a, b) => {
       const x = col.get(a), y = col.get(b);
-      return (typeof x === 'string' ? x.localeCompare(y) : x - y) * state.sortDir;
+      return (typeof x === 'string' ? x.localeCompare(y) : (x ?? Infinity) - (y ?? Infinity)) * V.sortDir;
     });
-    const winner = state.results.slice().sort((a, b) => a.finalRegret - b.finalRegret)[0].id;
+    const winner = V.results.slice().sort((a, b) => sorter(S.final.better)(finalOf(a), finalOf(b)))[0].id;
     tbl.innerHTML = `<thead><tr>${COLS.map((c) => {
-      const sorted = c.key === state.sortKey;
-      const aria = sorted ? (state.sortDir > 0 ? 'ascending' : 'descending') : 'none';
-      const arrow = sorted ? (state.sortDir > 0 ? ' ↑' : ' ↓') : '';
-      return `<th class="${c.n ? 'n' : ''}" aria-sort="${aria}" scope="col">${c.sortable === false ? esc(c.label) : `<button type="button" data-key="${c.key}">${esc(c.label)}${arrow}</button>`}</th>`;
+      const sorted = c.key === col.key;
+      const aria = sorted ? (V.sortDir > 0 ? 'ascending' : 'descending') : 'none';
+      const arrow = sorted ? (V.sortDir > 0 ? ' ↑' : ' ↓') : '';
+      return `<th class="${c.n ? 'n' : ''}" aria-sort="${aria}" scope="col">${c.sortable === false ? esc(c.label) : `<button type="button" data-key="${esc(c.key)}">${esc(c.label)}${arrow}</button>`}</th>`;
     }).join('')}</tr></thead><tbody>${rows.map((r) => `<tr class="${r.id === winner ? 'winner' : ''}">${COLS.map((c, i) => {
       const v = c.get(r);
       if (i === 0) return `<td><span class="key" style="background:${color(r.id)}"></span>${esc(v)}</td>`;
-      if (c.key === 'params') return `<td class="params-cell">${esc(v)}</td>`;
-      return `<td class="${c.n ? 'n' : ''}">${esc(c.fmt ? c.fmt(v) : v)}</td>`;
+      if (c.key === '@params') return `<td class="params-cell">${esc(v)}</td>`;
+      return `<td class="${c.n ? 'n' : ''}">${esc(c.n ? fmtBy(c.fmt, v) : v)}</td>`;
     }).join('')}</tr>`).join('')}</tbody>`;
     tbl.querySelectorAll('th button').forEach((b) => b.addEventListener('click', () => {
-      if (state.sortKey === b.dataset.key) state.sortDir *= -1;
-      else { state.sortKey = b.dataset.key; state.sortDir = COLS.find((c) => c.key === b.dataset.key).n && !['finalRegret', 'finalSE', 'finalMedian', 'msPerRun'].includes(b.dataset.key) ? -1 : 1; }
+      const c = COLS.find((x) => x.key === b.dataset.key);
+      if (V.sortKey === c.key) V.sortDir *= -1;
+      else { V.sortKey = c.key; V.sortDir = c.better === 'higher' ? -1 : 1; }
       renderTable();
-      const again = tbl.querySelector(`th button[data-key="${b.dataset.key}"]`); if (again) again.focus();
+      const again = tbl.querySelector(`th button[data-key="${CSS.escape(c.key)}"]`); if (again) again.focus();
     }));
   }
 
   // ------------------------------------------------------------ catalog ----
   function buildCatalog() {
-    const full = state.selected.length >= SLOTS;
-    $('#catalog').innerHTML = M.FAMILIES.map((f) => `
+    const full = V.selected.length >= SLOTS;
+    $('#catalog').innerHTML = S.families.map((f) => {
+      const list = S.algorithms.filter((a) => a.family === f.id);
+      if (!list.length) return '';
+      return `
       <section class="family">
-        <div class="family-head"><h3>${esc(f.name)}</h3><p>${esc(f.blurb)}</p></div>
-        <div class="cards">${M.ALGORITHMS.filter((a) => a.family === f.id).map((a) => {
-          const on = state.selected.includes(a.id);
-          const params = a.params.map((p) => `${p.label.split(' ')[0]} = ${p.default}`).join(', ');
+        <div class="family-head"><h3>${esc(f.name)}</h3><p>${esc(f.blurb || '')}</p></div>
+        <div class="cards">${list.map((a) => {
+          const on = V.selected.includes(a.id);
+          const params = (a.params || []).map((p) => `${p.label.split(' ')[0]} = ${p.default}`).join(', ');
           return `<article class="acard">
             <div class="top"><h3>${esc(a.name)}</h3>${on ? `<span class="key" style="display:inline-block;width:16px;height:3px;border-radius:2px;background:${color(a.id)}"></span>` : ''}</div>
-            <div class="formula">${esc(a.formula)}</div>
-            <p class="idea">${esc(a.idea)}</p>
-            <p class="bound">Regret: <b>${esc(a.regret)}</b>${params ? `<br>Defaults: <b>${esc(params)}</b>` : ''}</p>
-            <div><button type="button" class="chip" data-algo="${a.id}" aria-pressed="${on}" ${!on && full ? 'disabled title="Remove an algorithm first: eight is the limit"' : ''}>${on ? 'In comparison' : 'Add to comparison'}</button></div>
+            <div class="formula">${esc(a.formula || '')}</div>
+            <p class="idea">${esc(a.idea || '')}</p>
+            <p class="bound">${a.regret ? `Guarantee: <b>${esc(a.regret)}</b>` : ''}${params ? `<br>Defaults: <b>${esc(params)}</b>` : ''}</p>
+            <div><button type="button" class="chip" data-algo="${esc(a.id)}" aria-pressed="${on}" ${!on && full ? 'disabled title="Remove an algorithm first: eight is the limit"' : ''}>${on ? 'In comparison' : 'Add to comparison'}</button></div>
           </article>`;
         }).join('')}</div>
-      </section>`).join('');
+      </section>`;
+    }).join('');
   }
   function bindCatalog() {
     $('#catalog').addEventListener('click', (e) => {
       const b = e.target.closest('button[data-algo]'); if (!b) return;
-      const id = b.dataset.algo, on = state.selected.includes(id);
-      if (on && state.selected.length <= 1) return;
+      const id = b.dataset.algo, on = V.selected.includes(id);
+      if (on && V.selected.length <= 1) return;
       toggleAlgo(id, !on);
       buildAlgoList(); buildCatalog(); scheduleRun();
-      const again = $(`#catalog button[data-algo="${id}"]`); if (again) again.focus();
+      const again = $(`#catalog button[data-algo="${CSS.escape(id)}"]`); if (again) again.focus();
     });
   }
 
@@ -761,22 +938,20 @@
   }
 
   // ------------------------------------------------------------- boot ----
-  const WORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-  const TENS = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty'];
-  const n = M.ALGORITHMS.length;
-  $('#algo-total').textContent = n >= 20 && n < 70 ? TENS[Math.floor(n / 10)] + (n % 10 ? '-' + WORDS[n % 10].toLowerCase() : '') : String(n);
-  buildEnvs();
-  buildPresets();
-  buildAlgoList();
+  const total = SETTINGS.reduce((n, s) => n + s.algorithms.length, 0);
+  $('#algo-total').textContent = total.toLocaleString('en-US');
+  $('#setting-total').textContent = SETTINGS.length < NUM_WORDS.length ? NUM_WORDS[SETTINGS.length] : String(SETTINGS.length);
+  $('#setting-word').textContent = SETTINGS.length === 1 ? 'problem setting' : 'problem settings';
+  buildSettingsNav();
   bindControls();
-  buildCatalog();
   bindCatalog();
   drawLoopDiagram();
   drawDecideDiagram();
+  const fromHash = location.hash.replace('#', '');
+  switchSetting(SETTINGS.some((s) => s.id === fromHash) ? fromHash : SETTINGS[0].id, false);
   let rz = 0;
   new ResizeObserver(() => {
     cancelAnimationFrame(rz);
-    rz = requestAnimationFrame(() => { if (state.results) { renderCurves(); renderBoard(); renderHeat(); } });
+    rz = requestAnimationFrame(() => { if (V && V.results) { renderCurves(); renderBoard(); if (S.heatmap) renderHeat(); } });
   }).observe($('.main'));
-  scheduleRun(0);
 })();

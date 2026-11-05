@@ -262,15 +262,15 @@
       type: 'gaussian', stationary: true, contextual: true, d: 5,
       description: 'Each round shows a context x = (1, z₁…z₄), z ~ N(0, 1). Arm a pays N(θₐ·x, 1) with a hidden θₐ ~ N(0, 0.5²I). Without the context, only the average arm can be learned.',
       fill(K, T, rng, means, rewards, ctx) {
-        const d = 5, theta = new Float64Array(K * d);
+        const d = 5, theta = new Float64Array(K * d), x = new Float64Array(d);
         for (let i = 0; i < K * d; i++) theta[i] = 0.5 * rng.normal();
         for (let t = 0; t < T; t++) {
-          const x = t * d;
-          ctx[x] = 1;
-          for (let j = 1; j < d; j++) ctx[x + j] = rng.normal();
+          x[0] = 1;
+          for (let j = 1; j < d; j++) x[j] = rng.normal();
           for (let a = 0; a < K; a++) {
             let m = 0;
-            for (let j = 0; j < d; j++) m += theta[a * d + j] * ctx[x + j];
+            const row = (t * K + a) * d;
+            for (let j = 0; j < d; j++) { m += theta[a * d + j] * x[j]; ctx[row + j] = x[j]; }
             means[t * K + a] = m;
             rewards[t * K + a] = m + rng.normal();
           }
@@ -278,17 +278,9 @@
       },
     },
   ];
-  for (const e of ENVIRONMENTS) {
-    if (!e.d) e.d = 1;
-    if (e.type === 'bernoulli') {
-      e.sigma = 0.5; e.scale = 1;
-      e.normalize = (r) => r;
-    } else {
-      e.sigma = 1; e.scale = Math.SQRT2;
-      e.normalize = (r) => Math.min(1, Math.max(0, (r + 4) / 8));
-    }
-  }
-  const ENV_BY_ID = Object.fromEntries(ENVIRONMENTS.map((e) => [e.id, e]));
+  for (const e of ENVIRONMENTS) prepareEnv(e);
+  const ENV_BY_ID = {};
+  for (const e of ENVIRONMENTS) ENV_BY_ID[e.id] = e;
 
   // --------------------------------------------------------- algorithms ----
   /*
@@ -1378,27 +1370,28 @@
     idea: 'Li et al.\'s disjoint LinUCB: one ridge regression per arm on the context, plus an optimistic bonus from the regression\'s uncertainty. With no context it reduces to a ridge-regression UCB.',
     create(K, { rng, params, d = 1 }) {
       const Ainv = new Float64Array(K * d * d), bv = new Float64Array(K * d), idx = new Float64Array(K);
-      const Ax = new Float64Array(d), fallback = new Float64Array(d); fallback[0] = 1;
-      for (let a = 0; a < K; a++) for (let i = 0; i < d; i++) Ainv[a * d * d + i * d + i] = 1;
+      const Ax = new Float64Array(d), x = new Float64Array(d), fallback = new Float64Array(K * d);
+      for (let a = 0; a < K; a++) { fallback[a * d] = 1; for (let i = 0; i < d; i++) Ainv[a * d * d + i * d + i] = 1; }
       let last = fallback;
       return {
-        select(t, x) {
-          x = x && x.length === d ? x : fallback;
-          last = x;
+        select(t, Xt) {
+          Xt = Xt && Xt.length === K * d ? Xt : fallback;
+          last = Xt;
           for (let a = 0; a < K; a++) {
-            const o = a * d * d;
+            const o = a * d * d, row = a * d;
             let mean = 0, q = 0;
             for (let i = 0; i < d; i++) {
               let th = 0, ax = 0;
-              for (let j = 0; j < d; j++) { th += Ainv[o + i * d + j] * bv[a * d + j]; ax += Ainv[o + i * d + j] * x[j]; }
-              mean += th * x[i]; q += x[i] * ax;
+              for (let j = 0; j < d; j++) { th += Ainv[o + i * d + j] * bv[a * d + j]; ax += Ainv[o + i * d + j] * Xt[row + j]; }
+              mean += th * Xt[row + i]; q += Xt[row + i] * ax;
             }
             idx[a] = mean + params.alpha * Math.sqrt(Math.max(0, q));
           }
           return argmax(idx, rng);
         },
         update(a, r) {
-          const x = last, o = a * d * d;
+          const o = a * d * d;
+          for (let j = 0; j < d; j++) x[j] = last[a * d + j];
           // Sherman–Morrison: A⁻¹ ← A⁻¹ − (A⁻¹x)(A⁻¹x)ᵀ / (1 + xᵀA⁻¹x)
           let den = 1;
           for (let i = 0; i < d; i++) {
@@ -1416,7 +1409,8 @@
   // Keep each family's members together, in family order, for listings.
   const famOrder = (id) => FAMILIES.findIndex((f) => f.id === id);
   ALGORITHMS.sort((a, b) => famOrder(a.family) - famOrder(b.family));
-  const ALGO_BY_ID = Object.fromEntries(ALGORITHMS.map((a) => [a.id, a]));
+  const ALGO_BY_ID = {};
+  for (const a of ALGORITHMS) ALGO_BY_ID[a.id] = a;
 
   function defaultParams(algoId) {
     const out = {};
@@ -1435,9 +1429,12 @@
     if (!env) throw new Error('Unknown environment: ' + config.env);
     const K = config.K | 0, T = config.T | 0, runs = config.runs | 0, seed = config.seed >>> 0;
     if (K < 2) throw new Error('K must be at least 2');
+    // means/rewards are indexed [t*K + a]; for rested environments they are indexed by the
+    // arm's own pull count instead: [n*K + a] is the mean/reward of arm a's (n+1)-th pull.
     const means = new Float64Array(T * K), rewards = new Float64Array(T * K);
-    const D = env.d, contexts = new Float64Array(T * D).fill(1), xv = new Float64Array(D);
+    const D = env.d || 1, contexts = new Float64Array(T * K * D), X = new Float64Array(K * D);
     const best = new Float64Array(T), avgMean = new Float64Array(K), rank = new Int32Array(K);
+    const rested = !!env.rested, oracleCum = new Float64Array(T), pulls = new Int32Array(K);
 
     const slots = config.algorithms.map((spec) => {
       const def = ALGO_BY_ID[spec.id];
@@ -1452,40 +1449,85 @@
     });
     let done = 0;
 
+    function restedOracle() {
+      // Best of: greedy on current means (optimal when means only fall), and each fixed arm
+      // (optimal when means only rise). Store the better policy's cumulative expected reward.
+      const cnt = new Int32Array(K), greedy = new Float64Array(T);
+      let acc = 0;
+      for (let t = 0; t < T; t++) {
+        let b = 0, bv = -Infinity;
+        for (let a = 0; a < K; a++) { const m = means[cnt[a] * K + a]; if (m > bv) { bv = m; b = a; } }
+        acc += bv; cnt[b]++; greedy[t] = acc;
+      }
+      let bestArm = -1, bestTot = greedy[T - 1];
+      for (let a = 0; a < K; a++) {
+        let tot = 0;
+        for (let n = 0; n < T; n++) tot += means[n * K + a];
+        if (tot > bestTot) { bestTot = tot; bestArm = a; }
+      }
+      if (bestArm < 0) { oracleCum.set(greedy); return; }
+      acc = 0;
+      for (let n = 0; n < T; n++) { acc += means[n * K + bestArm]; oracleCum[n] = acc; }
+    }
+
     function runOne(run) {
       const envRng = Rng(hash32(seed, run, 'env'));
-      if (D > 1) contexts.fill(0); else contexts.fill(1);
-      env.fill(K, T, envRng, means, rewards, contexts);
+      contexts.fill(D > 1 ? 0 : 1);
+      const info = env.fill(K, T, envRng, means, rewards, contexts) || {};
       avgMean.fill(0);
-      for (let t = 0; t < T; t++) {
-        let b = -Infinity;
-        for (let a = 0; a < K; a++) {
-          const m = means[t * K + a];
-          if (m > b) b = m;
-          avgMean[a] += m / T;
+      if (rested) {
+        restedOracle();
+        for (let a = 0; a < K; a++) avgMean[a] = means[a];
+      } else {
+        for (let t = 0; t < T; t++) {
+          let b = -Infinity;
+          for (let a = 0; a < K; a++) {
+            const m = means[t * K + a];
+            if (m > b) b = m;
+            avgMean[a] += m / T;
+          }
+          best[t] = b;
         }
-        best[t] = b;
       }
-      // rank[arm] = 0 for the arm with the highest time-averaged mean
+      // rank[arm] = 0 for the arm with the highest time-averaged (rested: initial) mean
       const order = Array.from({ length: K }, (_, i) => i).sort((x, y) => avgMean[y] - avgMean[x]);
       order.forEach((arm, r) => { rank[arm] = r; });
+      const graph = info.graph || null;
 
       for (const slot of slots) {
         const rng = Rng(hash32(seed, run, slot.def.id));
-        const agent = slot.def.create(K, { T, env, params: slot.params, rng, d: D });
+        const agent = slot.def.create(K, { T, env, params: slot.params, rng, d: D, info });
+        const observe = graph && typeof agent.observe === 'function';
         const t0 = now();
-        let cum = 0;
+        let cum = 0, got = 0;
+        pulls.fill(0);
         const { regSum, regSq, optSum, rewSum, pullsByRank } = slot;
         for (let t = 0; t < T; t++) {
-          for (let j = 0; j < D; j++) xv[j] = contexts[t * D + j];
-          const a = agent.select(t + 1, xv);
-          const r = rewards[t * K + a];
+          const base = t * K * D;
+          for (let i = 0; i < K * D; i++) X[i] = contexts[base + i];
+          const a = agent.select(t + 1, X);
+          let r, m, isBest;
+          if (rested) {
+            const n = pulls[a];
+            r = rewards[n * K + a]; m = means[n * K + a];
+            let bv = -Infinity;
+            for (let b = 0; b < K; b++) { const mb = means[pulls[b] * K + b]; if (mb > bv) bv = mb; }
+            isBest = m === bv;
+            pulls[a]++;
+            got += m;
+            cum = oracleCum[t] - got;
+          } else {
+            r = rewards[t * K + a]; m = means[t * K + a];
+            cum += best[t] - m;
+            isBest = m === best[t];
+          }
           agent.update(a, r, t + 1);
-          const m = means[t * K + a];
-          cum += best[t] - m;
+          if (observe) {
+            for (let b = 0; b < K; b++) if (b !== a && graph[a * K + b]) agent.observe(b, rewards[t * K + b], t + 1);
+          }
           regSum[t] += cum;
           regSq[t] += cum * cum;
-          if (m === best[t]) optSum[t] += 1;
+          if (isBest) optSum[t] += 1;
           rewSum[t] += r;
           pullsByRank[rank[a]] += 1;
         }
@@ -1522,15 +1564,19 @@
           let optTail = 0, rewAll = 0;
           for (let t = T - tail; t < T; t++) optTail += optimal[t] / tail;
           for (let t = 0; t < T; t++) rewAll += reward[t] / T;
-          return {
-            id: s.def.id, name: s.def.name, family: s.def.family, params: s.params,
-            runs: done, regret, regretSE, optimal, reward,
-            pullShare: Array.from(s.pullsByRank, (x) => x / totalPulls),
+          const pullShare = Array.from(s.pullsByRank, (x) => x / totalPulls);
+          const msPerRun = done ? s.timeMs / done : 0;
+          const summary = {
             finalRegret: regret[T - 1], finalSE: regretSE[T - 1],
             finalMedian: sorted.length ? sorted[Math.floor(sorted.length / 2)] : 0,
-            finals: sorted,
-            optimalTail: optTail, meanReward: rewAll,
-            msPerRun: done ? s.timeMs / done : 0,
+            optimalTail: optTail, bestShare: pullShare[0], meanReward: rewAll, msPerRun,
+          };
+          return {
+            id: s.def.id, name: s.def.name, family: s.def.family, params: s.params,
+            runs: done, regret, regretSE, optimal, reward, pullShare,
+            finalRegret: summary.finalRegret, finalSE: summary.finalSE, finalMedian: summary.finalMedian,
+            finals: sorted, optimalTail: optTail, meanReward: rewAll, msPerRun,
+            curves: { regret, optimal, reward }, curvesSE: { regret: regretSE }, summary,
           };
         });
       },
@@ -1548,9 +1594,98 @@
     return r.results();
   }
 
+  // --------------------------------------------------------- registry ----
+  /**
+   * Add families, environments and algorithms to the K-armed / contextual arena.
+   * Add-on files call MAB.register({ families, environments, algorithms }).
+   * A family may carry `before: '<family id>'` to be listed ahead of that family.
+   */
+  function prepareEnv(e) {
+    if (!e.d) e.d = 1;
+    if (e.type === 'bernoulli') {
+      if (e.sigma == null) e.sigma = 0.5;
+      if (e.scale == null) e.scale = 1;
+      if (!e.normalize) e.normalize = (r) => Math.min(1, Math.max(0, r));
+    } else {
+      if (e.sigma == null) e.sigma = 1;
+      if (e.scale == null) e.scale = Math.SQRT2 * e.sigma;
+      if (!e.normalize) e.normalize = (r) => Math.min(1, Math.max(0, (r + 4) / 8));
+    }
+    return e;
+  }
+  function register({ families = [], environments = [], algorithms = [] } = {}) {
+    for (const f of families) {
+      if (FAMILIES.some((x) => x.id === f.id)) continue;
+      const at = f.before ? FAMILIES.findIndex((x) => x.id === f.before) : -1;
+      if (at >= 0) FAMILIES.splice(at, 0, f); else FAMILIES.push(f);
+    }
+    for (const e of environments) {
+      if (ENV_BY_ID[e.id]) throw new Error('Duplicate environment id: ' + e.id);
+      ENVIRONMENTS.push(prepareEnv(e)); ENV_BY_ID[e.id] = e;
+    }
+    for (const a of algorithms) {
+      if (ALGO_BY_ID[a.id]) throw new Error('Duplicate algorithm id: ' + a.id);
+      if (!FAMILIES.some((f) => f.id === a.family)) throw new Error(`Unknown family ${a.family} for ${a.id}`);
+      ALGORITHMS.push(a); ALGO_BY_ID[a.id] = a;
+    }
+    const order = (id) => FAMILIES.findIndex((f) => f.id === id);
+    ALGORITHMS.sort((a, b) => order(a.family) - order(b.family));
+  }
+
+  /**
+   * Settings are separate problem types (best-arm identification, dueling, ...), each with its
+   * own environments, algorithms, measures and runner. See docs/ARCHITECTURE.md.
+   */
+  const SETTINGS = [];
+  function registerSetting(s) {
+    if (SETTINGS.some((x) => x.id === s.id)) throw new Error('Duplicate setting id: ' + s.id);
+    SETTINGS.push(s);
+    return s;
+  }
+  registerSetting({
+    id: 'kab',
+    name: 'K-armed & contextual',
+    short: 'K-armed',
+    blurb: 'Pick one of K arms each round and see only its reward. Includes adversarial, non-stationary, rested and contextual environments.',
+    families: FAMILIES, environments: ENVIRONMENTS, algorithms: ALGORITHMS,
+    defaultEnv: 'bernoulli',
+    controls: {
+      K: { label: 'Arms (K)', min: 2, max: 50, default: 10 },
+      T: { label: 'Horizon (T steps)', options: [250, 500, 1000, 2000, 5000, 10000], default: 1000 },
+      runs: { label: 'Runs averaged', options: [20, 50, 100, 200, 500, 1000], default: 200 },
+    },
+    xLabel: 'step t',
+    metrics: [
+      { key: 'regret', label: 'Cumulative regret', better: 'lower', fmt: 'num', band: true, note: 'Shaded bands: 95% confidence interval of the mean across runs. Logarithmic growth shows up as a straight line on the log time axis.' },
+      { key: 'optimal', label: 'Best-arm rate', better: 'higher', fmt: 'pct', smooth: true, zeroToOne: true, note: 'Share of runs that pulled the best arm at each step' },
+      { key: 'reward', label: 'Reward per step', better: 'higher', fmt: 'fixed3', smooth: true, note: 'Average reward received at each step' },
+    ],
+    final: { key: 'finalRegret', se: 'finalSE', median: 'finalMedian', label: 'Final regret', better: 'lower' },
+    tiles: [
+      { key: 'optimalTail', label: 'Picks the best arm most', better: 'higher', fmt: 'pct', sub: 'of the last 10% of steps' },
+    ],
+    columns: [
+      { key: 'finalRegret', label: 'Regret', fmt: 'num', better: 'lower' },
+      { key: 'finalSE', label: '95% CI', fmt: 'ci' },
+      { key: 'finalMedian', label: 'Median', fmt: 'num', better: 'lower' },
+      { key: 'optimalTail', label: 'Best arm, last 10%', fmt: 'pct', better: 'higher' },
+      { key: 'bestShare', label: 'Pulls on best arm', fmt: 'pct', better: 'higher' },
+      { key: 'meanReward', label: 'Mean reward', fmt: 'fixed3', better: 'higher' },
+      { key: 'msPerRun', label: 'ms / run', fmt: 'fixed2', better: 'lower' },
+    ],
+    heatmap: true,
+    createRunner,
+  });
+
+  const util = {
+    stats, record, argmax, untried, sampleIndex, softmaxInto, klBern, klUcbBern, klIndex,
+    posterior, samplePosterior, normCdf, normPdf, normInv, logPlus, binomHalf, gittinsPsi, exp3Gamma, now,
+  };
+
   return {
-    Rng, hash32, normInv, normCdf, klBern, klUcbBern, argmax, gittinsPsi,
+    Rng, hash32, normInv, normCdf, klBern, klUcbBern, argmax, gittinsPsi, util,
     ENVIRONMENTS, ENV_BY_ID, FAMILIES, ALGORITHMS, ALGO_BY_ID,
+    SETTINGS, register, registerSetting,
     defaultParams, createRunner, simulate,
   };
 });

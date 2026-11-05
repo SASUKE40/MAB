@@ -102,9 +102,25 @@ button, input, select { font: inherit; color: inherit; }
 .pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
 .pill[data-state="running"] .dot { background: var(--s4); animation: pulse 1s ease-in-out infinite; }
 .pill[data-state="done"] .dot { background: var(--good); }
+.pill[data-state="error"] .dot { background: var(--s8); }
 @keyframes pulse { 50% { opacity: 0.35; } }
 .progress { width: 96px; height: 4px; border-radius: 2px; background: var(--surface-2); overflow: hidden; }
 .progress span { display: block; height: 100%; width: 0; background: var(--ink-2); transition: width 120ms linear; }
+
+/* ---------- setting tabs ---------- */
+.setting-bar { display: grid; gap: 8px; padding-bottom: 16px; }
+.settings-nav { display: flex; flex-wrap: wrap; gap: 6px; }
+.settings-nav button {
+  display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); font-size: var(--step--1);
+}
+.settings-nav button:hover { border-color: var(--ink-2); color: var(--ink); }
+.settings-nav button[aria-selected="true"] { background: var(--primary); border-color: var(--primary); color: var(--on-primary); font-weight: 600; }
+.settings-nav .count { font-family: var(--font-data); font-size: 0.75rem; opacity: 0.7; }
+.setting-blurb { color: var(--ink-2); font-size: var(--step--1); max-width: 80ch; }
+.env-desc { font-size: 0.8125rem; color: var(--ink-2); line-height: 1.45; }
+.env-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.env-tags .tag { margin-left: 0; }
 
 /* ---------- bench layout ---------- */
 .bench { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 20px; align-items: start; padding-bottom: 40px; }
@@ -218,6 +234,7 @@ svg.focusing .series:not(.on) { opacity: 0.15; }
 
 .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
 @media (max-width: 1180px) { .split { grid-template-columns: minmax(0, 1fr); } }
+.split.single { grid-template-columns: minmax(0, 1fr); }
 
 .scale { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 0.75rem; color: var(--muted); margin-top: 10px; }
 .scale .bins { display: flex; gap: 2px; }
@@ -282,7 +299,7 @@ footer { color: var(--muted); font-size: var(--step--1); padding-block: 0 40px; 
     <div>
       <div class="eyebrow">Multi-armed bandits · reinforcement learning</div>
       <h1>Bandit Algorithm Arena</h1>
-      <p class="lede"><span id="algo-total">Forty-four</span> bandit algorithms, simulated in your browser. Every algorithm in a run plays the same bandit and sees the same reward stream, so differences come from the strategy, not the luck of the draw.</p>
+      <p class="lede"><span id="algo-total">200</span> bandit algorithms across <span id="setting-total">nine</span> <span id="setting-word">problem settings</span>, simulated in your browser. Every algorithm in a run plays the same bandit and sees the same reward stream, so differences come from the strategy, not the luck of the draw.</p>
     </div>
     <div class="status" aria-live="polite">
       <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
@@ -291,33 +308,43 @@ footer { color: var(--muted); font-size: var(--step--1); padding-block: 0 40px; 
   </div>
 </header>
 
+<div class="wrap setting-bar">
+  <nav class="settings-nav" id="settings-nav" role="tablist" aria-label="Problem setting"></nav>
+  <p class="setting-blurb" id="setting-blurb"></p>
+</div>
+
 <div class="wrap bench">
   <aside class="rail" aria-label="Simulation settings">
     <section>
-      <div class="eyebrow">Environment</div>
-      <div class="envs" id="envs" role="radiogroup" aria-label="Environment"></div>
+      <div class="field">
+        <label class="eyebrow" for="env-select">Environment</label>
+        <select id="env-select"></select>
+        <p class="env-desc" id="env-desc"></p>
+        <div class="env-tags" id="env-tags"></div>
+      </div>
     </section>
     <section>
-      <div class="field">
-        <div class="row"><label for="k-range">Arms (K)</label><output id="k-out" class="mono num" for="k-range">10</output></div>
+      <div class="field" id="k-field">
+        <div class="row"><label for="k-range" id="k-label">Arms (K)</label><output id="k-out" class="mono num" for="k-range">10</output></div>
         <input type="range" id="k-range" min="2" max="50" step="1" value="10">
       </div>
       <div class="two">
-        <div class="field">
-          <label for="t-select">Horizon (T steps)</label>
+        <div class="field" id="t-field">
+          <label for="t-select" id="t-label">Horizon (T steps)</label>
           <select id="t-select">
             <option value="250">250</option><option value="500">500</option><option value="1000" selected>1,000</option>
             <option value="2000">2,000</option><option value="5000">5,000</option><option value="10000">10,000</option>
           </select>
         </div>
         <div class="field">
-          <label for="runs-select">Runs averaged</label>
+          <label for="runs-select" id="runs-label">Runs averaged</label>
           <select id="runs-select">
             <option value="20">20</option><option value="50">50</option><option value="100">100</option>
             <option value="200" selected>200</option><option value="500">500</option><option value="1000">1,000</option>
           </select>
         </div>
       </div>
+      <div id="extra-controls" class="two" hidden></div>
       <div class="field">
         <label for="seed-input">Seed</label>
         <div class="seed">
@@ -366,7 +393,7 @@ footer { color: var(--muted); font-size: var(--step--1); padding-block: 0 40px; 
       <p class="note" id="curve-note"></p>
     </section>
 
-    <div class="split">
+    <div class="split" id="split">
       <section class="card" aria-labelledby="board-title">
         <div class="card-head">
           <div>
@@ -376,7 +403,7 @@ footer { color: var(--muted); font-size: var(--step--1); padding-block: 0 40px; 
         </div>
         <div class="chart" id="board-chart"></div>
       </section>
-      <section class="card" aria-labelledby="heat-title">
+      <section class="card" aria-labelledby="heat-title" id="heat-card">
         <div class="card-head">
           <div>
             <h2 id="heat-title">Where the pulls went</h2>
@@ -423,19 +450,21 @@ footer { color: var(--muted); font-size: var(--step--1); padding-block: 0 40px; 
 
   <div class="shelf-head">
     <div class="eyebrow">Catalog</div>
-    <h2>Every algorithm in the arena</h2>
-    <p>Grouped by how they explore. Add any of them to the comparison from here.</p>
+    <h2 id="catalog-title">Every algorithm in the arena</h2>
+    <p>Grouped by family. Add any of them to the comparison from here. Use the setting tabs at the top to see the other problem settings.</p>
   </div>
   <div class="catalog" id="catalog"></div>
 </div>
 
 <footer>
   <div class="wrap">
-    Simulation core: <code>src/mab.js</code>. Regret is pseudo-regret, Σ (μ*ₜ − μ<sub>aₜ</sub>); for drifting and abrupt environments μ*ₜ is the best mean at step t. Bonuses are scaled by s = 1 for Bernoulli and s = √2 for unit-variance Gaussian rewards.
+    Simulation core: <code>src/mab.js</code>; add-ons in <code>src/algos/</code> and <code>src/settings/</code>. In the K-armed arena, regret is pseudo-regret, Σ (μ*ₜ − μ<sub>aₜ</sub>); for drifting and abrupt environments μ*ₜ is the best mean at step t. Bonuses are scaled by s = 1 for Bernoulli and s = √2 for unit-variance Gaussian rewards.
   </div>
 </footer>
 
 <script src="../src/mab.js"></script>
+<!-- addons:start -->
+<!-- addons:end -->
 <script src="app.js"></script>
 </body>
 </html>
